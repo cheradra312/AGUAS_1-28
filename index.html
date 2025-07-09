@@ -26,8 +26,8 @@
         .text-shadow {
             text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
         }
-		.topic-button { background-color: #ffffff; border: 1px solid #e5e7eb; color: #374151; padding: 1rem; border-radius: 0.75rem; text-align: left; transition: all 0.2s ease-in-out; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
-		.topic-button:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); }
+		.topic-button { border: 1px solid #e5e7eb; color: #374151; padding: 1rem; border-radius: 0.75rem; text-align: left; transition: all 0.2s ease-in-out; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
+		.topic-button:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1); border-color: #d1d5db; }
 		.topic-number { border-radius: 9999px; font-weight: 700; font-size: 1.125rem; width: 2.75rem; height: 2.75rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s ease-in-out; }
 		.topic-title { font-weight: 600; flex-grow: 1; }
 		.topic-icon { font-size: 1.25rem; width: 2rem; text-align: center; transition: color 0.2s ease-in-out; }
@@ -59,7 +59,7 @@
        }
 	</style>
 </head>
-<body class="bg-sky-50 p-2 md:p-4">
+<body class="bg-sky-100 p-2 md:p-4">
 
 	<div class="mx-auto max-w-7xl">
 		<!-- VISTA DEL MENÚ PRINCIPAL -->
@@ -87,7 +87,7 @@
                         <path d="M-3.35,111.27 C150.00,150.00 271.49,-49.98 503.97,109.28 L500.00,150.00 L0.00,150.00 Z" style="stroke: none; fill: rgba(255,255,255,0.15);"></path>
                     </svg>
                 </div>
-                <button id="change-session-button" class="absolute top-4 right-4 bg-sky-900/30 text-white font-semibold px-3 py-1.5 rounded-lg hover:bg-sky-900/50 text-xs backdrop-blur-sm transition-colors">Cerrar Sesión</button>
+                <button id="change-session-button" class="absolute top-4 right-4 bg-slate-800/50 text-white font-semibold px-3 py-1.5 rounded-lg hover:bg-slate-800/70 text-xs backdrop-blur-sm transition-colors">Cerrar Sesión</button>
 			</header>
 			<div id="topics-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
 		</div>
@@ -459,7 +459,7 @@
                         { "title": "La Ley de Aguas y sus reglamentos en relación con la planificación hidrológica", "start": 0, "end": 0 },
                         { "title": "Instrucción de planificación hidrológica", "start": 0, "end": 0 },
                         { "title": "El proceso de planificación hidrológica, elaboración y contenido de los planes hidrológicos de demarcación", "start": 0, "end": 0 },
-                        { "title": "Programas de medidas de los planes hidrológicos. Criterios para la selección de las medidas. Financiación. Coordinación con otros Planes y Programas", "start": 0, "end": 0 }
+                        { "title": "Programas de medidas de los planes hidrológicos. Criterios para la selección de las medidas. Financiación. Coordinación com otros Planes y Programas", "start": 0, "end": 0 }
                     ]
                 },
                 {
@@ -656,7 +656,7 @@
                 }
             ];
 
- 			const colorPalette={blue:{normal:"bg-blue-50 text-blue-700",icon:"text-blue-500"},cyan:{normal:"bg-cyan-50 text-cyan-700",icon:"text-cyan-500"},sky:{normal:"bg-sky-50 text-sky-700",icon:"text-sky-500"},indigo:{normal:"bg-indigo-50 text-indigo-700",icon:"text-indigo-500"},green:{normal:"bg-green-50 text-green-700",icon:"text-green-500"},emerald:{normal:"bg-emerald-50 text-emerald-700",icon:"text-emerald-500"},teal:{normal:"bg-teal-50 text-teal-700",icon:"text-teal-500"},lime:{normal:"bg-lime-50 text-lime-700",icon:"text-lime-500"},yellow:{normal:"bg-yellow-50 text-yellow-700",icon:"text-yellow-500"},amber:{normal:"bg-amber-50 text-amber-700",icon:"text-amber-500"},orange:{normal:"bg-orange-50 text-orange-700",icon:"text-orange-500"},red:{normal:"bg-red-50 text-red-700",icon:"text-red-500"},rose:{normal:"bg-rose-50 text-rose-700",icon:"text-rose-500"},pink:{normal:"bg-pink-50 text-pink-700",icon:"text-pink-500"},fuchsia:{normal:"bg-fuchsia-50 text-fuchsia-700",icon:"text-fuchsia-500"},purple:{normal:"bg-purple-50 text-purple-700",icon:"text-purple-500"},violet:{normal:"bg-violet-50 text-violet-700",icon:"text-violet-500"},gray:{normal:"bg-gray-50 text-gray-700",icon:"text-gray-500"},slate:{normal:"bg-slate-50 text-slate-700",icon:"text-slate-500"},zinc:{normal:"bg-zinc-50 text-zinc-700",icon:"text-zinc-500"}};
+ 			const colorPalette={blue:{normal:"bg-blue-100 text-blue-800",buttonBg:"bg-blue-50",icon:"text-blue-500"},cyan:{normal:"bg-cyan-100 text-cyan-800",buttonBg:"bg-cyan-50",icon:"text-cyan-500"},sky:{normal:"bg-sky-100 text-sky-800",buttonBg:"bg-sky-50",icon:"text-sky-500"},indigo:{normal:"bg-indigo-100 text-indigo-800",buttonBg:"bg-indigo-50",icon:"text-indigo-500"},green:{normal:"bg-green-100 text-green-800",buttonBg:"bg-green-50",icon:"text-green-500"},emerald:{normal:"bg-emerald-100 text-emerald-800",buttonBg:"bg-emerald-50",icon:"text-emerald-500"},teal:{normal:"bg-teal-100 text-teal-800",buttonBg:"bg-teal-50",icon:"text-teal-500"},lime:{normal:"bg-lime-100 text-lime-800",buttonBg:"bg-lime-50",icon:"text-lime-500"},yellow:{normal:"bg-yellow-100 text-yellow-800",buttonBg:"bg-yellow-50",icon:"text-yellow-500"},amber:{normal:"bg-amber-100 text-amber-800",buttonBg:"bg-amber-50",icon:"text-amber-500"},orange:{normal:"bg-orange-100 text-orange-800",buttonBg:"bg-orange-50",icon:"text-orange-500"},red:{normal:"bg-red-100 text-red-800",buttonBg:"bg-red-50",icon:"text-red-500"},rose:{normal:"bg-rose-100 text-rose-800",buttonBg:"bg-rose-50",icon:"text-rose-500"},pink:{normal:"bg-pink-100 text-pink-800",buttonBg:"bg-pink-50",icon:"text-pink-500"},fuchsia:{normal:"bg-fuchsia-100 text-fuchsia-800",buttonBg:"bg-fuchsia-50",icon:"text-fuchsia-500"},purple:{normal:"bg-purple-100 text-purple-800",buttonBg:"bg-purple-50",icon:"text-purple-500"},violet:{normal:"bg-violet-100 text-violet-800",buttonBg:"bg-violet-50",icon:"text-violet-500"},gray:{normal:"bg-gray-100 text-gray-800",buttonBg:"bg-gray-50",icon:"text-gray-500"},slate:{normal:"bg-slate-100 text-slate-800",buttonBg:"bg-slate-50",icon:"text-slate-500"},zinc:{normal:"bg-zinc-100 text-zinc-800",buttonBg:"bg-zinc-50",icon:"text-zinc-500"}};
  			const gridContainer=document.getElementById("topics-grid"),mainMenuView=document.getElementById("main-menu-view"),mapViewerVIew=document.getElementById("map-viewer-view"),backButton=document.getElementById("back-button"),topControlBar=document.getElementById("top-control-bar"),chaptersMenuContainer=document.getElementById("chapters-menu-container"),chaptersButton=document.getElementById("chapters-button"),chaptersDropdown=document.getElementById("chapters-dropdown"),topicAudio=document.getElementById("topic-audio"),playPauseButton=document.getElementById("play-pause-button"),playPauseIcon=document.getElementById("play-pause-icon"),rewindButton=document.getElementById("rewind-button"),forwardButton=document.getElementById("forward-button"),timelineSlider=document.getElementById("timeline-slider"),currentTimeEl=document.getElementById("current-time"),totalDurationEl=document.getElementById("total-duration"),speedButton=document.getElementById("speed-button"),loopButton=document.getElementById("loop-button"),editorPanel=document.getElementById("editor-panel"),editorList=document.getElementById("editor-list"),editModeToggle=document.getElementById("edit-mode-toggle"),saveDataButton=document.getElementById("save-data-button"),saveIcon=document.getElementById("save-icon"),saveText=document.getElementById("save-text"),saveNotification=document.getElementById("save-notification"),addChapterButton = document.getElementById("add-chapter-button"),passwordModalOverlay=document.getElementById("password-modal-overlay"),passwordInput=document.getElementById("password-input"),confirmEditButton=document.getElementById("confirm-edit-button"),cancelEditButton=document.getElementById("cancel-edit-button"),passwordError=document.getElementById("password-error"),newChapterTitleInput=document.getElementById("new-chapter-title-input"),restoreDefaultsButton = document.getElementById("restore-defaults-button");
             const sideSelectModal = document.getElementById('side-select-modal'), openLeftBtn = document.getElementById('open-left-btn'), openRightBtn = document.getElementById('open-right-btn'), cancelSideSelectBtn = document.getElementById('cancel-side-select-btn');
  			const pdfViewerContainer = document.getElementById('pdf-viewer-container'), pdfCanvas = document.getElementById('pdf-canvas'), pageNumEl = document.getElementById('page-num'), pageCountEl = document.getElementById('page-count'), prevPageBtn = document.getElementById('prev-page'), nextPageBtn = document.getElementById('next-page'), pdfLoadingOverlay = document.getElementById('pdf-loading-overlay'), loadingText = document.getElementById('loading-text'), togglePdfButton = document.getElementById('toggle-pdf-button'), contentContainer = document.getElementById('content-container'), contentFrame = document.getElementById('content-frame'), mainViewerArea = document.getElementById('main-viewer-area');
@@ -676,7 +676,7 @@
                 } else {
                     iconHtml = `<i class="fas ${e.icon} topic-icon ${n.icon}"></i>`;
                 }
- 				o.className="topic-button",o.dataset.index=t;
+ 				o.className=`topic-button ${n.buttonBg}`,o.dataset.index=t;
                 o.innerHTML=`<span class="topic-number ${n.normal}">${t+1}</span>${iconHtml}<span class="topic-title">${e.title}</span>`;
                 gridContainer.appendChild(o);
  			});
