@@ -16,7 +16,7 @@
    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 
 	<style>
-		body { font-family: 'Inter', sans-serif; }
+		body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .font-luckiest { font-family: 'Luckiest Guy', cursive; }
         .fancy-title-word {
             background-clip: text;
@@ -26,12 +26,12 @@
         .text-shadow {
             text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
         }
-		.topic-button { border: 1px solid #e5e7eb; color: #374151; padding: 1rem; border-radius: 0.75rem; text-align: left; transition: all 0.2s ease-in-out; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
-		.topic-button:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1); border-color: #d1d5db; }
+		.topic-button { border: 1px solid #e0f2fe; color: #374151; padding: 1rem; border-radius: 0.75rem; text-align: left; transition: all 0.2s ease-in-out; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
+		.topic-button:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1); border-color: #bae6fd; }
 		.topic-number { border-radius: 9999px; font-weight: 700; font-size: 1.125rem; width: 2.75rem; height: 2.75rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s ease-in-out; }
 		.topic-title { font-weight: 600; flex-grow: 1; }
 		.topic-icon { font-size: 1.25rem; width: 2rem; text-align: center; transition: color 0.2s ease-in-out; }
-		#top-control-bar, #editor-panel, #lector-panel { display: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
+		#top-control-bar, #editor-panel, #lector-panel { opacity: 0; transition: opacity 0.3s ease-in-out; }
 		input[type="range"]::-webkit-slider-runnable-track { background: #e5e7eb; height: 0.25rem; border-radius: 1rem; }
 		input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; margin-top: -6px; background-color: #3b82f6; height: 1rem; width: 1rem; border-radius: 50%; }
 		input[type="range"] { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; }
@@ -57,9 +57,37 @@
        .side-panel {
             flex-shrink: 0;
        }
+        /* Estilos para la animación de la tarjeta */
+        #animation-container {
+            perspective: 2000px;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            pointer-events: none;
+        }
+        #animation-card {
+            transition: transform 0.6s, width 0.4s ease-in-out, height 0.4s ease-in-out, top 0.4s ease-in-out, left 0.4s ease-in-out, border-radius 0.4s ease-in-out;
+            transform-style: preserve-3d;
+            position: absolute;
+            will-change: transform, width, height, top, left;
+        }
+        .animation-card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: inherit;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .animation-card-back {
+            transform: rotateY(180deg);
+            background-color: #f3f4f6; /* bg-gray-100 */
+        }
 	</style>
 </head>
-<body class="bg-sky-100 p-2 md:p-4">
+<body class="bg-sky-50 p-2 md:p-4">
 
 	<div class="mx-auto">
 		<!-- VISTA DEL MENÚ PRINCIPAL -->
@@ -99,7 +127,6 @@
 					<i class="fas fa-arrow-left"></i><span class="hidden sm:inline">Volver</span>
 				</button>
 				<div class="flex items-center gap-2 flex-wrap justify-end">
-                    <!-- Botón para el Lector -->
                     <button id="toggle-lector-button" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 flex items-center gap-2">
                         <i class="fas fa-book-open"></i><span class="hidden sm:inline">Lector</span>
                     </button>
@@ -107,9 +134,7 @@
                         <button id="toggle-video-button" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 flex items-center gap-2">
                            <i class="fas fa-video"></i><span class="hidden sm:inline">Ver Vídeo</span>
                        </button>
-                       <div id="video-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20 hidden">
-                           <!-- Video links will be inserted here -->
-                       </div>
+                       <div id="video-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20 hidden"></div>
                     </div>
                    <button id="toggle-oral-button" class="bg-green-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-green-600 flex items-center gap-2">
                        <i class="fas fa-question-circle"></i><span class="hidden sm:inline">Preguntas Oral</span>
@@ -141,7 +166,6 @@
 			</div>
 
 			<div id="main-viewer-area" class="flex flex-col lg:flex-row gap-4">
-                <!-- Contenedores movibles -->
                 <div id="lector-panel" class="side-panel bg-white p-4 rounded-lg shadow-lg border border-gray-200 hidden" style="flex-basis: 33.33%;">
                     <iframe id="lector-frame" class="w-full h-full border-0" style="min-height: 75vh;"></iframe>
                 </div>
@@ -168,7 +192,6 @@
                <div id="content-container" class="flex-1">
                    <iframe id="content-frame" class="w-full h-full border-0 rounded-xl shadow-lg" style="min-height: 90vh;" src=""></iframe>
                </div>
-               <!-- Contenedores para PDF que se moverán dinámicamente -->
                <div id="pdf-viewer-wrapper" class="side-panel hidden" style="flex-basis: 50%;">
                     <div id="pdf-viewer-container" class="w-full h-full transition-all duration-300 bg-gray-200 p-2 sm:p-4 flex flex-col items-center relative rounded-lg" style="min-height: 90vh;">
                        <div id="pdf-controls" class="mb-2 sm:mb-4 bg-white p-2 rounded-lg shadow-md flex items-center gap-2 sm:gap-4 z-10">
@@ -210,6 +233,14 @@
                </div>
 			</div>
 		</div>
+
+        <!-- Contenedor para la animación de la tarjeta -->
+        <div id="animation-container" class="hidden">
+            <div id="animation-card">
+                <div class="animation-card-face" id="animation-front"></div>
+                <div class="animation-card-face animation-card-back"></div>
+            </div>
+        </div>
 
        <!-- MODAL DE SESIÓN -->
        <div id="session-modal-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center z-50 modal-overlay">
@@ -283,6 +314,7 @@
            let indexToDelete = -1;
            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
            let pdfToOpen = null;
+           let originalButton = null;
 
 			async function initializeAndAuthFirebase() {
 				try {
@@ -361,299 +393,34 @@
             handleSession();
             const presaIconSvg = `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full"><rect x="15" y="20" width="70" height="50" rx="5" fill="#A9A9A9" stroke="#333333" stroke-width="2"/><rect x="20" y="25" width="60" height="10" fill="#6B7280" stroke="#333333" stroke-width="1"/><rect x="40" y="35" width="20" height="25" fill="#60A5FA" stroke="#333333" stroke-width="1"/><path d="M40 60 C45 75, 55 75, 60 60 L60 85 C55 95, 45 95, 40 85 L40 60Z" fill="#60A5FA" opacity="0.9"/><circle cx="45" cy="70" r="2" fill="#3B82F6"/><circle cx="55" cy="70" r="2" fill="#3B82F6"/><circle cx="42" cy="80" r="2" fill="#3B82F6"/><circle cx="58" cy="80" r="2" fill="#3B82F6"/><path d="M10 80 C20 90, 80 90, 90 80 L90 85 C80 95, 20 95, 10 85 L10 80Z" fill="#60A5FA" opacity="0.7"/><circle cx="20" cy="88" r="2" fill="#3B82F6"/><circle cx="30" cy="85" r="2" fill="#3B82F6"/><circle cx="70" cy="88" r="2" fill="#3B82F6"/><circle cx="80" cy="85" r="2" fill="#3B82F6"/></svg>`;
 			const topics = [
-                {
-                    file: 'MEA1T1_Desplegable.html', title: 'Marco normativo en materia de aguas en España', color: 'blue', icon: 'fa-landmark', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Marco normativo en materia de aguas en España. Elementos que regula el texto refundido de la Ley de Aguas", "start": 0, "end": 0 },
-                        { "title": "Organización de la Administración Hidráulica en España", "start": 0, "end": 0 },
-                        { "title": "Reglamento del Dominio Público Hidráulico. Dominio Público Hidráulico: aguas públicas y privadas", "start": 0, "end": 0 },
-                        { "title": "Utilización del Dominio Público Hidráulico: servidumbres, usos comunes y privativos, concesiones y autorizaciones, registro de aguas y régimen jurídico de las comunidades de usuarios", "start": 0, "end": 0 },
-                        { "title": "Reconocimiento de derechos anteriores a 1986", "start": 0, "end": 0 },
-                        { "title": "Protección del Dominio Público Hidráulico y de la calidad de las aguas continentales: zonas de servidumbre y de policía, apeo y deslinde; vertidos; reutilización", "start": 0, "end": 0 },
-                        { "title": "Régimen económico-financiero de la utilización del dominio público hidráulico", "start": 0, "end": 0 },
-                        { "title": "Infracciones y sanciones", "start": 0, "end": 0 },
-                        { "title": "Contrato de cesión de derechos al uso privativo de las aguas públicas", "start": 0, "end": 0 },
-                        { "title": "Seguridad de presas, embalses y balsas", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T2_Desplegable.html', title: 'Directiva Marco de Aguas', color: 'green', icon: 'fa-file-alt', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Directiva 2000/60/CE Marco del Agua y directivas relacionadas", "start": 0, "end": 0 },
-                        { "title": "Objetivos medioambientales", "start": 0, "end": 0 },
-                        { "title": "Tipos de masas de agua, caracterización de masas de agua, presiones e impactos", "start": 0, "end": 0 },
-                        { "title": "Estado ecológico, potencial ecológico y designación de masas artificiales y muy modificadas", "start": 0, "end": 0 },
-                        { "title": "Real Decreto 817/2015, de 11 de septiembre, por el que se establecen los criterios de seguimiento y evaluación del estado de las aguas superficiales y las normas de calidad ambiental", "start": 0, "end": 0 },
-                        { "title": "Reglamento de planificación hidrológica. Marco normativo de los Planes Hidrológicos", "start": 0, "end": 0 },
-                        { "title": "Características de la demarcación hidrográfica", "start": 0, "end": 0 },
-                        { "title": "Recuperación de costes", "start": 0, "end": 0 },
-                        { "title": "Programa de medidas", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T3_Desplegable.html', title: 'Avenidas y sequías', color: 'purple', icon: 'fa-cloud-showers-heavy', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Avenidas e inundaciones", "start": 0, "end": 0 },
-                        { "title": "La Directiva 2007/60 de evaluación y gestión de riesgos de inundación y RD 903/2010 de evaluación y gestión de riesgos de inundación. Planes de gestión de riesgo de inundación", "start": 0, "end": 0 },
-                        { "title": "Sequías", "start": 0, "end": 0 },
-                        { "title": "Planes especiales de alerta y eventual sequía", "start": 0, "end": 0 },
-                        { "title": "Estudios relativos a inundaciones y sequías. Prevención y control", "start": 0, "end": 0 },
-                        { "title": "Sistema automático de información hidrológica", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T4_Desplegable.html', title: 'Convenios internacionales en materia de aguas', color: 'orange', icon: 'fa-globe', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Cooperación internacional y participación pública", "start": 0, "end": 0 },
-                        { "title": "Principales convenios internacionales relacionados con la gestión de los recursos transfronterizos: Convenio de Albufeira, Convenio OSPAR, Convenio de Barcelona y Plan de Acción del Mediterráneo, Convenio RAMSAR, Acuerdo de Toulouse, Conferencia de Directores Iberoamericanos del Agua (CODIA), Convenio de Helsinki", "start": 0, "end": 0 },
-                        { "title": "Principales organismos internacionales relacionados con la gestión de los recursos hídricos", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T5_Desplegable.html', title: 'Legislación de calidad del agua', color: 'teal', icon: 'fa-balance-scale', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Legislación de aguas en relación a la calidad del agua", "start": 0, "end": 0 },
-                        { "title": "La Directiva 91/271", "start": 0, "end": 0 },
-                        { "title": "El Real Decreto-ley 11/1995 y el Real Decreto 509/1996", "start": 0, "end": 0 },
-                        { "title": "Las zonas sensibles: la resolución de 25 de mayo de 1998", "start": 0, "end": 0 },
-                        { "title": "Vertidos", "start": 0, "end": 0 },
-                        { "title": "Declaración de vertidos", "start": 0, "end": 0 },
-                        { "title": "Autorizaciones de vertido", "start": 0, "end": 0 },
-                        { "title": "Procedimientos de infracción abiertos por la Comisión Europea al Reino de España por incumplimiento de la Directiva 91/271", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T6_Desplegable.html', title: 'Las zonas húmedas', color: 'red', icon: 'fa-water', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Las zonas húmedas", "start": 0, "end": 0 },
-                        { "title": "Inventario español de zonas húmedas", "start": 0, "end": 0 },
-                        { "title": "La delimitación de zonas húmedas", "start": 0, "end": 0 },
-                        { "title": "Mecanismos de protección y conservación de las zonas húmedas", "start": 0, "end": 0 },
-                        { "title": "Rehabilitación o restauración", "start": 0, "end": 0 },
-                        { "title": "Directiva de Hábitats y de Aves", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T7_Desplegable.html', title: 'El régimen económico financiero de la Ley de Aguas', color: 'amber', icon: 'fa-euro-sign', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "El régimen económico financiero de la Ley de Aguas", "start": 0, "end": 0 },
-                        { "title": "Canon de ocupación o utilización", "start": 0, "end": 0 },
-                        { "title": "El canon de control de vertidos", "start": 0, "end": 0 },
-                        { "title": "Canon de regulación y tarifa de utilización del agua. Distribución entre los beneficiarios", "start": 0, "end": 0 },
-                        { "title": "Canon por utilización de las aguas continentales para la producción de energía eléctrica", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T8_Desplegable.html', title: 'Principios generales de la administración pública del agua', color: 'cyan', icon: 'fa-university', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Principios generales de la administración pública del agua", "start": 0, "end": 0 },
-                        { "title": "El Consejo Nacional del Agua", "start": 0, "end": 0 },
-                        { "title": "Los organismos de cuenca: configuración y funciones. Atribuciones y cometidos. Órganos de gobierno, administración y cooperación. Comité de autoridades competentes de las Demarcaciones Hidrográficas intercomunitarias. Hacienda y patrimonio", "start": 0, "end": 0 },
-                        { "title": "Régimen jurídico de las comunidades de usuarios. Derechos y obligaciones. Reparto y distribución del agua", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T9_Desplegable.html', title: 'Objetivos generales de la planificación hidrológica', color: 'indigo', icon: 'fa-bullseye', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Objetivos generales de la planificación hidrológica", "start": 0, "end": 0 },
-                        { "title": "La Ley de Aguas y sus reglamentos en relación con la planificación hidrológica", "start": 0, "end": 0 },
-                        { "title": "Instrucción de planificación hidrológica", "start": 0, "end": 0 },
-                        { "title": "El proceso de planificación hidrológica, elaboración y contenido de los planes hidrológicos de demarcación", "start": 0, "end": 0 },
-                        { "title": "Programas de medidas de los planes hidrológicos. Criterios para la selección de las medidas. Financiación. Coordinación com otros Planes y Programas", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T10_Desplegable.html', title: 'Evaluación de recursos existentes', color: 'lime', icon: 'fa-calculator', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Evaluación de recursos existentes: recursos en régimen natural, recursos disponibles y recursos libres", "start": 0, "end": 0 },
-                        { "title": "Las demandas", "start": 0, "end": 0 },
-                        { "title": "La demanda medioambiental", "start": 0, "end": 0 },
-                        { "title": "Balances hidráulicos", "start": 0, "end": 0 },
-                        { "title": "Los sistemas de explotación de recursos: modelos de optimización y simulación de recursos", "start": 0, "end": 0 },
-                        { "title": "Rasgos básicos del balance hidráulico nacional", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T11_Desplegable.html', title: 'Hidrología', color: 'fuchsia', icon: 'fa-tint', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Hidrología", "start": 0, "end": 0 },
-                        { "title": "Ciclo hidrológico", "start": 0, "end": 0 },
-                        { "title": "Red Integrada de Estaciones de Aforos (SAIH-ROEA), el Sistema Automático de Información de Calidad de las Aguas (SAICA) y las redes de control de aguas subterráneas", "start": 0, "end": 0 },
-                        { "title": "Los SIG y su aplicación a la gestión de los recursos hidráulicos", "start": 0, "end": 0 },
-                        { "title": "Orden TED/1191/2024 por la que se regulan los sistemas electrónicos de control de los volúmenes de agua utilizados por los aprovechamientos de agua, los retornos y los vertidos al dominio público hidráulico", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T12_Desplegable.html', title: 'Regulación', color: 'sky', icon: 'fa-cogs', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Regulación", "start": 0, "end": 0 },
-                        { "title": "Garantía de la regulación. Criterios de garantía", "start": 0, "end": 0 },
-                        { "title": "Modelos matemáticos de regulación", "start": 0, "end": 0 },
-                        { "title": "Leyes de distribución de aportaciones", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T13_Desplegable.html', title: 'Hidrología de las aguas subterráneas', color: 'violet', icon: 'fa-layer-group', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Hidrología de las aguas subterráneas", "start": 0, "end": 0 },
-                        { "title": "Utilización y aprovechamiento de aguas subterráneas: régimen de explotación", "start": 0, "end": 0 },
-                        { "title": "Masas de agua subterráneas en riesgo de no alcanzar el buen estado cuantitativo o químico", "start": 0, "end": 0 },
-                        { "title": "Técnicas de investigación hidrogeológica y evaluación de recursos", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T14_Desplegable.html', title: 'Usos de agua en abastecimiento a poblaciones', color: 'emerald', icon: 'fa-city', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Usos de agua en abastecimiento a poblaciones", "start": 0, "end": 0 },
-                        { "title": "Prognosis de la demanda de abastecimiento", "start": 0, "end": 0 },
-                        { "title": "Dotaciones", "start": 0, "end": 0 },
-                        { "title": "Pérdidas en la red de distribución", "start": 0, "end": 0 },
-                        { "title": "Captaciones de aguas superficiales y subterráneas: tipos", "start": 0, "end": 0 },
-                        { "title": "Perímetros de protección de captaciones", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T15_Desplegable.html', title: 'Técnicas especiales e indirectas para incrementar la eficacia de los recursos de agua', color: 'pink', icon: 'fa-magic', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Técnicas especiales e indirectas para incrementar la eficacia de los recursos de agua", "start": 0, "end": 0 },
-                        { "title": "Actuaciones sobre la oferta de recursos", "start": 0, "end": 0 },
-                        { "title": "Desalación de agua del mar y salobre: concepto y requisitos", "start": 0, "end": 0 },
-                        { "title": "Reutilización de aguas residuales. Real Decreto 1085/2024 por el que se aprueba el Reglamento de reutilización del agua", "start": 0, "end": 0 },
-                        { "title": "Prevención de evaporación de embalses", "start": 0, "end": 0 },
-                        { "title": "Actuaciones sobre la demanda: soluciones legales, técnicas y de gestión", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T16_Desplegable.html', title: 'Condiciones de potabilidad del agua', color: 'yellow', icon: 'fa-glass-whiskey', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Condiciones de potabilidad del agua", "start": 0, "end": 0 },
-                        { "title": "Técnicas de potabilización, desalación y técnicas de tratamiento de aguas industriales", "start": 0, "end": 0 },
-                        { "title": "Pretratamientos y postratamientos necesarios", "start": 0, "end": 0 },
-                        { "title": "Obras de abastecimiento y saneamiento en general", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T17_Desplegable.html', title: 'Depuración de aguas residuales', color: 'slate', icon: 'fa-recycle', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Depuración de aguas residuales", "start": 0, "end": 0 },
-                        { "title": "Control e índices de contaminación", "start": 0, "end": 0 },
-                        { "title": "Autodepuración en cursos naturales", "start": 0, "end": 0 },
-                        { "title": "Tecnología de la depuración físico-química: pretratamiento y tratamientos primarios", "start": 0, "end": 0 },
-                        { "title": "Tecnología de eliminación biológica de nutrientes: tratamientos secundarios", "start": 0, "end": 0 },
-                        { "title": "Tecnología del tratamiento terciario: filtración y esterilización", "start": 0, "end": 0 },
-                        { "title": "Tratamientos avanzados de eliminación de nutrientes: fósforo y nitrógeno", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T18_Desplegable.html', title: 'Problemas de contaminación de efluentes industriales', color: 'rose', icon: 'fa-industry', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Problemas de contaminación en relación con los efluentes industriales", "start": 0, "end": 0 },
-                        { "title": "Reutilización de efluentes industriales", "start": 0, "end": 0 },
-                        { "title": "Evaluación de la carga contaminante por sector industrial. Categorización del sector industrial", "start": 0, "end": 0 },
-                        { "title": "Características de los efluentes", "start": 0, "end": 0 },
-                        { "title": "Selección de parámetros contaminantes a efectos de establecimiento de niveles de emisión", "start": 0, "end": 0 },
-                        { "title": "Tecnologías disponibles para reducir la contaminación de efluentes: medidas internas y tratamiento de efluentes", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T19_Desplegable.html', title: 'Uso del agua para regadío', color: 'blue', icon: 'fa-seedling', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Uso del agua para regadío", "start": 0, "end": 0 },
-                        { "title": "El agua en la fisiología vegetal", "start": 0, "end": 0 },
-                        { "title": "Técnicas de aplicación del agua al terreno y obras de riego en general", "start": 0, "end": 0 },
-                        { "title": "Dotaciones, garantía y calidad del agua", "start": 0, "end": 0 },
-                        { "title": "Reutilización de caudales de riego", "start": 0, "end": 0 },
-                        { "title": "Los fertilizantes y los productos fitosanitarios como agentes contaminantes potenciales. La contaminación difusa", "start": 0, "end": 0 },
-                        { "title": "Problemas de salinidad", "start": 0, "end": 0 },
-                        { "title": "Gestión sostenible de regadíos. Plan Nacional de Regadíos", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T20_Desplegable.html', title: 'Energía', color: 'green', icon: 'fa-lightbulb', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Aprovechamientos hidráulicos convencionales", "start": 0, "end": 0 },
-                        { "title": "Centrales de acumulación o de bombeo y de usos múltiple", "start": 0, "end": 0 },
-                        { "title": "Obras civiles de carácter hidroeléctrico", "start": 0, "end": 0 },
-                        { "title": "Tecnologías energéticas, convencionales y renovables. Usos: generación eléctrica, aprovechamiento térmico y transporte", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T21_Desplegable.html', title: 'Otros usos del agua', color: 'purple', icon: 'fa-swimmer', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "El agua en la industria", "start": 0, "end": 0 },
-                        { "title": "Evaluación de necesidades", "start": 0, "end": 0 },
-                        { "title": "Refrigeración de centrales térmicas de combustión fósil o nuclear", "start": 0, "end": 0 },
-                        { "title": "Calor a disipar", "start": 0, "end": 0 },
-                        { "title": "Caudal de refrigeración y de dilución", "start": 0, "end": 0 },
-                        { "title": "Navegación fluvial", "start": 0, "end": 0 },
-                        { "title": "Usos recreativos", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T22_Desplegable.html', title: 'Las obras hidráulicas', color: 'orange', icon: 'fa-hard-hat', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Las obras hidráulicas. Concepto y naturaleza jurídica de las obras hidráulicas: competencias para la ejecución, gestión y explotación de las obras hidráulicas públicas", "start": 0, "end": 0 },
-                        { "title": "Obras hidráulicas de interés general, declaración de obras hidráulicas de interés general, prerrogativas de las obras hidráulicas de interés general", "start": 0, "end": 0 },
-                        { "title": "Coordinación de competencias concurrentes, declaración de utilidad pública y necesidad de ocupación", "start": 0, "end": 0 },
-                        { "title": "Régimen jurídico de las Sociedades Estatales de Aguas", "start": 0, "end": 0 },
-                        { "title": "Contrato de concesión de obras hidráulicas", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T23_Desplegable.html', title: 'Presas I', color: 'teal', icon: presaIconSvg, videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Presas I: Generalidades. Avenidas y otros criterios de proyecto", "start": 0, "end": 0 },
-                        { "title": "Criterios generales de predimensionamiento", "start": 0, "end": 0 },
-                        { "title": "Clasificación tipológica de las presas", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T24_Desplegable.html', title: 'Presas II', color: 'red', icon: presaIconSvg, videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Presas II: Presas de hormigón y de materiales sueltos: tipologías, elementos funcionales y materiales", "start": 0, "end": 0 },
-                        { "title": "Construcción de presas", "start": 0, "end": 0 },
-                        { "title": "Órganos de desagüe de la presa", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T25_Desplegable.html', title: 'Seguridad de presas', color: 'amber', icon: 'fa-shield-alt', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Normativa de seguridad de presas, embalses y balsas", "start": 0, "end": 0 },
-                        { "title": "Gestión de seguridad de las presas. Inventario de presas y embalses", "start": 0, "end": 0 },
-                        { "title": "Planes de emergencia y revisiones de seguridad de las presas", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T26_Desplegable.html', title: 'Biodiversidad y conservación de ecosistemas fluviales', color: 'cyan', icon: 'fa-leaf', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Biodiversidad, conservación y restauración de ecosistemas fluviales y acuáticos. Indicadores", "start": 0, "end": 0 },
-                        { "title": "Caudales ecológicos", "start": 0, "end": 0 },
-                        { "title": "Eutrofización de las masas de agua", "start": 0, "end": 0 },
-                        { "title": "Infraestructuras verdes y soluciones basadas en la naturaleza en el medio hídrico", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T27_Desplegable.html', title: 'Canales y conducciones en carga', color: 'indigo', icon: 'fa-project-diagram', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Canales y conducciones en carga", "start": 0, "end": 0 },
-                        { "title": "Revestimientos, juntas y obras singulares", "start": 0, "end": 0 },
-                        { "title": "Redes de distribución de agua potable", "start": 0, "end": 0 },
-                        { "title": "Redes de saneamiento", "start": 0, "end": 0 },
-                        { "title": "Emisarios submarinos", "start": 0, "end": 0 },
-                        { "title": "Depósitos. Construcción, explotación y conservación", "start": 0, "end": 0 }
-                    ]
-                },
-                {
-                    file: 'MEA1T28_Desplegable.html', title: 'Estaciones de bombeo', color: 'lime', icon: 'fa-pump-soap', videos: [{ name: 'Ver Vídeo', url: '#' }],
-                    chapters: [
-                        { "title": "Estaciones de bombeo. Conceptos básicos", "start": 0, "end": 0 },
-                        { "title": "Tipos de bombas: características, selección, transitorios", "start": 0, "end": 0 },
-                        { "title": "Protección y tipos de estaciones", "start": 0, "end": 0 },
-                        { "title": "Estaciones de sobrepresión", "start": 0, "end": 0 },
-                        { "title": "Elementos constructivos", "start": 0, "end": 0 },
-                        { "title": "Ingeniería de impulsiones: trazado, tipos y cálculo", "start": 0, "end": 0 }
-                    ]
-                }
+                { file: 'MEA1T1_Desplegable.html', title: 'Marco normativo en materia de aguas en España', color: 'blue', icon: 'fa-landmark' },
+                { file: 'MEA1T2_Desplegable.html', title: 'Directiva Marco de Aguas', color: 'green', icon: 'fa-file-alt' },
+                { file: 'MEA1T3_Desplegable.html', title: 'Avenidas y sequías', color: 'purple', icon: 'fa-cloud-showers-heavy' },
+                { file: 'MEA1T4_Desplegable.html', title: 'Convenios internacionales en materia de aguas', color: 'orange', icon: 'fa-globe' },
+                { file: 'MEA1T5_Desplegable.html', title: 'Legislación de calidad del agua', color: 'teal', icon: 'fa-balance-scale' },
+                { file: 'MEA1T6_Desplegable.html', title: 'Las zonas húmedas', color: 'red', icon: 'fa-water' },
+                { file: 'MEA1T7_Desplegable.html', title: 'El régimen económico financiero de la Ley de Aguas', color: 'amber', icon: 'fa-euro-sign' },
+                { file: 'MEA1T8_Desplegable.html', title: 'Principios generales de la administración pública del agua', color: 'cyan', icon: 'fa-university' },
+                { file: 'MEA1T9_Desplegable.html', title: 'Objetivos generales de la planificación hidrológica', color: 'indigo', icon: 'fa-bullseye' },
+                { file: 'MEA1T10_Desplegable.html', title: 'Evaluación de recursos existentes', color: 'lime', icon: 'fa-calculator' },
+                { file: 'MEA1T11_Desplegable.html', title: 'Hidrología', color: 'fuchsia', icon: 'fa-tint' },
+                { file: 'MEA1T12_Desplegable.html', title: 'Regulación', color: 'sky', icon: 'fa-cogs' },
+                { file: 'MEA1T13_Desplegable.html', title: 'Hidrología de las aguas subterráneas', color: 'violet', icon: 'fa-layer-group' },
+                { file: 'MEA1T14_Desplegable.html', title: 'Usos de agua en abastecimiento a poblaciones', color: 'emerald', icon: 'fa-city' },
+                { file: 'MEA1T15_Desplegable.html', title: 'Técnicas especiales e indirectas para incrementar la eficacia de los recursos de agua', color: 'pink', icon: 'fa-magic' },
+                { file: 'MEA1T16_Desplegable.html', title: 'Condiciones de potabilidad del agua', color: 'yellow', icon: 'fa-glass-whiskey' },
+                { file: 'MEA1T17_Desplegable.html', title: 'Depuración de aguas residuales', color: 'slate', icon: 'fa-recycle' },
+                { file: 'MEA1T18_Desplegable.html', title: 'Problemas de contaminación de efluentes industriales', color: 'rose', icon: 'fa-industry' },
+                { file: 'MEA1T19_Desplegable.html', title: 'Uso del agua para regadío', color: 'blue', icon: 'fa-seedling' },
+                { file: 'MEA1T20_Desplegable.html', title: 'Energía', color: 'green', icon: 'fa-lightbulb' },
+                { file: 'MEA1T21_Desplegable.html', title: 'Otros usos del agua', color: 'purple', icon: 'fa-swimmer' },
+                { file: 'MEA1T22_Desplegable.html', title: 'Las obras hidráulicas', color: 'orange', icon: 'fa-hard-hat' },
+                { file: 'MEA1T23_Desplegable.html', title: 'Presas I', color: 'teal', icon: presaIconSvg },
+                { file: 'MEA1T24_Desplegable.html', title: 'Presas II', color: 'red', icon: presaIconSvg },
+                { file: 'MEA1T25_Desplegable.html', title: 'Seguridad de presas', color: 'amber', icon: 'fa-shield-alt' },
+                { file: 'MEA1T26_Desplegable.html', title: 'Biodiversidad y conservación de ecosistemas fluviales', color: 'cyan', icon: 'fa-leaf' },
+                { file: 'MEA1T27_Desplegable.html', title: 'Canales y conducciones en carga', color: 'indigo', icon: 'fa-project-diagram' },
+                { file: 'MEA1T28_Desplegable.html', title: 'Estaciones de bombeo', color: 'lime', icon: 'fa-pump-soap' }
             ];
 
  			const colorPalette={blue:{normal:"bg-blue-100 text-blue-800",buttonBg:"bg-blue-50",icon:"text-blue-500"},cyan:{normal:"bg-cyan-100 text-cyan-800",buttonBg:"bg-cyan-50",icon:"text-cyan-500"},sky:{normal:"bg-sky-100 text-sky-800",buttonBg:"bg-sky-50",icon:"text-sky-500"},indigo:{normal:"bg-indigo-100 text-indigo-800",buttonBg:"bg-indigo-50",icon:"text-indigo-500"},green:{normal:"bg-green-100 text-green-800",buttonBg:"bg-green-50",icon:"text-green-500"},emerald:{normal:"bg-emerald-100 text-emerald-800",buttonBg:"bg-emerald-50",icon:"text-emerald-500"},teal:{normal:"bg-teal-100 text-teal-800",buttonBg:"bg-teal-50",icon:"text-teal-500"},lime:{normal:"bg-lime-100 text-lime-800",buttonBg:"bg-lime-50",icon:"text-lime-500"},yellow:{normal:"bg-yellow-100 text-yellow-800",buttonBg:"bg-yellow-50",icon:"text-yellow-500"},amber:{normal:"bg-amber-100 text-amber-800",buttonBg:"bg-amber-50",icon:"text-amber-500"},orange:{normal:"bg-orange-100 text-orange-800",buttonBg:"bg-orange-50",icon:"text-orange-500"},red:{normal:"bg-red-100 text-red-800",buttonBg:"bg-red-50",icon:"text-red-500"},rose:{normal:"bg-rose-100 text-rose-800",buttonBg:"bg-rose-50",icon:"text-rose-500"},pink:{normal:"bg-pink-100 text-pink-800",buttonBg:"bg-pink-50",icon:"text-pink-500"},fuchsia:{normal:"bg-fuchsia-100 text-fuchsia-800",buttonBg:"bg-fuchsia-50",icon:"text-fuchsia-500"},purple:{normal:"bg-purple-100 text-purple-800",buttonBg:"bg-purple-50",icon:"text-purple-500"},violet:{normal:"bg-violet-100 text-violet-800",buttonBg:"bg-violet-50",icon:"text-violet-500"},gray:{normal:"bg-gray-100 text-gray-800",buttonBg:"bg-gray-50",icon:"text-gray-500"},slate:{normal:"bg-slate-100 text-slate-800",buttonBg:"bg-slate-50",icon:"text-slate-500"},zinc:{normal:"bg-zinc-100 text-zinc-800",buttonBg:"bg-zinc-50",icon:"text-zinc-500"}};
@@ -667,12 +434,15 @@
             const oralPdfViewerWrapper = document.getElementById('oral-pdf-viewer-wrapper');
             const flashcardsWrapper = document.getElementById('flashcards-wrapper');
             const oralPrevPageBtn = document.getElementById('oral-prev-page'), oralNextPageBtn = document.getElementById('oral-next-page');
+            const animationContainer = document.getElementById('animation-container');
+            const animationCard = document.getElementById('animation-card');
+            const animationFront = document.getElementById('animation-front');
 
  			topics.forEach((e,t)=>{
  				const o=document.createElement("button"),n=colorPalette[e.color];
                 let iconHtml = '';
                 if (e.icon.startsWith('<svg')) {
-                    iconHtml = `<div class="topic-icon">${e.icon}</div>`;
+                    iconHtml = `<div class="topic-icon w-6 h-6">${e.icon}</div>`;
                 } else {
                     iconHtml = `<i class="fas ${e.icon} topic-icon ${n.icon}"></i>`;
                 }
@@ -793,36 +563,93 @@
             }
 
  			function showMapView(button){
- 				playPauseButton.disabled = false;
- 				playPauseIcon.className = "fas fa-play";
- 				const topicIndex = button.dataset.index;
- 				const baseTopic = topics[topicIndex];
- 				const topicId = baseTopic.file.replace(/_Desplegable\.html$/i, '');
+                originalButton = button;
+                const topic = topics[button.dataset.index];
+ 				const chaptersToLoad = userCustomChapters[topic.file.replace(/_Desplegable\.html$/i, '')] || (topic.chapters ? JSON.parse(JSON.stringify(topic.chapters)) : []);
 
- 				const chaptersToLoad = userCustomChapters[topicId] || (baseTopic.chapters ? JSON.parse(JSON.stringify(baseTopic.chapters)) : []);
+ 				currentTopic = { ...topic, chapters: chaptersToLoad };
 
- 				currentTopic = { ...baseTopic, chapters: chaptersToLoad };
+                const rect = button.getBoundingClientRect();
+                const color = colorPalette[topic.color];
 
- 				mainMenuView.classList.add("hidden");
- 				mapViewerVIew.classList.remove("hidden");
+                animationFront.innerHTML = `<div class="text-center text-white">
+                    <div class="w-24 h-24 mx-auto mb-6 flex items-center justify-center">${topic.icon.startsWith('<svg') ? topic.icon : `<i class="fas ${topic.icon} text-6xl"></i>`}</div>
+                    <h2 class="text-4xl font-bold">${topic.title}</h2>
+                </div>`;
+                animationFront.className = `animation-card-face flex items-center justify-center p-8 ${color.normal.replace('bg-', 'bg-').replace('-100', '-500')}`;
 
- 				contentFrame.src = currentTopic.file;
-                const audioSrc = `audio/${currentTopic.file.replace(/_Desplegable\.html$/i, ".mp3")}`;
-                console.log("Intentando cargar audio desde:", audioSrc);
- 				topicAudio.src = audioSrc;
+                animationCard.style.width = `${rect.width}px`;
+                animationCard.style.height = `${rect.height}px`;
+                animationCard.style.top = `${rect.top}px`;
+                animationCard.style.left = `${rect.left}px`;
+                animationCard.style.borderRadius = '0.75rem';
+                animationCard.style.transform = 'rotateY(0deg)';
+                
+                animationContainer.style.display = 'block';
+                button.style.opacity = '0';
 
- 				updateChapters(chaptersToLoad);
- 				updateEditor(chaptersToLoad);
+                setTimeout(() => {
+                    animationCard.style.width = '100vw';
+                    animationCard.style.height = '100vh';
+                    animationCard.style.top = '0px';
+                    animationCard.style.left = '0px';
+                    animationCard.style.borderRadius = '0';
+                }, 10);
 
- 				topControlBar.style.display="flex";
- 				setTimeout(()=>topControlBar.style.opacity=1,10)
+                setTimeout(() => {
+                    animationCard.style.transform = 'rotateY(180deg)';
+                }, 500);
+
+                setTimeout(() => {
+                    mainMenuView.classList.add("hidden");
+                    mapViewerVIew.classList.remove("hidden");
+                    animationContainer.style.display = 'none';
+                    
+                    playPauseButton.disabled = false;
+                    playPauseIcon.className = "fas fa-play";
+                    contentFrame.src = currentTopic.file;
+                    const audioSrc = `audio/${currentTopic.file.replace(/_Desplegable\.html$/i, ".mp3")}`;
+                    topicAudio.src = audioSrc;
+                    updateChapters(currentTopic.chapters);
+                    updateEditor(currentTopic.chapters);
+                    topControlBar.style.display="flex";
+                    setTimeout(()=>topControlBar.style.opacity=1,10);
+
+                }, 1100);
  			}
 
  			function showMainMenu(){
- 				mapViewerVIew.classList.add("hidden");
+                const rect = originalButton.getBoundingClientRect();
+                
                 mainMenuView.classList.remove("hidden");
-                topicAudio.pause();
-                resetLayout();
+                mapViewerVIew.classList.add("hidden");
+                
+                animationContainer.style.display = 'block';
+                animationCard.style.transform = 'rotateY(180deg)';
+                animationCard.style.width = '100vw';
+                animationCard.style.height = '100vh';
+                animationCard.style.top = '0px';
+                animationCard.style.left = '0px';
+                animationCard.style.borderRadius = '0';
+
+                setTimeout(() => {
+                    animationCard.style.transform = 'rotateY(0deg)';
+                }, 10);
+
+                setTimeout(() => {
+                    animationCard.style.width = `${rect.width}px`;
+                    animationCard.style.height = `${rect.height}px`;
+                    animationCard.style.top = `${rect.top}px`;
+                    animationCard.style.left = `${rect.left}px`;
+                    animationCard.style.borderRadius = '0.75rem';
+                }, 600);
+
+                setTimeout(() => {
+                    animationContainer.style.display = 'none';
+                    originalButton.style.opacity = '1';
+                    topicAudio.pause();
+                    resetLayout();
+                }, 1100);
  			}
  			gridContainer.addEventListener("click",(e=>e.target.closest(".topic-button")&&showMapView(e.target.closest(".topic-button")))),backButton.addEventListener("click",showMainMenu);
 
@@ -830,20 +657,9 @@
  			topicAudio.addEventListener("loadedmetadata",()=>{totalDurationEl.textContent=formatTime(topicAudio.duration),timelineSlider.max=topicAudio.duration}),
             topicAudio.addEventListener("error", (e) => {
                 console.error("Error al cargar el audio:", e);
-                console.error("Código de error de audio:", topicAudio.error.code);
-                console.error("Mensaje de error de audio:", topicAudio.error.message);
                 playPauseButton.disabled = true;
                 playPauseIcon.className = "fas fa-times";
                 totalDurationEl.textContent = "Error";
-                let errorMessage = "No se pudo cargar el audio. Esto puede deberse a:";
-                if (topicAudio.error.code === 4) {
-                    errorMessage += "\n- El archivo de audio no se encontró en la ruta especificada o el navegador no puede acceder a él por restricciones de seguridad (por ejemplo, si abres el HTML directamente desde tu equipo, o por políticas de seguridad del sitio).";
-                    errorMessage += "\n- El archivo de audio está dañado o en un formato no compatible.";
-                    errorMessage += "\n\nAsegúrate de que el archivo MP3 está en la carpeta 'audio' al mismo nivel que 'index.html' y que estás ejecutando la aplicación desde un servidor web (como GitHub Pages) y no directamente desde tu disco duro.";
-                } else {
-                    errorMessage += "\n- Un error desconocido al cargar el audio.";
-                }
-                alert(errorMessage);
             }),
             playPauseButton.addEventListener("click",()=>{currentChapterEndTime=null,currentChapterStartTime=null,topicAudio.paused?topicAudio.play():topicAudio.pause()}),topicAudio.addEventListener("play",()=>playPauseIcon.classList.replace("fa-play","fa-pause")),topicAudio.addEventListener("pause",()=>playPauseIcon.classList.replace("fa-pause","fa-play")),topicAudio.addEventListener("ended",()=>{
                 if (x3LoopState.active) {
