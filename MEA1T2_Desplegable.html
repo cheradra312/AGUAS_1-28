@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Directiva Marco de Aguas</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-water"></i> MEA1T2. Directiva Marco de Aguas <i class="fas fa-gavel"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Directiva Marco del Agua -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-book-open"></i></div>
+                <h2>1. Directiva 2000/60/CE Marco del Agua y directivas relacionadas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>La <span class="definition-pill"><strong>Directiva Marco de Aguas (DMA)</strong></span> es la <span class="doc-pill"><strong>Directiva 2000/60</strong></span>, traspuesta mediante la <span class="law-pill"><strong>Ley 62/2003</strong></span> que modifica el <span class="law-pill">TRLA</span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-bullseye icon text-red-600"></i>Tiene por <strong><u>objeto la protección</u></strong> de las:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-water icon text-gray-500"></i><u>Aguas superficiales continentales</u>.</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i><u>Aguas de transición</u>.</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i><u>Aguas costeras</u>.</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>Y <u>aguas subterráneas</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-lightbulb icon text-purple-600"></i><strong><u>Nace como respuesta a la necesidad</u></strong> de:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-users-cog icon text-gray-500"></i><strong><u>Unificar las actuaciones</u></strong> en materia de gestión de agua en la <span class="actor-pill">Unión Europea</span>.</p></li>
+                                <li><p><i class="fas fa-exclamation-triangle icon text-yellow-500"></i>Debido a que las aguas están sometidas a la <strong><u>creciente presión</u></strong> que supone el <u>continuo crecimiento de su demanda</u>, de <u>buena calidad</u> y en <u>cantidades suficientes</u> para todos los usos.</p></li>
+                                <li><p><i class="fas fa-shield-alt icon text-green-500"></i>Surge la <strong><u>necesidad de tomar medidas</u></strong> para <strong><u>proteger las aguas</u></strong> tanto en términos <u>cualitativos como cuantitativos</u> y garantizar así su <u>sostenibilidad</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-orange-600"></i>Supone una serie de <strong><u>exigencias</u></strong> para los <span class="actor-pill">Estados miembros</span>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong><u>Implantación de medidas</u></strong>.</p></li>
+                                <li><p><i class="fas fa-map-marked-alt icon text-gray-500"></i><strong><u>Constitución de demarcaciones hidrográficas</u></strong>.</p></li>
+                                <li><p><i class="fas fa-file-alt icon text-gray-500"></i>Y <strong><u>desarrollo de <span class="plan-pill">Planes Hidrológicos</span></u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-link icon text-cyan-700"></i>Algunas <strong><u>directivas relacionadas</u></strong> que cabe citar son, por orden cronológico:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-file-alt icon text-gray-500"></i>La <span class="doc-pill"><strong>Directiva 2006/118</strong></span> relativa a la <u>protección de las aguas subterráneas</u> contra la contaminación y el deterioro.</p></li>
+                                <li><p><i class="fas fa-file-alt icon text-gray-500"></i>La <span class="doc-pill"><strong>Directiva 2008/105</strong></span> relativa a <u>normas de calidad ambiental</u> en el ámbito de la política de aguas.</p></li>
+                                <li><p><i class="fas fa-file-alt icon text-gray-500"></i>Y la <span class="doc-pill"><strong>Directiva 2009/90</strong></span> que establece las <u>especificaciones técnicas del análisis químico</u> y del <u>seguimiento del estado de las aguas</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-plus-circle icon text-green-700"></i>Además, hay una serie de <strong><u>directivas sobre control de emisiones</u></strong> (<u>vertidos</u>) y <strong><u>prevención de la contaminación</u></strong>.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 2: Objetivos medioambientales -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-leaf"></i></div>
+                <h2>2. Objetivos medioambientales</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-flag-checkered icon text-blue-600"></i>Los <span class="actor-pill"><strong>Estados miembros</strong></span> debían <strong><u>cumplir los objetivos medioambientales</u></strong> antes de <span class="pill-blue"><strong>2015</strong></span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-purple-600"></i>Determinando las <strong><u>medidas oportunas</u></strong> que se pueden resumir en:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-shield-alt icon text-gray-500"></i><strong><u>Prevenir el deterioro</u></strong>.</p></li>
+                                <li><p><i class="fas fa-umbrella icon text-gray-500"></i><strong><u>Proteger</u></strong>.</p></li>
+                                <li><p><i class="fas fa-chart-line icon text-gray-500"></i><strong><u>Mejorar</u></strong>.</p></li>
+                                <li><p><i class="fas fa-recycle icon text-gray-500"></i>Y <strong><u>regenerar</u></strong> las <u>aguas superficiales, subterráneas</u> y las <u>masas de agua artificiales y muy modificadas</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-bullseye icon text-red-600"></i>Para <strong><u>alcanzar un buen estado</u></strong> en todas ellas.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 3: Tipos de masas de agua -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-swimmer"></i></div>
+                <h2>3. Tipos de masas de agua, caracterización de masas de agua, presiones e impactos</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-book-open icon text-blue-600"></i>La <strong><u>caracterización</u></strong> de los tipos de masas de agua, de las presiones y de los impactos viene reflejada en el <span class="doc-pill"><strong>anexo II de la DMA</strong></span> haciendo una distinción entre:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-water icon text-cyan-500"></i><strong><u>Aguas superficiales</u></strong>:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-stream icon text-gray-400"></i><strong>Tipos:</strong> <u>Ríos</u>, <u>lagos</u>, <u>aguas de transición</u>, <u>costeras</u> y <u>artificiales</u>.</p></li>
+                                            <li><p><i class="fas fa-ruler-combined icon text-gray-400"></i><strong>Caracterización:</strong> <u>tamaño</u>, <u>caudales</u>, <u>condiciones físico-químicas</u>, <u>biológicas</u>, e <u>hidromorfológicas</u>.</p></li>
+                                            <li><p><i class="fas fa-compress-arrows-alt icon text-gray-400"></i><strong>Presiones:</strong> <u>contaminación puntual</u> (vertidos) o <u>difusa</u> (fertilizantes, plaguicidas), <u>extracción</u>.</p></li>
+                                            <li><p><i class="fas fa-chart-area icon text-gray-400"></i><strong>Impactos:</strong> <u>evaluación de influencia</u> de las presiones en el <u>estado de las aguas</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-tint icon text-blue-500"></i><strong><u>Aguas subterráneas</u></strong>:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-layer-group icon text-gray-400"></i><strong>Tipos:</strong> <u>Acuíferos</u>.</p></li>
+                                            <li><p><i class="fas fa-map-marked-alt icon text-gray-400"></i><strong>Caracterización:</strong> <u>ubicación</u>, <u>límites</u>, <u>tamaño</u>, <u>estratos suprayacentes</u> y <u>dependencia de aguas superficiales</u>.</p></li>
+                                            <li><p><i class="fas fa-compress-arrows-alt icon text-gray-400"></i><strong>Presiones:</strong> fuentes de <u>contaminación puntual</u>, <u>difusa</u>, <u>recarga</u>, <u>extracción</u>.</p></li>
+                                            <li><p><i class="fas fa-chart-area icon text-gray-400"></i><strong>Impactos:</strong> <u>evaluación de influencia</u> de las presiones en el <u>estado de estas aguas</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-info-circle icon text-purple-600"></i>Una <span class="definition-pill"><strong>presión</strong></span> es cualquier <strong><u>actividad humana</u></strong> que incida sobre el estado de las aguas.</p></li>
+                    <li><p><i class="fas fa-info-circle icon text-orange-600"></i>Un <span class="definition-pill"><strong>impacto</strong></span> es la <strong><u>alteración del valor natural</u></strong> que la presión produce.</p></li>
+                    <li><p><i class="fas fa-info-circle icon text-green-600"></i>Mientras que un <span class="definition-pill"><strong>indicador</strong></span> permite <strong><u>evaluar el efecto de la presión</u></strong>, definiendo la <span class="doc-pill">DMA</span> una amplia variedad de <u>indicadores de calidad</u> para determinar el estado de las aguas.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 4: Estado ecológico -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-seedling"></i></div>
+                <h2>4. Estado ecológico, potencial ecológico y designación de masas artificiales y muy modificadas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-leaf icon text-green-600"></i>El <span class="definition-pill"><strong>estado ecológico</strong></span> es función de los siguientes <strong><u>indicadores</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-bug icon text-gray-500"></i><u>Biológicos</u>.</p></li>
+                                <li><p><i class="fas fa-mountain icon text-gray-500"></i><u>Hidromorfológicos</u>.</p></li>
+                                <li><p><i class="fas fa-flask icon text-gray-500"></i>Y <u>físico-químicos</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-atom icon text-blue-600"></i>El <span class="definition-pill"><strong>estado químico</strong></span> es función de la <u>concentración de contaminantes</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-balance-scale icon text-purple-600"></i>El <span class="definition-pill"><strong>estado de las aguas superficiales</strong></span> es la <strong><u>expresión general de su estado</u></strong>, y corresponde al <strong><u>peor valor</u></strong> de:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-leaf icon text-gray-500"></i>Su <strong><u>estado ecológico</u></strong>.</p></li>
+                                <li><p><i class="fas fa-atom icon text-gray-500"></i>Y su <strong><u>estado químico</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-tools icon text-orange-600"></i>Las <span class="definition-pill"><strong>masas de agua artificiales</strong></span> son las que han sido <strong><u>creadas por la actividad humana</u></strong>, no requieren ningún estudio ecológico para su identificación.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-sync-alt icon text-cyan-600"></i>Las <span class="definition-pill"><strong>masas de agua muy modificadas</strong></span> son la que, como consecuencia de las actividades humanas, han <strong><u>cambiado en su naturaleza</u></strong> sin que puedan alcanzar un <u>buen estado ecológico</u>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-bullseye icon text-red-500"></i>Por lo que se habla de cumplir el <span class="definition-pill"><strong>buen potencial ecológico</strong></span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 5: Real Decreto 817/2015 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-book-open"></i></div>
+                <h2>5. Real Decreto 817/2015, de 11 de septiembre, por el que se establecen los criterios de seguimiento y evaluación del estado de las aguas superficiales y las normas de calidad ambiental</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>Este <span class="law-pill"><strong>real decreto</strong></span> <strong><u>establece</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-tasks icon text-purple-500"></i>Los <strong><u>criterios básicos y homogéneos</u></strong> para el <u>diseño</u> y la <u>implantación</u> de los <span class="plan-pill"><strong>programas de seguimiento</strong></span> del estado de las <u>masas de agua superficiales</u> y para el <u>control adicional</u> de las <u>zonas protegidas</u>.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-award icon text-green-500"></i>Las <span class="definition-pill"><strong>normas de calidad ambiental</strong></span> para las <u>sustancias prioritarias</u>, <u>preferentes</u> y para <u>otros contaminantes</u>.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-bullseye icon text-red-400"></i>Con objeto de conseguir un <strong><u>buen estado químico y ecológico</u></strong> de las aguas superficiales o un <strong><u>buen potencial ecológico</u></strong> de dichas aguas, cuando proceda.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-ruler-combined icon text-orange-500"></i>Las <strong><u>condiciones de referencia</u></strong> y los <strong><u>límites de clases de estado</u></strong> de los <u>indicadores</u> de los elementos de <u>calidad biológicos</u>, <u>fisicoquímicos</u> e <u>hidromorfológicos</u>.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-bullseye icon text-red-400"></i>Para <strong><u>clasificar el estado o potencial ecológico</u></strong> de las masas de agua superficiales.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li><p><i class="fas fa-exchange-alt icon text-cyan-500"></i>Y las <strong><u>disposiciones mínimas</u></strong> para el <strong><u>intercambio de información</u></strong> sobre <u>estado y calidad de las aguas</u> entre la <span class="actor-pill">Administración General del Estado</span> y las <span class="actor-pill">administraciones con competencias en materia de aguas</span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 6: Reglamento de planificación hidrológica -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-book-open"></i></div>
+                <h2>6. Reglamento de planificación hidrológica. Marco normativo de los Planes Hidrológicos</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>El <strong><u>marco normativo</u></strong> de los planes hidrológicos lo constituye el <span class="law-pill"><strong>TRLA</strong></span> y el <span class="law-pill"><strong>Reglamento de Planificación Hidrológica</strong></span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-bullseye icon text-red-600"></i>La <strong><u>planificación hidrológica</u></strong> tiene por <strong><u>objetivos generales</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-check-circle icon text-gray-500"></i>Conseguir el <strong><u>buen estado</u></strong> y la <strong><u>adecuada protección</u></strong> del <u>dominio público hidráulico</u>.</p></li>
+                                <li><p><i class="fas fa-hand-holding-water icon text-gray-500"></i>La <strong><u>satisfacción de las demandas de agua</u></strong>.</p></li>
+                                <li><p><i class="fas fa-balance-scale icon text-gray-500"></i>El <strong><u>equilibrio y armonización</u></strong> del <u>desarrollo regional y sectorial</u>.</p></li>
+                                <li><p><i class="fas fa-tint icon text-gray-500"></i><strong><u>Incrementando las disponibilidades</u></strong> del recurso, <strong><u>protegiendo su calidad</u></strong>, <strong><u>economizando su empleo</u></strong> y <strong><u>racionalizando sus usos</u></strong> en armonía con el <u>medio ambiente</u>.</p></li>
+                                <li><p><i class="fas fa-house-damage icon text-gray-500"></i>Y <strong><u>contribuyendo a paliar los efectos</u></strong> de las <u>inundaciones</u> y <u>sequías</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-cogs icon text-purple-600"></i>La <strong><u>planificación se realiza</u></strong> mediante:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-map icon text-orange-500"></i>El <span class="plan-pill"><strong>Plan Hidrológico Nacional</strong></span>.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-water icon text-cyan-500"></i>Y los <span class="plan-pill"><strong>planes hidrológicos de cuenca</strong></span>.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-map-marked-alt icon text-gray-400"></i>Que tienen como <strong><u>ámbito territorial</u></strong> el de la <u>demarcación hidrográfica</u> correspondiente.</p></li>
+                                            <li><p><i class="fas fa-stamp icon text-gray-400"></i>Son <strong><u>aprobados por el <span class="actor-pill">Gobierno</span></u></strong>, incluso los elaborados por las <span class="actor-pill">CCAA</span> en <u>cuencas intracomunitarias</u>.</p></li>
+                                            <li><p><i class="fas fa-link icon text-gray-400"></i>Y deben <strong><u>acomodarse a las determinaciones</u></strong> del <span class="plan-pill">Plan Hidrológico Nacional</span>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-users-cog icon text-indigo-600"></i>La <strong><u>elaboración y propuesta de revisiones</u></strong> ulteriores de los planes hidrológicos de cuenca se realizarán por:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>Las <span class="actor-pill"><strong>Confederaciones Hidrográficas</strong></span> en <u>cuencas intercomunitarias</u>.</p></li>
+                                <li><p><i class="fas fa-building icon text-gray-500"></i>O por la <span class="actor-pill"><strong>administración hidráulica competente de la comunidad autónoma</strong></span> correspondiente en <u>cuencas intracomunitarias</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-blue-700"></i>El <strong><u>procedimiento para su elaboración y revisión</u></strong> contempla:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-users icon text-gray-500"></i>La <strong><u>participación pública</u></strong> y de los <u>departamentos ministeriales interesados</u>.</p></li>
+                                <li><p><i class="fas fa-calendar-alt icon text-gray-500"></i>Los <strong><u>plazos para presentación de propuestas</u></strong> por los organismos correspondientes.</p></li>
+                                <li><p><i class="fas fa-gavel icon text-gray-500"></i>Y la <strong><u>actuación subsidiaria del <span class="actor-pill">Gobierno</span></u></strong> en caso de <u>falta de propuesta</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-leaf icon text-green-700"></i>Los <span class="plan-pill">planes hidrológicos de demarcación</span> se deben someter a <strong><u>evaluación ambiental estratégica</u></strong> de acuerdo con lo establecido en la <span class="law-pill"><strong>Ley 21/2013 de evaluación ambiental</strong></span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-user-friends icon text-cyan-800"></i>El <span class="actor-pill"><strong>Consejo del Agua de la demarcación</strong></span> es el <strong><u>encargado</u></strong> de:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-bullhorn icon text-gray-500"></i><strong><u>Promover la información, consulta y participación pública</u></strong> en el proceso planificador.</p></li>
+                                <li><p><i class="fas fa-upload icon text-gray-500"></i>Y <strong><u>elevar al <span class="actor-pill">Gobierno</span></u></strong>, a través del <span class="actor-pill">MITECO</span>, el <span class="plan-pill">plan hidrológico de la cuenca</span> y sus <u>ulteriores revisiones</u>.</p></li>
+                                <li><p><i class="fas fa-info icon text-gray-500"></i>Asimismo, podrá <strong><u>informar las cuestiones de interés general</u></strong> para la demarcación y las relativas a la <u>protección de las aguas</u> y a la <u>mejor ordenación, explotación y tutela</u> del dominio público hidráulico.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-paper-plane icon text-purple-700"></i>El <span class="actor-pill"><strong>MITECO</strong></span> <strong><u>remitirá las propuestas</u></strong> de <span class="plan-pill">Planes Hidrológicos de cuenca</span> al <span class="actor-pill"><strong>Consejo Nacional del Agua</strong></span>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-file-alt icon text-gray-500"></i>Para que <strong><u>emita el preceptivo informe</u></strong> donde se analice la <u>compatibilidad entre los planes hidrológicos de demarcación</u> y con el <span class="plan-pill">Plan Hidrológico Nacional</span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-check-circle icon text-green-800"></i>Una vez emitido el informe por el <span class="actor-pill">Consejo Nacional del Agua</span>, el <span class="actor-pill">MITECO</span> <strong><u>eleva al <span class="actor-pill">Gobierno</span> el <span class="plan-pill">Plan Hidrológico</span> para su aprobación</u></strong> si procede, que se realiza por <span class="law-pill">Real Decreto</span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-clipboard-list icon text-orange-700"></i>Los <span class="plan-pill"><strong>Planes Hidrológicos de cuenca</strong></span> <strong><u>comprenderán obligatoriamente</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-map icon text-gray-500"></i>La <strong><u>descripción general de la demarcación hidrográfica</u></strong> incluyendo la <u>delimitación de aguas superficiales, continentales, costeras, de transición</u> (incluyendo la motivación de las aguas artificiales y muy modificadas), y <u>subterráneas</u>.</p></li>
+                                <li><p><i class="fas fa-compress-arrows-alt icon text-gray-500"></i>La <strong><u>descripción general de los usos, presiones e incidencias antrópicas</u></strong> significativas sobre las aguas, incluyendo el <u>orden de preferencia</u> y los <u>caudales ecológicos</u>.</p></li>
+                                <li><p><i class="fas fa-vector-square icon text-gray-500"></i>La <strong><u>identificación y delimitación</u></strong> de las <u>zonas protegidas</u>.</p></li>
+                                <li><p><i class="fas fa-network-wired icon text-gray-500"></i>Las <strong><u>redes de control</u></strong> establecidas para el <u>seguimiento del estado de las aguas superficiales, subterráneas y de las zonas protegidas</u>.</p></li>
+                                <li><p><i class="fas fa-leaf icon text-gray-500"></i>La <strong><u>lista de objetivos medioambientales</u></strong> para las <u>aguas superficiales, subterráneas y las zonas protegidas</u>, incluyendo los <u>plazos previstos</u> para su consecución, y las <u>condiciones para excepciones y prórrogas</u>.</p></li>
+                                <li><p><i class="fas fa-chart-pie icon text-gray-500"></i>El <strong><u>análisis económico</u></strong> del uso del agua.</p></li>
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i>Los <strong><u>programas de medidas</u></strong> para alcanzar los <u>objetivos previstos</u>.</p></li>
+                                <li><p><i class="fas fa-file-alt icon text-gray-500"></i>Las <strong><u>determinaciones del <span class="plan-pill">Plan Hidrológico Nacional</span></u></strong> para el <span class="plan-pill">Plan Hidrológico de Cuenca</span>.</p></li>
+                                <li><p><i class="fas fa-comments icon text-gray-500"></i>Un <strong><u>Resumen de la información pública y las consultas</u></strong> efectuadas, y su repercusión en el <span class="plan-pill">Plan Hidrológico de Cuenca</span>.</p></li>
+                                <li><p><i class="fas fa-users-cog icon text-gray-500"></i>La <strong><u>lista de autoridades competentes</u></strong> designadas.</p></li>
+                                <li><p><i class="fas fa-link icon text-gray-500"></i>Los <strong><u>puntos de contacto y procedimientos</u></strong> para obtener la <u>documentación de base</u> y la <u>información requerida</u> por las consultas públicas.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-tint icon text-blue-800"></i>En los <span class="plan-pill">planes hidrológicos de cuenca</span> se podrán establecer <strong><u>reservas, de agua y de terrenos</u></strong>, necesarias para las <u>actuaciones y obras previstas</u>.</p></li>
+                    <li><p><i class="fas fa-sync icon text-cyan-800"></i>Los <span class="plan-pill">planes hidrológicos de cuenca</span> se deben <strong><u>revisar cada <span class="pill-blue">6 años</span></u></strong>.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 7: Características de la demarcación hidrográfica -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-map-marked-alt"></i></div>
+                <h2>7. Características de la demarcación hidrográfica</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>Es la <strong><u>zona terrestre y marina</u></strong>, compuesta por:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>Una o varias <strong><u>cuencas hidrográficas vecinas</u></strong>.</p></li>
+                                <li><p><i class="fas fa-tint icon text-gray-500"></i>Y las <strong><u>aguas de transición, subterráneas y costeras</u></strong>, asociada/s a dicha/s cuenca/s.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-sitemap icon text-purple-600"></i>Son consideradas la <strong><u>principal unidad</u></strong> a efectos de:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong><u>Gestión de cuencas</u></strong>.</p></li>
+                                <li><p><i class="fas fa-file-alt icon text-gray-500"></i>Y de los correspondientes <span class="plan-pill"><strong>planes hidrológicos</strong></span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 8: Recuperación de costes -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-coins"></i></div>
+                <h2>8. Recuperación de costes</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>La <strong><u>recuperación de costes</u></strong> de los servicios relacionados con el agua, es un <span class="principle-pill"><strong>principio fundamental</strong></span> junto con el de <span class="principle-pill"><strong>“quien contamina paga”</strong></span> de la <span class="doc-pill">DMA</span>.</p></li>
+                    <li><p><i class="fas fa-calendar-check icon text-green-600"></i>En <span class="pill-blue"><strong>2010</strong></span> los <span class="actor-pill">Estados miembros</span> debían tener <strong><u>implantadas políticas y normas</u></strong> que garantizaran el <u>cumplimiento de estos principios</u>.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 9: Programa de medidas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-tasks"></i></div>
+                <h2>9. Programa de medidas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-flag-usa icon text-blue-600"></i>Los <span class="actor-pill"><strong>Estados miembros</strong></span> velarán por que se establezca para cada <u>demarcación hidrográfica</u> un <span class="plan-pill"><strong>programa de medidas</strong></span>.</p></li>
+                    <li><p><i class="fas fa-bullseye icon text-red-600"></i>Con el <strong><u>fin de alcanzar los objetivos medioambientales</u></strong>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-stream icon text-purple-600"></i>Existen <strong><u>2 tipos de medidas</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-star icon text-yellow-500"></i><span class="definition-pill"><strong>Básicas</strong></span>, para alcanzar <u>requisitos mínimos</u> y se establecen <u>reglamentariamente</u>.</p></li>
+                                <li><p><i class="fas fa-plus-circle icon text-green-500"></i>Y <span class="definition-pill"><strong>complementarias</strong></span>, de <u>carácter adicional</u> para una <u>protección ampliada</u> de las aguas.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <!-- Script para la funcionalidad desplegable -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Selecciona todos los elementos que servirán como disparadores
+            const triggers = document.querySelectorAll('.collapsible-trigger');
+
+            // Itera sobre cada disparador para añadirle un detector de clics
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', function (event) {
+                    // Evita que el clic en un desplegable anidado afecte a su contenedor padre
+                    event.stopPropagation();
+                    
+                    // Encuentra el elemento de contenido que sigue inmediatamente al disparador
+                    const content = this.nextElementSibling;
+                    
+                    // Alterna la clase 'open' en el disparador (para rotar el icono)
+                    this.classList.toggle('open');
+                    
+                    // Verifica que el siguiente elemento sea un contenido desplegable y alterna la clase 'hidden'
+                    if (content && content.classList.contains('collapsible-content')) {
+                        content.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
