@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Marco Normativo de Aguas en España</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-water"></i> MEA1T1. Marco normativo en materia de aguas en España <i class="fas fa-gavel"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Marco normativo -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-book-open"></i></div>
+                <h2>1. Marco normativo en materia de aguas en España. Elementos que regula el texto refundido de la Ley de Aguas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>La <span class="law-pill"><strong>Ley 29/1985</strong></span>, que <strong><u>derogó</u></strong> la <span class="law-pill">Ley de Aguas de 1879</span>, <strong><u>estableció</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-landmark icon text-gray-500"></i>Un <strong><u>nuevo régimen jurídico</u></strong> del <span class="definition-pill">Dominio Público Hidráulico</span> conforme al sistema establecido por la <span class="law-pill">Constitución</span> en referencia a la <u>distribución de competencias</u> entre el <span class="actor-pill">Estado</span> y las <span class="actor-pill">CCAA</span>.</p></li>
+                                <li><p><i class="fas fa-recycle icon text-gray-500"></i>Configuró el <strong><u>agua como recurso unitario y renovable</u></strong> a través del <u>ciclo hidrológico</u>, sin distinguir <u>aguas superficiales y subterráneas</u>.</p></li>
+                                <li><p><i class="fas fa-tasks icon text-gray-500"></i>Legalizó un <strong><u>complejo proceso de planificación hidrológica</u></strong>.</p></li>
+                                <li><p><i class="fas fa-link icon text-gray-500"></i>Y <strong><u>vinculó la disponibilidad del recurso</u></strong> en <u>cantidad suficiente</u> a la <u>exigencia de la calidad</u> del mismo.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-sync-alt icon text-purple-600"></i>Desde su promulgación hasta la actualidad esta ley ha sufrido <strong><u>multitud de modificaciones</u></strong>.</p></li>
+                    <li><p><i class="fas fa-gavel icon text-amber-800"></i>Siendo el <strong><u>texto legal vigente</u></strong> el <span class="law-pill"><strong>Real Decreto Legislativo 1/2001</strong></span> por el que se aprueba el <span class="doc-pill"><strong>Texto Refundido de la Ley de Aguas</strong></span>, con sus <u>modificaciones posteriores</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tint icon text-cyan-600"></i>El <span class="law-pill"><strong>TRLA</strong></span> <strong><u>regula todas las aguas continentales</u></strong> (<u>superficiales</u> y <u>subterráneas</u>).</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-ban icon text-red-500"></i><strong><u>Excepto</u></strong> las <strong><u>aguas minerales y termales</u></strong> que tienen <u>legislación específica</u> y son de <u>competencia autonómica</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-cogs icon text-indigo-600"></i>La <strong><u>legislación de aguas se desarrolla</u></strong> con:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-book icon text-gray-500"></i>El <span class="law-pill"><strong>Reglamento del DPH (RD 849/1986)</strong></span>.</p></li>
+                                <li><p><i class="fas fa-book icon text-gray-500"></i>El <span class="law-pill"><strong>Reglamento de la Administración Pública del Agua (RD 927/1988)</strong></span>.</p></li>
+                                <li><p><i class="fas fa-book icon text-gray-500"></i>Y el <span class="law-pill"><strong>Reglamento de Planificación Hidrológica (RD 907/2007)</strong></span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 2: Organización de la Administración Hidráulica -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-sitemap"></i></div>
+                <h2>2. Organización de la Administración Hidráulica en España</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>En las <strong><u>cuencas intercomunitarias</u></strong> las competencias en materia de aguas las ejerce el <span class="actor-pill"><strong>Ministerio para la Transición Ecológica y el Reto Demográfico (MITECO)</strong></span> a través de:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-user-tie icon text-gray-500"></i>La <span class="actor-pill"><strong>D.G. del Agua</strong></span>.</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>Y de las <span class="actor-pill"><strong>Confederaciones Hidrográficas</strong></span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-map-marked-alt icon text-purple-600"></i>Y en las <strong><u>cuencas intracomunitarias</u></strong> le corresponde a la <span class="actor-pill"><strong>administración hidráulica de la comunidad autónoma</strong></span> correspondiente.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 3: Reglamento del Dominio Público Hidráulico -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-landmark"></i></div>
+                <h2>3. Reglamento del Dominio Público Hidráulico. Dominio Público Hidráulico: aguas públicas y privadas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-book-open icon text-blue-600"></i>El <span class="law-pill"><strong>Reglamento del DPH</strong></span> regula las materias relacionadas con:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-info icon text-gray-500"></i>La <strong><u>definición del DPH</u></strong>.</p></li>
+                                <li><p><i class="fas fa-hand-holding-water icon text-gray-500"></i>Su <strong><u>utilización y protección</u></strong>, incluidos sus regímenes de <u>policía</u> y <u>económico-financiero</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-layer-group icon text-purple-600"></i>Además de las <u>aguas continentales</u> (<u>superficiales</u> y <u>subterráneas</u>), el <span class="definition-pill"><strong>DPH</strong></span> incluye:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-stream icon text-gray-500"></i>Los <strong><u>cauces de corrientes naturales</u></strong> (<u>continuas</u> y <u>discontinuas</u>).</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>Los <strong><u>lechos de lagos y embalses</u></strong>.</p></li>
+                                <li><p><i class="fas fa-tint icon text-gray-500"></i>Los <strong><u>acuíferos</u></strong>.</p></li>
+                                <li><p><i class="fas fa-industry icon text-gray-500"></i>Y las <strong><u>aguas procedentes de la desalación</u></strong> de agua de mar.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-arrow-down icon text-cyan-600"></i>Las <strong><u>aguas subterráneas son DPH</u></strong>, aunque con <strong><u>dos importantes derechos</u></strong> en favor del <span class="actor-pill">titular de la superficie</span>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-hand-holding-droplet icon text-green-500"></i><strong><u>Aprovechamiento</u></strong> hasta <span class="pill-blue"><strong>7.000 m³/año</strong></span>.</p></li>
+                                <li><p><i class="fas fa-search icon text-orange-500"></i>Y <strong><u>Autorización de investigación</u></strong>, y si ésta resulta favorable el propietario tiene un plazo de <span class="pill-blue">6 meses</span> para solicitar la <u>concesión de aprovechamiento</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-user-lock icon text-red-600"></i>Las <span class="definition-pill"><strong>aguas privadas</strong></span> quedan como un <strong><u>concepto residual</u></strong> aplicable a las <strong><u>charcas situadas en predios de propiedad particular</u></strong> siempre que se destinen a su <u>servicio exclusivo</u>.</p></li>
+                    <li><p><i class="fas fa-cloud-rain icon text-indigo-600"></i>Son de <strong><u>dominio privado</u></strong> los <strong><u>cauces por los que ocasionalmente discurran exclusivamente aguas pluviales</u></strong> en tanto atraviesen, desde su origen, <u>únicamente fincas de dominio privado</u>.</p></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Card 4: Utilización del DPH -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-landmark"></i></div>
+                <h2>4. Utilización del Dominio Público Hidráulico: servidumbres, usos comunes y privativos, concesiones y autorizaciones, registro de aguas y régimen jurídico de las comunidades de usuarios</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <h3 class="section-title"><i class="fas fa-link text-purple-600"></i>Servidumbres</h3>
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i><strong><u>Facilitan el uso de un bien de DPH</u></strong> por quien está legitimado para hacerlo.</p></li>
+                    <li><p><i class="fas fa-weight-hanging icon text-red-600"></i>E <strong><u>imponen una carga en el dominio</u></strong> al propietario de un predio (<span class="definition-pill">predio sirviente</span>), en beneficio del propietario de otro predio (<span class="definition-pill">predio dominante</span>).</p></li>
+                    <li><p><i class="fas fa-coins icon text-yellow-600"></i>Las servidumbres se <strong><u>indemnizan</u></strong>, pueden <strong><u>revisarse</u></strong> y algunas lo pueden ser por <strong><u>interés privado</u></strong>.</p></li>
+                    <li><p><i class="fas fa-handshake icon text-green-600"></i>Pueden acordarse por los <strong><u>particulares</u></strong> o por <strong><u>disposición legal</u></strong> (<span class="definition-pill">servidumbres legales</span>).</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-gavel icon text-amber-800"></i>El <span class="law-pill">RDPH</span> regula las siguientes <strong><u>servidumbres legales</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>De <strong><u>acueducto</u></strong>.</p></li>
+                                <li><p><i class="fas fa-hand-holding-droplet icon text-gray-500"></i>De <strong><u>saca de agua o abrevadero</u></strong>.</p></li>
+                                <li><p><i class="fas fa-archway icon text-gray-500"></i>De <strong><u>estribo de presa</u></strong>.</p></li>
+                                <li><p><i class="fas fa-random icon text-gray-500"></i>De <strong><u>parada o partidor</u></strong>.</p></li>
+                                <li><p><i class="fas fa-cubes icon text-gray-500"></i>De <strong><u>depósito de materiales</u></strong>.</p></li>
+                                <li><p><i class="fas fa-road icon text-gray-500"></i>Y de <strong><u>paso</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <h3 class="section-title"><i class="fas fa-users text-cyan-600"></i>Usos comunes</h3>
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i><strong><u>Beber, bañarse, abrevar el ganado</u></strong>, etc.</p></li>
+                    <li><p><i class="fas fa-check-circle icon text-green-600"></i>Deben llevarse a cabo <strong><u>sin alterar el caudal ni la calidad</u></strong> del agua.</p></li>
+                    <li><p><i class="fas fa-file-alt-slash icon text-purple-600"></i><strong><u>No requieren autorización</u></strong> administrativa.</p></li>
+                </ul>
+
+                <h3 class="section-title"><i class="fas fa-star text-yellow-500"></i>Usos comunes especiales</h3>
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>La <strong><u>navegación y flotación</u></strong>, <strong><u>barcas de paso</u></strong> y sus <strong><u>embarcaderos</u></strong>, <strong><u>pesca</u></strong>, <strong><u>vertidos</u></strong> sujetos a autorización, y cualquier otro uso que <strong><u>no excluya la utilización por terceros</u></strong>.</p></li>
+                    <li><p><i class="fas fa-file-signature icon text-orange-600"></i>Requieren <strong><u>previa declaración responsable</u></strong>.</p></li>
+                </ul>
+
+                <h3 class="section-title"><i class="fas fa-user-lock text-red-700"></i>Usos privativos</h3>
+                <ul>
+                    <li><p><i class="fas fa-stamp icon text-green-600"></i>Se adquieren por <strong><u>disposición legal</u></strong> o <strong><u>concesión administrativa</u></strong> por un plazo máximo de <span class="pill-blue"><strong>75 años</strong></span>.</p></li>
+                    <li><p><i class="fas fa-exclamation-triangle icon text-yellow-600"></i>Y están <strong><u>sujetos a limitaciones</u></strong> de carácter general (<u>no abuso ni desperdicio</u>) y <u>utilización coordinada</u> por el <span class="actor-pill">Organismo de Cuenca</span>, la concesión <u>no garantiza caudal</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-sort-amount-down icon text-indigo-600"></i>Hay un <strong><u>orden de prelación de los usos</u></strong> establecido por el <span class="plan-pill">Plan Hidrológico de cuenca</span> y subsidiariamente por la ley:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-city icon text-gray-500"></i><strong><u>Abastecimiento</u></strong> de población.</p></li>
+                                <li><p><i class="fas fa-seedling icon text-gray-500"></i><strong><u>Regadíos</u></strong> y usos agrarios.</p></li>
+                                <li><p><i class="fas fa-charging-station icon text-gray-500"></i><strong><u>Almacenamiento hidráulico</u></strong> para energía.</p></li>
+                                <li><p><i class="fas fa-industry icon text-gray-500"></i><strong><u>Usos industriales</u></strong> para producción de energía.</p></li>
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong><u>Otros usos industriales</u></strong>.</p></li>
+                                <li><p><i class="fas fa-fish icon text-gray-500"></i><strong><u>Acuicultura</u></strong>.</p></li>
+                                <li><p><i class="fas fa-swimmer icon text-gray-500"></i><strong><u>Usos recreativos</u></strong>.</p></li>
+                                <li><p><i class="fas fa-ship icon text-gray-500"></i><strong><u>Navegación</u></strong>.</p></li>
+                                <li><p><i class="fas fa-plus icon text-gray-500"></i>Y <strong><u>otros aprovechamientos</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <h3 class="section-title"><i class="fas fa-database text-blue-800"></i>Registro de aguas</h3>
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>En él se <strong><u>inscriben de oficio las concesiones de agua</u></strong> y sus cambios.</p></li>
+                    <li><p><i class="fas fa-eye icon text-green-600"></i>Es <strong><u>público</u></strong>, y hay <strong><u>uno por cada <span class="actor-pill">Organismo de Cuenca</span></u></strong>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-stream icon text-purple-600"></i>El registro tiene <strong><u>3 secciones</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-font icon text-gray-500"></i><strong><u>A</u></strong> (<u>concesiones de aguas superficiales, subterráneas</u>, o <u>recursos no convencionales</u> como aguas <u>desalinizadas o regeneradas</u>, <u>reservas a favor de las Confederaciones Hidrográficas</u>).</p></li>
+                                <li><p><i class="fas fa-font icon text-gray-500"></i><strong><u>B</u></strong> (<u>aprovechamientos de aguas subterráneas</u> hasta <span class="pill-blue">7.000 m³/año</span>).</p></li>
+                                <li><p><i class="fas fa-font icon text-gray-500"></i><strong><u>C</u></strong> (<u>aprovechamientos temporales de aguas privadas</u>).</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <h3 class="section-title"><i class="fas fa-users text-cyan-800"></i>Régimen jurídico de las comunidades de usuarios</h3>
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Son <strong><u>beneficiarios del agua y otros bienes de DPH</u></strong> de una misma <u>toma o concesión</u> (p.e. comunidades de regantes).</p></li>
+                    <li><p><i class="fas fa-building icon text-purple-600"></i>Son <strong><u>corporaciones de derecho público</u></strong> adscritas al <span class="actor-pill">organismo de cuenca</span> con sus propios <u>estatutos</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-sitemap icon text-orange-600"></i>Tienen una <strong><u>organización mínima</u></strong> constituida por:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-users icon text-gray-500"></i>La <strong><u>Junta general o Asamblea</u></strong>.</p></li>
+                                <li><p><i class="fas fa-user-tie icon text-gray-500"></i>La <strong><u>Junta de gobierno</u></strong> (que es el <u>órgano ejecutivo</u> elegido por la Junta general).</p></li>
+                                <li><p><i class="fas fa-gavel icon text-gray-500"></i>Y el <strong><u>Jurado</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Card 5: Reconocimiento de derechos anteriores a 1986 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-stamp"></i></div>
+                <h2>5. Reconocimiento de derechos anteriores a 1986</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>Respecto a la <strong><u>utilización de aguas privadas</u></strong> conforme a la <span class="law-pill"><strong>Ley de 1879</strong></span>, la <span class="law-pill"><strong>Ley 29/1985</strong></span> daba <strong><u>dos opciones</u></strong>, durante <span class="pill-blue">3 años</span>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-file-signature icon text-purple-500"></i><strong><u>Inscribir el aprovechamiento</u></strong> como <span class="definition-pill"><strong>temporal de aguas privadas</strong></span>.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-calendar-alt icon text-gray-400"></i>Por un <strong><u>plazo máximo de <span class="pill-blue">50 años</span></u></strong>.</p></li>
+                                            <li><p><i class="fas fa-star icon text-gray-400"></i>Teniendo al final de ese plazo <strong><u>preferencia para obtener la concesión</u></strong>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-book icon text-orange-500"></i>Otra opción era la <strong><u>inclusión en el <span class="doc-pill">“catálogo de aguas privadas”</span></u></strong>.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-shield-alt icon text-gray-400"></i><strong><u>Sin protección</u></strong> administrativa.</p></li>
+                                            <li><p><i class="fas fa-times-circle icon text-gray-400"></i>Que <strong><u>finalizó</u></strong> con la entrada en vigor de la <span class="law-pill"><strong>ley del Plan Hidrológico Nacional</strong></span>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 6: Protección del DPH -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-shield-alt"></i></div>
+                <h2>6. Protección del Dominio Público Hidráulico y de la calidad de las aguas continentales: zonas de servidumbre y de policía, apeo y deslinde; vertidos; reutilización</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <h3 class="section-title"><i class="fas fa-vector-square text-blue-600"></i>Zonas de servidumbre y de policía</h3>
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-purple-600"></i>Las <strong><u>márgenes</u></strong> están sujetas en toda su extensión longitudinal a:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-ruler-horizontal icon text-orange-500"></i>Una <span class="definition-pill"><strong>zona de servidumbre de <span class="pill-blue">5 m</span> de anchura</strong></span> (en <u>cauces, lagos y embalses</u>).</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-check-circle icon text-green-400"></i>Donde se podrá <strong><u>sembrar y plantar</u></strong>, pero no árboles que requieren autorización.</p></li>
+                                            <li><p><i class="fas fa-ban icon text-red-400"></i>Así como <strong><u>cualquier tipo de edificación</u></strong> que se otorgará en <u>casos muy justificados</u> y de forma <u>excepcional</u>.</p></li>
+                                            <li>
+                                                <div class="collapsible-trigger">
+                                                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                    <p><i class="fas fa-tasks icon text-blue-400"></i>Las <strong><u>funciones</u></strong> de esta zona son:</p>
+                                                </div>
+                                                <div class="collapsible-content hidden">
+                                                    <ul class="even-deeper-nested-list">
+                                                        <li><p><i class="fas fa-leaf icon text-gray-300"></i><strong><u>Proteger el ecosistema fluvial</u></strong> y el <span class="definition-pill">DPH</span>.</p></li>
+                                                        <li><p><i class="fas fa-walking icon text-gray-300"></i><strong><u>Paso público peatonal</u></strong> y para los servicios de <u>vigilancia, conservación y salvamento</u>.</p></li>
+                                                        <li><p><i class="fas fa-anchor icon text-gray-300"></i>Y <strong><u>varado y amarre de embarcaciones</u></strong> de forma <u>ocasional</u> y en <u>caso de necesidad</u>.</p></li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li><p><i class="fas fa-ruler-horizontal icon text-yellow-600"></i>Y una <span class="definition-pill"><strong>zona de policía de <span class="pill-blue">100 m</span></strong></span> en la que se <strong><u>condicionará el uso del suelo</u></strong> y las <u>actividades a desarrollar</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-arrows-alt-h icon text-cyan-600"></i>Ambas distancias medidas desde el <strong><u>límite del DPH</u></strong>.</p></li>
+                </ul>
+
+                <h3 class="section-title"><i class="fas fa-map-marked-alt text-green-700"></i>Apeo y deslinde</h3>
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>El <span class="definition-pill"><strong>apeo</strong></span> (<u>comprobación en campo</u> por <span class="actor-pill">representante de la administración</span>, <span class="actor-pill">técnico</span> y <span class="actor-pill">propietarios afectados</span>) y el <span class="definition-pill"><strong>deslinde</strong></span> (<u>delimitación visible</u> por medio de <u>hitos o amojonamiento</u>) de los cauces de <span class="definition-pill">DPH</span>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-landmark icon text-purple-500"></i>Corresponde a la <span class="actor-pill"><strong>AGE</strong></span> en <u>cuencas intercomunitarias</u>.</p></li>
+                                <li><p><i class="fas fa-water icon text-orange-500"></i>Que los efectuará a través de los <span class="actor-pill"><strong>organismos de cuenca</strong></span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <h3 class="section-title"><i class="fas fa-tint-slash text-red-700"></i>Vertidos</h3>
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Según el <span class="law-pill">TRLA</span> son <span class="definition-pill"><strong>vertidos</strong></span> los que se realicen <strong><u>directa o indirectamente</u></strong> en las <u>aguas continentales y marinas</u>, así como en el <u>resto del DPH</u>, independientemente de la técnica utilizada.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-ban icon text-red-600"></i>Se <strong><u>prohíbe con carácter general</u></strong> el vertido de <u>aguas contaminadas</u> al <span class="definition-pill">DPH</span>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-check-circle icon text-green-500"></i><strong><u>Salvo</u></strong> que tenga <strong><u>autorización administrativa</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <h3 class="section-title"><i class="fas fa-recycle text-cyan-800"></i>Reutilización</h3>
+                <ul>
+                     <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>El uso de las <span class="definition-pill"><strong>aguas regeneradas</strong></span> requerirá:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-stamp icon text-gray-500"></i><strong><u>Concesión administrativa</u></strong>.</p></li>
+                                <li><p><i class="fas fa-edit icon text-gray-500"></i>O la <strong><u>modificación de características</u></strong> de una concesión existente.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-gavel icon text-amber-800"></i>El <span class="actor-pill"><strong>organismo de cuenca</strong></span> <strong><u>resolverá motivadamente</u></strong> las solicitudes presentadas, previo <strong><u>informe preceptivo y vinculante</u></strong> de las <span class="actor-pill">autoridades sanitarias</span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-user-check icon text-green-700"></i>Cuando el <strong><u>interesado</u></strong> en el uso de las aguas regeneradas sea el <strong><u>primer usuario</u></strong> y el uso al que se vaya a destinar esté <strong><u>reconocido en el marco de su concesión original</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-times-circle icon text-red-500"></i><strong><u>No precisará una nueva concesión</u></strong>.</p></li>
+                                <li><p><i class="fas fa-file-signature icon text-purple-500"></i>Y <strong><u>solicitará</u></strong> al <span class="actor-pill">organismo de cuenca</span> la <strong><u>modificación de la concesión existente</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-industry icon text-indigo-600"></i>Adicionalmente, la <strong><u>producción y suministro de aguas regeneradas</u></strong> estarán sometidas a <strong><u>autorización</u></strong> del <span class="actor-pill">organismo de cuenca</span>.</p></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Card 7: Régimen económico-financiero -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-coins"></i></div>
+                <h2>7. Régimen económico-financiero de la utilización del dominio público hidráulico</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Las <span class="actor-pill"><strong>Administraciones públicas competentes</strong></span>, en virtud del <span class="principle-pill"><strong>principio de recuperación de costes</strong></span> y teniendo en cuenta <u>proyecciones económicas a largo plazo</u>, <strong><u>establecerán los oportunos mecanismos</u></strong>.</p></li>
+                    <li><p><i class="fas fa-bullseye icon text-red-600"></i>Para <strong><u>repercutir los costes de los servicios</u></strong> relacionados con la <u>gestión del agua</u>, incluyendo los <u>costes ambientales</u> y del <u>recurso</u>, en los diferentes <span class="actor-pill">usuarios finales</span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-purple-600"></i>Para ello, el <span class="law-pill"><strong>TRLA</strong></span> contempla las siguientes <strong><u>exacciones</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-hand-holding-water icon text-gray-500"></i><strong><u>Canon de utilización</u></strong> de bienes de <span class="definition-pill">DPH</span>.</p></li>
+                                <li><p><i class="fas fa-tint-slash icon text-gray-500"></i><strong><u>Canon de control de vertidos</u></strong>.</p></li>
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong><u>Canon de regulación</u></strong> y <strong><u>tarifa de utilización del agua</u></strong>.</p></li>
+                                <li><p><i class="fas fa-bolt icon text-gray-500"></i>Y <strong><u>canon por utilización de las aguas continentales</u></strong> para la <u>producción de energía eléctrica</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 8: Infracciones y sanciones -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-exclamation-triangle"></i></div>
+                <h2>8. Infracciones y sanciones</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-book-open icon text-blue-600"></i>El <span class="law-pill"><strong>TRLA</strong></span> considera <span class="definition-pill"><strong>infracciones</strong></span>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-house-damage icon text-gray-500"></i>Las acciones que causen <strong><u>daños a los bienes de DPH</u></strong> y a las <u>obras hidráulicas</u>.</p></li>
+                                <li><p><i class="fas fa-tint-slash icon text-gray-500"></i>La <strong><u>derivación de agua</u></strong> de sus cauces y el <strong><u>alumbramiento de aguas subterráneas</u></strong> sin la correspondiente <u>concesión o autorización</u> cuando sea precisa.</p></li>
+                                <li><p><i class="fas fa-file-excel icon text-gray-500"></i>El <strong><u>incumplimiento de las condiciones</u></strong> impuestas en las <u>concesiones y autorizaciones</u>.</p></li>
+                                <li><p><i class="fas fa-hard-hat icon text-gray-500"></i>La <strong><u>ejecución, sin la debida autorización</u></strong>, de <u>obras, siembras o plantaciones</u> en los <u>cauces públicos</u>.</p></li>
+                                <li><p><i class="fas fa-sign-in-alt icon text-gray-500"></i>La <strong><u>invasión, la ocupación o la extracción de áridos</u></strong> de los cauces, <u>sin la correspondiente autorización</u>.</p></li>
+                                <li><p><i class="fas fa-recycle icon text-gray-500"></i>Los <strong><u>vertidos que puedan deteriorar la calidad del agua</u></strong> efectuados <u>sin contar con autorización</u>.</p></li>
+                                <li><p><i class="fas fa-井 icon text-gray-500"></i>La <strong><u>apertura de pozos</u></strong> y la <strong><u>instalación en los mismos de instrumentos</u></strong> para la <u>extracción de aguas subterráneas</u> sin disponer previamente de <u>concesión o autorización</u>.</p></li>
+                                <li><p><i class="fas fa-file-signature icon text-gray-500"></i>La <strong><u>no presentación de declaración responsable</u></strong> o el <strong><u>incumplimiento</u></strong> de las <u>previsiones contenidas</u> en la declaración responsable para el ejercicio de una determinada actividad o de las <u>condiciones impuestas</u> por la Administración para el ejercicio de la misma.</p></li>
+                                <li><p><i class="fas fa-user-secret icon text-gray-500"></i>Y la <strong><u>inexactitud, falsedad u omisión</u></strong> en los <u>datos o documentos</u> que se incorporen o acompañen a la <u>declaración responsable</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-purple-600"></i>Las <strong><u>infracciones se califican</u></strong> en el <span class="law-pill"><strong>RDPH</strong></span> como <u>leves</u>, <u>menos graves</u>, <u>graves</u>, o <u>muy graves</u>, según:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-landmark icon text-gray-500"></i>Sus <strong><u>consecuencias sobre el DPH</u></strong>.</p></li>
+                                <li><p><i class="fas fa-shield-alt icon text-gray-500"></i>Y la <strong><u>seguridad de las personas</u></strong>.</p></li>
+                                <li><p><i class="fas fa-user-tie icon text-gray-500"></i>Y las <strong><u>circunstancias del responsable</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-euro-sign icon text-orange-600"></i>Las <strong><u>sanciones</u></strong> pueden ser:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-balance-scale-left icon text-green-500"></i>Infracciones <strong><u>leves</u></strong>, multa de hasta <span class="pill-blue"><strong>10.000 €</strong></span>.</p></li>
+                                <li><p><i class="fas fa-balance-scale icon text-yellow-500"></i>Infracciones <strong><u>menos graves</u></strong>, multa de <span class="pill-blue"><strong>10.000,01 a 50.000 €</strong></span>.</p></li>
+                                <li><p><i class="fas fa-balance-scale-right icon text-orange-500"></i>Infracciones <strong><u>graves</u></strong>, multa de <span class="pill-blue"><strong>50.000,01 a 500.000 €</strong></span>.</p></li>
+                                <li><p><i class="fas fa-bomb icon text-red-500"></i>E infracciones <strong><u>muy graves</u></strong>, multa de <span class="pill-blue"><strong>500.000,01 a 1 M€</strong></span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                     <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-gavel icon text-indigo-600"></i>La <strong><u>sanción</u></strong> de las infracciones <strong><u>corresponde</u></strong> a:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>Al <span class="actor-pill"><strong>Organismo de cuenca</strong></span>, las <u>leves</u> y <u>menos graves</u>.</p></li>
+                                <li><p><i class="fas fa-leaf icon text-gray-500"></i>Las <u>graves</u> al <span class="actor-pill"><strong>MITECO</strong></span>.</p></li>
+                                <li><p><i class="fas fa-users icon text-gray-500"></i>Y las <u>muy graves</u> al <span class="actor-pill"><strong>Consejo de Ministros</strong></span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 9: Contrato de cesión de derechos -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-handshake"></i></div>
+                <h2>9. Contrato de cesión de derechos al uso privativo de las aguas públicas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Los <span class="actor-pill"><strong>concesionarios o titulares</strong></span> de algún derecho al <strong><u>uso privativo de las aguas</u></strong> podrán <strong><u>ceder con carácter temporal</u></strong> a otro <span class="actor-pill">concesionario o titular de derecho</span> de <u>igual o mayor rango</u> según el orden de prelación de usos.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-purple-600"></i>Bajo las siguientes <strong>condiciones</strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-stamp icon text-gray-500"></i>Previa <strong><u>autorización administrativa</u></strong>.</p></li>
+                                <li><p><i class="fas fa-layer-group icon text-gray-500"></i>La <strong><u>totalidad o parte de los derechos</u></strong> de uso que les correspondan.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-ban icon text-red-600"></i>Los <span class="actor-pill">concesionarios o titulares de derechos</span> de usos privativos de carácter <strong><u>no consuntivo no podrán ceder sus derechos</u></strong> para usos que <u>no tengan tal consideración</u>.</p></li>
+                    <li><p><i class="fas fa-exclamation-triangle icon text-yellow-600"></i>Cuando <strong><u>razones de interés general</u></strong> lo justifiquen, el <span class="actor-pill">ministro competente</span> podrá <strong><u>autorizar, con carácter temporal y excepcional</u></strong>, cesiones de derechos de uso del agua que <u>no respeten las normas sobre prelación de usos</u>.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 10: Seguridad de presas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-shield-alt"></i></div>
+                <h2>10. Seguridad de presas, embalses y balsas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-gavel icon text-amber-800"></i>El <span class="law-pill"><strong>RDPH</strong></span> dedica su <strong><u>título VII</u></strong> a la <strong><u>seguridad de presas, embalses y balsas</u></strong>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-universal-access icon text-blue-600"></i>Que estén <strong>clasificadas</strong> como:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-archway icon text-purple-500"></i><span class="definition-pill"><strong>Grandes presas</strong></span>:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-ruler-vertical icon text-gray-400"></i>Altura <span class="formula-pill"><strong>&gt; 15 m</strong></span>.</p></li>
+                                            <li><p><i class="fas fa-ruler-combined icon text-gray-400"></i>Y las que, teniendo una altura entre <span class="pill-blue">10</span> y <span class="pill-blue">15 m</span>, tengan una capacidad de embalse <span class="formula-pill"><strong>&gt; 1 hm³</strong></span>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-exclamation-triangle icon text-red-500"></i>O en función de su <strong><u>riesgo potencial</u></strong> sean clasificadas en las <strong>categorías</strong>:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-city icon text-red-400"></i><span class="definition-pill"><strong>A</strong></span> (presas cuya <u>rotura o funcionamiento incorrecto</u> pueden <strong><u>afectar gravemente a núcleos urbanos o a servicios esenciales</u></strong>, o producir <u>daños materiales o medioambientales muy importantes</u>).</p></li>
+                                            <li><p><i class="fas fa-house-damage icon text-orange-400"></i><span class="definition-pill"><strong>B</strong></span> (presas cuya <u>rotura o funcionamiento incorrecto</u> puede ocasionar <strong><u>daños materiales o medioambientales importantes</u></strong> o <u>afectar a un número reducido de viviendas</u>).</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-plus-circle icon text-green-600"></i>A efectos de <strong><u>solicitud de clasificación y registro</u></strong>, quedan asimismo <strong><u>incluidas en el ámbito de aplicación</u></strong> de este título:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-ruler-vertical icon text-gray-500"></i>Las presas y balsas de <strong><u>altura <span class="formula-pill">&gt; 5 m</span></u></strong>.</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>O de <strong><u>capacidad de embalse <span class="formula-pill">&gt; 100.000 m³</span></u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <!-- Script para la funcionalidad desplegable -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Selecciona todos los elementos que servirán como disparadores
+            const triggers = document.querySelectorAll('.collapsible-trigger');
+
+            // Itera sobre cada disparador para añadirle un detector de clics
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', function (event) {
+                    // Evita que el clic en un desplegable anidado afecte a su contenedor padre
+                    event.stopPropagation();
+                    
+                    // Encuentra el elemento de contenido que sigue inmediatamente al disparador
+                    const content = this.nextElementSibling;
+                    
+                    // Alterna la clase 'open' en el disparador (para rotar el icono)
+                    this.classList.toggle('open');
+                    
+                    // Verifica que el siguiente elemento sea un contenido desplegable y alterna la clase 'hidden'
+                    if (content && content.classList.contains('collapsible-content')) {
+                        content.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
