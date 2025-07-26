@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Evaluación de recursos existentes</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-search-location"></i> MEA1T10. Evaluación de recursos existentes <i class="fas fa-chart-bar"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Evaluación de recursos existentes -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-tasks"></i></div>
+                <h2>1. Evaluación de recursos existentes: recursos en régimen natural, recursos disponibles y recursos libres</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>La <strong><u>evaluación de los recursos</u></strong> es una de las <strong><u>bases de la planificación hidrológica</u></strong>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-bullseye icon text-red-500"></i>Para ello es preciso <strong><u>determinar su volumen y distribución</u></strong> en el tiempo.</p></li>
+                                <li><p><i class="fas fa-cogs icon text-purple-500"></i>El <strong><u>procedimiento de evaluación</u></strong> consiste en la <strong><u>modelación hidrológica</u></strong> de los <u>componentes básicos del ciclo del agua</u> a la <u>escala global del sistema evaluado</u>, reproduciendo la <u>interacción de las aguas superficiales y subterráneas</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-calculator icon text-orange-600"></i>En principio, los <strong><u>métodos de evaluación cuantitativa</u></strong> de los recursos hídricos suponen la <strong><u>determinación de los recursos renovables</u></strong> (<u>aportación total</u>), tanto de <u>origen superficial como subterráneo</u>, para una:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-ruler-combined icon text-gray-500"></i><strong><u>Escala espacial</u></strong> (<u>número y distribución de puntos</u> en los que se evalúa el recurso).</p></li>
+                                <li><p><i class="fas fa-clock icon text-gray-500"></i>Y <strong><u>temporal</u></strong> (<u>condicionada por la futura gestión</u> del sistema) prefijadas.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-chart-line icon text-cyan-600"></i>Lo <strong><u>ideal</u></strong> sería disponer de <strong><u>medidas continuadas</u></strong> (<u>series de datos suficientemente largas</u> con registros de distintos periodos consecutivos secos o húmedos que aporten <u>variabilidad hidrológica</u>) en los <u>puntos de interés</u> de la <u>aportación de la red fluvial</u> y de las <u>fugas subterráneas</u>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-database icon text-green-500"></i>En la actualidad estos datos son proporcionados por las <strong><u>redes de medida existentes</u></strong>, tanto para:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-water icon text-gray-400"></i><strong><u>Aguas superficiales</u></strong> (<span class="doc-pill">Red Oficial de Estaciones de Aforo</span>, <span class="doc-pill">red SAIH</span>).</p></li>
+                                            <li><p><i class="fas fa-tint icon text-gray-400"></i>Como para <strong><u>aguas subterráneas</u></strong> (<span class="doc-pill">red de medida de niveles piezométricos en los acuíferos</span>).</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li><p><i class="fas fa-exclamation-triangle icon text-red-500"></i>Pero la <strong><u>realidad</u></strong> es que, por una parte, las <strong><u>series existentes son cortas o discontinuas</u></strong> y, por otra, en los puntos de interés <strong><u>no siempre existen observaciones</u></strong>.</p></li>
+                                <li><p><i class="fas fa-directions icon text-indigo-500"></i>Por tanto, en la mayoría de los casos, la <strong><u>evaluación del recurso ha de realizarse por métodos indirectos</u></strong> basados en el uso de <u>modelos de simulación continua de la cuenca</u> por <u>correlación con datos meteorológicos</u> y con <u>datos de aforo en estaciones próximas</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-stream icon text-blue-700"></i>Se pueden <strong><u>clasificar los recursos</u></strong> de la siguiente manera:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-leaf icon text-green-500"></i><span class="definition-pill"><strong>Recursos en régimen natural</strong></span>, los que <strong><u>existirían sin intervención humana</u></strong>, excluyendo <u>trasvases, obras de regulación, derivaciones en río, extracciones en acuífero, etc</u>. En <span class="actor-pill">España</span> son aproximadamente <span class="pill-blue"><strong>111.000 hm³/año</strong></span>.</p></li>
+                                <li><p><i class="fas fa-check-circle icon text-cyan-500"></i><span class="definition-pill"><strong>Recursos potenciales (utilizables)</strong></span>, restando la <strong><u>reserva ambiental</u></strong> (que se estima en un <span class="pill-blue">20%</span>), quedan unos <span class="pill-blue"><strong>89.000 hm³/año</strong></span>.</p></li>
+                                <li><p><i class="fas fa-hand-holding-water icon text-orange-500"></i><span class="definition-pill"><strong>Recursos disponibles</strong></span>, son los que se pueden <strong><u>emplear para los distintos usos</u></strong> (según <span class="doc-pill">registros de aguas</span>), unos <span class="pill-blue"><strong>40.000 hm³/año</strong></span>.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-plus icon text-purple-500"></i><span class="definition-pill"><strong>Recursos libres</strong></span>, existen en los <strong><u>sistemas excedentarios</u></strong> donde los <u>recursos globales son mayores que las necesidades consuntivas</u>, siendo la <strong><u>diferencia entre los recursos potenciales y los disponibles</u></strong>.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-exclamation-circle icon text-yellow-400"></i>Aun así, pueden tener <strong><u>problemas por insuficiencia de infraestructuras</u></strong> o por <strong><u>problemas de calidad</u></strong>, pero no por <u>insuficiencia de recursos</u>.</p></li>
+                                            <li><p><i class="fas fa-map-marker-alt icon text-red-400"></i>En <span class="actor-pill"><strong>España</strong></span> se presenta <strong><u>superávit</u></strong> en la <u>cuenca del Ebro</u> (que transfiere a la demarcación del <u>Cantábrico Occidental</u> y <u>Cuencas Internas de Cataluña</u>) y en la <u>cabecera del Tajo</u> (que transfiere a las cuencas del <u>Júcar, Segura, Mediterránea Andaluza y Guadiana</u>).</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 2: Las demandas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-hand-holding-water"></i></div>
+                <h2>2. Las demandas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i><span class="definition-pill"><strong>Demanda</strong></span> es la <strong><u>cantidad de agua a suministrar</u></strong> para satisfacer los diferentes usos: <u>abastecimiento a poblaciones</u>, <u>regadíos</u>, <u>energéticos</u> e <u>industriales</u>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-flask icon text-purple-500"></i>Cantidad <strong><u>hipotética</u></strong> que se utiliza para realizar el <u>balance hidráulico</u>.</p></li>
+                                <li><p><i class="fas fa-not-equal icon text-red-500"></i><strong><u>Distinta del consumo</u></strong> que es la <u>cantidad real utilizada</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-orange-600"></i>Las <strong><u>demandas de agua se caracterizan</u></strong> por:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-calendar-alt icon text-gray-500"></i>El <strong><u>volumen anual</u></strong> y su <strong><u>distribución temporal</u></strong>.</p></li>
+                                <li><p><i class="fas fa-award icon text-gray-500"></i><strong><u>Condiciones de calidad</u></strong> exigibles al suministro.</p></li>
+                                <li><p><i class="fas fa-shield-alt icon text-gray-500"></i><strong><u>Nivel de garantía</u></strong>.</p></li>
+                                <li><p><i class="fas fa-euro-sign icon text-gray-500"></i><strong><u>Coste repercutible</u></strong>.</p></li>
+                                <li><p><i class="fas fa-tint icon text-gray-500"></i><strong><u>Consumo</u></strong>, <strong><u>retorno</u></strong> y sus <strong><u>condiciones de calidad</u></strong> previas a cualquier tratamiento.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-file-alt icon text-cyan-600"></i>Vienen recogidas en los <span class="plan-pill"><strong>Planes Hidrológicos de Cuenca</strong></span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-chart-pie icon text-indigo-600"></i>La <strong><u>demanda actual</u></strong> se cifra en unos <span class="pill-blue"><strong>32.000 hm³/año</strong></span>, de los cuales:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-seedling icon text-green-500"></i>Un <span class="pill-blue"><strong>80%</strong></span> corresponde a <strong><u>regadío</u></strong>.</p></li>
+                                <li><p><i class="fas fa-city icon text-blue-500"></i>Un <span class="pill-blue"><strong>15%</strong></span> a <strong><u>abastecimiento de poblaciones e industrias</u></strong>.</p></li>
+                                <li><p><i class="fas fa-industry icon text-purple-500"></i>Y un <span class="pill-blue"><strong>5%</strong></span> a <strong><u>uso industrial</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-stream icon text-blue-700"></i>Podemos <strong><u>clasificar la demanda</u></strong> en:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-city icon text-orange-500"></i><span class="definition-pill"><strong>Demanda urbana</strong></span>, para las necesidades <u>domésticas</u>, de <u>servicios públicos</u>, <u>comerciales</u> e <u>industriales</u> y <u>pérdidas en la distribución</u>.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-users icon text-gray-400"></i>La <strong><u>demanda/nº de habitantes</u></strong> es la <span class="definition-pill">dotación</span> que se sitúa entre <span class="pill-blue"><strong>270</strong></span> y <span class="pill-blue"><strong>340 l/hab y día</strong></span>.</p></li>
+                                            <li><p><i class="fas fa-shield-alt icon text-gray-400"></i>Exige un <strong><u>nivel de garantía</u></strong> de prácticamente el <span class="pill-blue"><strong>100%</strong></span>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-industry icon text-purple-500"></i><span class="definition-pill"><strong>Demanda industrial</strong></span>, sus necesidades vienen determinadas por las <u>diferentes formas de utilización en las fábricas</u>, función del <u>tipo de producto y su cantidad</u>, o del <u>sistema de fabricación</u>.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-info-circle icon text-gray-400"></i>Por tanto, <strong><u>dependen mucho del tipo de industria</u></strong>, su <span class="definition-pill">dotación</span> se mide en <strong><u>m³/empleado y día</u></strong>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-seedling icon text-green-500"></i><span class="definition-pill"><strong>Demanda agraria</strong></span>, las necesidades de agua para el <strong><u>regadío</u></strong> vienen determinadas por el <u>tipo de cultivo</u> y por la <u>cuenca hidrográfica</u>.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-ruler-combined icon text-gray-400"></i>La <span class="definition-pill">dotación</span> se expresa en <strong><u>m³/ha y año</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-book icon text-gray-400"></i>El <span class="plan-pill"><strong>Plan Nacional de Regadíos</strong></span> ayuda a estimar su evaluación.</p></li>
+                                            <li><p><i class="fas fa-question-circle icon text-yellow-400"></i>La <strong><u>previsión de esta demanda</u></strong> resulta <strong><u>muy compleja</u></strong> y está sometida a <strong><u>incertidumbres</u></strong> como el <u>desarrollo futuro de los regadíos</u>, las <u>subvenciones de la política agraria común</u>, los <u>mercados agrícolas</u>, etc.</p></li>
+                                            <li><p><i class="fas fa-check-circle icon text-teal-400"></i>Pero aun así los <span class="plan-pill">planes hidrológicos de cuenca</span> han realizado su <strong><u>estimación</u></strong> considerando sus <u>requerimientos</u>, atendiendo a su <u>viabilidad</u> desde el punto de vista de la <u>disponibilidad hídrica</u> sin prejuzgar <u>políticas sectoriales</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 3: La demanda medioambiental -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-seedling"></i></div>
+                <h2>3. La demanda medioambiental</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>Los <strong><u>requerimientos medioambientales</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-times-circle icon text-red-500"></i><strong><u>No suponen un uso del agua</u></strong>.</p></li>
+                                <li><p><i class="fas fa-ban icon text-orange-500"></i>Sino que son <strong><u>restricciones en la propia utilización</u></strong> para la <u>conservación del medio natural</u>, como es concebido por la propia <span class="law-pill">ley de aguas</span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-chart-pie icon text-purple-600"></i>En <span class="actor-pill"><strong>España</strong></span> se estima en un <span class="pill-blue"><strong>20%</strong></span> de los <u>recursos naturales</u>.</p></li>
+                    <li><p><i class="fas fa-tint icon text-cyan-600"></i>Lo que supone unos <span class="pill-blue"><strong>22.000 hm³/año</strong></span>.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 4: Balances hidráulicos -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-balance-scale-right"></i></div>
+                <h2>4. Balances hidráulicos</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Se <strong><u>plantean entre los recursos hídricos disponibles y las demandas</u></strong>.</p></li>
+                    <li><p><i class="fas fa-bullseye icon text-red-600"></i>Con <strong><u>objeto de permitir la planificación</u></strong> de las <u>medidas necesarias para adecuar</u> ambos conceptos.</p></li>
+                    <li><p><i class="fas fa-calendar-alt icon text-purple-600"></i>El <span class="definition-pill"><strong>balance hídrico</strong></span> puede realizarse para <strong><u>cualquier periodo temporal</u></strong>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-stream icon text-orange-600"></i>Pero debe hacerse una <strong><u>distinción</u></strong> entre:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-calendar-week icon text-gray-500"></i><span class="definition-pill"><strong>Balances medios</strong></span> (<u>interanuales</u>).</p></li>
+                                <li><p><i class="fas fa-calendar-day icon text-gray-500"></i>Y <span class="definition-pill"><strong>balances operacionales</strong></span> (para <u>periodos específicos</u>, tales como un <u>año</u>, <u>estación</u>, <u>mes</u> o <u>número de días</u>).</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 5: Los sistemas de explotación de recursos -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-sitemap"></i></div>
+                <h2>5. Los sistemas de explotación de recursos: modelos de optimización y simulación de recursos</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-gavel icon text-amber-800"></i>El <span class="law-pill"><strong>Reglamento de Planificación Hidrológica</strong></span> establece que los <span class="plan-pill"><strong>planes hidrológicos</strong></span> <strong><u>definirán los sistemas de explotación</u></strong> en lo que funcionalmente se dividirá el territorio de la demarcación.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>Cada <span class="definition-pill"><strong>sistema de explotación de recursos</strong></span> está constituido por:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-water icon text-gray-500"></i><strong><u>Masas de agua</u></strong> superficial y subterránea.</p></li>
+                                <li><p><i class="fas fa-building icon text-gray-500"></i><strong><u>Obras e instalaciones</u></strong> de infraestructura hidráulica.</p></li>
+                                <li><p><i class="fas fa-file-alt icon text-gray-500"></i><strong><u>Normas de utilización del agua</u></strong> derivadas de las características de las demandas.</p></li>
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i>Y <strong><u>reglas de explotación</u></strong> que, aprovechando los <u>recursos hídricos naturales</u>, y de acuerdo con su <u>calidad</u>, permiten <strong><u>establecer los suministros de agua</u></strong> que configuran la <u>oferta de recursos disponibles</u> del sistema de explotación, cumpliendo los <u>objetivos ambientales</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-calendar-alt icon text-purple-600"></i>Cada sistema de explotación de recursos se <strong><u>referirá a un horizonte temporal</u></strong>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-check-circle icon text-green-500"></i>Debiendo incluirse, en todo caso, el correspondiente a la <strong><u>situación existente al elaborarse el <span class="plan-pill">Plan</span></u></strong>.</p></li>
+                                <li><p><i class="fas fa-calendar-day icon text-orange-500"></i>Los sistemas de explotación se referirán, además, a <strong><u>dos horizontes temporales</u></strong>, <span class="pill-blue"><strong>2027</strong></span> y <span class="pill-blue"><strong>2039</strong></span>, en los que se considerará la <u>satisfacción de las demandas previsibles</u>.</p></li>
+                                <li><p><i class="fas fa-plus icon text-cyan-500"></i>Estos horizontes se <strong><u>incrementarán en <span class="pill-blue">seis años</span></u></strong> en las <u>sucesivas actualizaciones</u> de los <span class="plan-pill">planes</span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-compress-arrows-alt icon text-indigo-600"></i>Sin perjuicio de los <span class="definition-pill">sistemas de explotación parciales</span> que puedan definirse en cada <span class="plan-pill">Plan</span>, se definirá un <span class="definition-pill"><strong>sistema de explotación único</strong></span>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-info icon text-gray-500"></i>En el que, de forma <strong><u>simplificada</u></strong>, queden <strong><u>incluidos todos los sistemas parciales</u></strong>.</p></li>
+                                <li><p><i class="fas fa-chart-area icon text-gray-500"></i>Y con el que se posibilite el <strong><u>análisis global de comportamiento</u></strong> en toda la <u>demarcación hidrográfica</u>.</p></li>
+                                <li><p><i class="fas fa-tasks icon text-gray-500"></i>En el <span class="plan-pill">Plan</span> se indicará la <strong><u>agrupación de recursos, demandas, infraestructuras de almacenamiento y masas de agua</u></strong> llevada a cabo a partir de los <u>sistemas parciales</u>, en su caso, para definir el <u>sistema de explotación único</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-brain icon text-blue-700"></i>La <strong><u>modelización de los sistemas hídricos</u></strong> es de <strong><u>gran utilidad</u></strong> en la <u>planificación hidrológica</u> para <u>predecir el funcionamiento</u> de las infraestructuras hidráulicas.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-stream icon text-cyan-700"></i>Se <strong><u>clasifican</u></strong> en:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-sync icon text-gray-500"></i><span class="definition-pill"><strong>Modelos de simulación</strong></span>, <strong><u>reproducen el comportamiento del sistema</u></strong> ante determinadas <u>acciones exteriores</u> y <u>decisiones en su gestión</u>.</p></li>
+                                <li><p><i class="fas fa-star icon text-gray-500"></i><span class="definition-pill"><strong>Modelos de optimización</strong></span>, <strong><u>seleccionan directamente la solución óptima</u></strong> al problema planteado, son <strong><u>muy complejos</u></strong> por el <u>algoritmo de optimización</u> y la <u>elección de la función objetivo</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 6: Rasgos básicos del balance hidráulico nacional -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-water"></i></div>
+                <h2>6. Rasgos básicos del balance hidráulico nacional</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-users icon text-blue-600"></i>Demanda</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-purple-600"></i>Por el lado de la <span class="definition-pill">demanda</span> es previsible un <strong><u>aumento de población</u></strong> en la <u>mitad sur</u>.</p></li>
+                        <li><p><i class="fas fa-sun icon text-orange-600"></i>Agravada con el <strong><u>turismo</u></strong> que requiere <strong><u>garantía del <span class="pill-blue">100%</span></u></strong> en regiones con <u>mayores déficits hídricos</u>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-mountain icon text-green-700"></i>Recursos naturales</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>En cuanto a los <span class="definition-pill">recursos naturales</span> se pueden resaltar los siguientes <strong>datos</strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-map-marked-alt icon text-gray-500"></i><strong><u>España peninsular</u></strong>:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-cloud-rain icon text-gray-400"></i>Precipitación media anual <span class="pill-blue"><strong>660 mm</strong></span>.</p></li>
+                                                <li><p><i class="fas fa-water icon text-gray-400"></i>Escorrentía <span class="pill-blue"><strong>220 mm</strong></span>.</p></li>
+                                                <li><p><i class="fas fa-tint icon text-gray-400"></i>Aportación <span class="pill-blue"><strong>111.000 hm³/año</strong></span>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-random icon text-red-500"></i><strong><u>Distribución muy irregular</u></strong> de la escorrentía:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-arrow-up icon text-green-400"></i>Cornisa cantábrica <span class="formula-pill"><strong>>700mm/año</strong></span>.</p></li>
+                                                <li><p><i class="fas fa-arrow-down icon text-orange-400"></i>Resto <span class="formula-pill"><strong><250mm/año</strong></span>.</p></li>
+                                                <li><p><i class="fas fa-arrow-down icon text-red-400"></i>Segura <span class="pill-blue"><strong>50 mm/año</strong></span> (casi <span class="pill-blue">20</span> veces inferior a Galicia y <span class="pill-blue">5</span> veces inferior a la media).</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-calendar-alt icon text-purple-600"></i>A la <strong><u>irregularidad espacial</u></strong> se une la <strong><u>irregularidad temporal</u></strong>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-chart-line icon text-gray-500"></i>En la cuenca del <strong><u>Guadiana</u></strong> la relación entre las aportaciones anuales máxima y mínima puede llegar a <span class="pill-blue"><strong>30</strong></span>.</p></li>
+                                    <li><p><i class="fas fa-chart-line icon text-gray-500"></i>En las menos irregulares como la <strong><u>cornisa cantábrica</u></strong> es aproximadamente <span class="pill-blue"><strong>3</strong></span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-tint icon text-cyan-600"></i>La <strong><u>recarga de acuíferos</u></strong> se estima en unos <span class="pill-blue"><strong>29.000 hm³/año</strong></span> (<span class="pill-blue">26%</span> de los recursos en régimen natural).</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tools icon text-indigo-600"></i>Para <strong><u>paliar la extrema irregularidad</u></strong> se cuenta con:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-archway icon text-gray-500"></i><strong><u>Regulación en embalses</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-arrow-down icon text-gray-500"></i><strong><u>Explotación de aguas subterráneas</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-exchange-alt icon text-gray-500"></i><strong><u>Realización de trasvases</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-flask icon text-gray-500"></i><strong><u>Utilización de recursos no convencionales</u></strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-water icon text-blue-700"></i>La <strong><u>capacidad de agua embalsada</u></strong> en España, atendiendo a la vertiente a que corresponden los ríos regulados, es:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i>Vertiente <strong><u>atlántica</u></strong> <span class="pill-blue"><strong>42.000 hm³</strong></span>.</p></li>
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i>Vertiente <strong><u>mediterránea</u></strong> <span class="pill-blue"><strong>14.000 hm³</strong></span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-hand-holding-water icon text-green-700"></i>Los <strong><u>recursos disponibles</u></strong> en España son unos <span class="pill-blue"><strong>40.000 hm³/año</strong></span>, que representan un <span class="pill-blue"><strong>36%</strong></span> de los recursos naturales.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-arrow-down icon text-cyan-800"></i>De las <strong><u>aguas subterráneas se explotan</u></strong> unos <span class="pill-blue"><strong>5.500 hm³/año</strong></span> (<span class="pill-blue">~20%</span> de la recarga) con los que se atiende:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-city icon text-gray-500"></i>Un <span class="pill-blue"><strong>30%</strong></span> de los <strong><u>abastecimientos urbanos e industriales</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-seedling icon text-gray-500"></i>Y un <span class="pill-blue"><strong>27%</strong></span> de la <strong><u>superficie de riego</u></strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-chart-area icon text-orange-700"></i>La <strong><u>mayor utilización</u></strong> se da en las cuencas del <strong><u>Júcar y Guadiana</u></strong>, en ésta supera incluso a la recarga.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-map-marked-alt icon text-gray-500"></i>En las cuencas <strong><u>Mediterránea Andaluza, Segura, cuencas internas de Cataluña y las islas</u></strong>, la utilización de acuíferos se sitúa entre el <span class="pill-blue"><strong>50%</strong></span> y el <span class="pill-blue"><strong>80%</strong></span> de la recarga.</p></li>
+                                    <li><p><i class="fas fa-map-marked-alt icon text-gray-500"></i>En <strong><u>Duero, Ebro y Guadalquivir</u></strong> la utilización de las aguas subterráneas es <strong><u>muy pequeña</u></strong> a pesar de tener acuíferos importantes.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-flask icon text-purple-700"></i>En cuanto a los <strong><u>recursos no convencionales</u></strong>, <u>aguas regeneradas y desaladas</u>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-percentage icon text-gray-500"></i>Representan aproximadamente un <span class="pill-blue"><strong>2%</strong></span> del total.</p></li>
+                                    <li><p><i class="fas fa-check-circle icon text-green-500"></i>Y aunque <strong><u>no pueden considerarse significativos</u></strong> desde un punto de vista global, resultan <strong><u>imprescindibles para resolver graves problemas locales</u></strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Script para la funcionalidad desplegable -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Selecciona todos los elementos que servirán como disparadores
+            const triggers = document.querySelectorAll('.collapsible-trigger');
+
+            // Itera sobre cada disparador para añadirle un detector de clics
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', function (event) {
+                    // Evita que el clic en un desplegable anidado afecte a su contenedor padre
+                    event.stopPropagation();
+                    
+                    // Encuentra el elemento de contenido que sigue inmediatamente al disparador
+                    const content = this.nextElementSibling;
+                    
+                    // Alterna la clase 'open' en el disparador (para rotar el icono)
+                    this.classList.toggle('open');
+                    
+                    // Verifica que el siguiente elemento sea un contenido desplegable y alterna la clase 'hidden'
+                    if (content && content.classList.contains('collapsible-content')) {
+                        content.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
