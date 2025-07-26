@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Carga contaminante por sector industrial</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Estilos para la tabla comparativa */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem;
+            text-align: left;
+            vertical-align: top;
+        }
+        .comparison-table th {
+            background-color: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+        .comparison-table td ul {
+            padding-left: 0;
+            margin-top: 0;
+        }
+        .comparison-table td li {
+            padding-left: 1.75rem;
+            margin-top: 0.5rem;
+        }
+         .comparison-table td li::before {
+            content: '▪️';
+            position: absolute;
+            left: 0;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-industry"></i> MEA1T18. Problemas de contaminación de efluentes industriales <i class="fas fa-exclamation-triangle"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Problemas de contaminación -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-tint-slash"></i></div>
+                <h2>1. Problemas de contaminación en relación con los efluentes industriales</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>En términos generales, se pueden distinguir <strong><u>3 tipos de contaminación</u></strong> producida por efluentes industriales:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-recycle icon text-green-600"></i><span class="definition-pill"><strong>Contaminación orgánica</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-equals icon text-gray-500"></i><strong><u>Asimilable a la urbana</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-industry icon text-gray-500"></i>Y <strong><u>tratable en depuradoras urbanas</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-exclamation-circle icon text-red-500"></i>Salvo por <strong><u>carga orgánica excesiva</u></strong> en algunos casos como en el <u>vertido de sangre de los mataderos</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-atom icon text-purple-600"></i><span class="definition-pill"><strong>Contaminación inorgánica</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-vial icon text-gray-500"></i>Se caracteriza por la presencia de <strong><u>metales pesados, fenoles, cianuros, sulfuros, etc.</u></strong> y en general <u>sustancias tóxicas</u>.</p></li>
+                                            <li><p><i class="fas fa-ban icon text-gray-500"></i>Que <strong><u>inhiben la degradación natural</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-biohazard icon text-gray-500"></i>Y son <strong><u>altamente nocivas</u></strong> para <u>cauces o depuradoras receptoras</u>.</p></li>
+                                            <li><p><i class="fas fa-chart-bar icon text-gray-500"></i>La <strong><u>DQO es muy superior a la DBO</u></strong>.</p></li>
+                                            <li>
+                                                <div class="collapsible-trigger">
+                                                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                    <p><i class="fas fa-cogs icon text-gray-500"></i>Se puede <strong><u>reducir con instalaciones de recuperación</u></strong> instaladas en la propia industria para <u>reducir sus contaminantes típicos</u>, que se pueden clasificar en elementos:</p>
+                                                </div>
+                                                <div class="collapsible-content hidden">
+                                                    <ul class="even-deeper-nested-list">
+                                                        <li><p><i class="fas fa-compress-arrows-alt icon"></i><strong>Insolubles separables físicamente</strong>, como <u>sólidos en suspensión</u> y <u>materias flotantes</u>.</p></li>
+                                                        <li><p><i class="fas fa-filter icon"></i><strong>Solubles separables físicamente</strong>, como <u>materias absorbibles</u> o <u>sales separables por ósmosis</u>.</p></li>
+                                                        <li><p><i class="fas fa-balance-scale icon"></i>Que solo requieren una <strong>neutralización</strong>, como <u>ácidos y bases solubles</u>.</p></li>
+                                                        <li><p><i class="fas fa-sync-alt icon"></i>Que requieren una <strong>oxidación-reducción</strong>, como <u>sulfuros y cianuros</u>.</p></li>
+                                                        <li><p><i class="fas fa-wind icon"></i><strong>Separables por desgasificación</strong>, como <u>gases ocluidos o disueltos</u>, o <u>productos sulfurosos concentrados</u>.</p></li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-bacterium icon text-red-700"></i><span class="definition-pill"><strong>Contaminación biológica</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-pastafarianism icon text-gray-500"></i>Causada por <strong><u>bacterias, virus y otros organismos patógenos</u></strong>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-exclamation-triangle icon text-orange-600"></i>La <strong><u>incorporación de efluentes industriales</u></strong> a <u>cursos naturales</u> o al <u>alcantarillado público</u> <strong><u>no debe realizarse</u></strong> en la mayoría de los casos <strong><u>sin un tratamiento previo</u></strong> que permita la <u>depuración posterior</u>.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 2: Reutilización de efluentes industriales -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-recycle"></i></div>
+                <h2>2. Reutilización de efluentes industriales</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>Conviene <strong><u>distinguir en primer lugar</u></strong> entre:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-redo-alt icon text-gray-500"></i>La <span class="definition-pill"><strong>reutilización</strong></span>, que es el <strong><u>empleo de las aguas residuales depuradas</u></strong>.</p></li>
+                                <li><p><i class="fas fa-sync-alt icon text-gray-500"></i>Y el <span class="definition-pill"><strong>reciclaje</strong></span>, que es el <strong><u>empleo del mismo agua varias veces</u></strong> dentro de la industria.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-plus-circle icon text-purple-600"></i>Además del destino con <strong><u>fines industriales</u></strong> también cabría el <strong><u>empleo de dichos efluentes con fines agrícolas</u></strong>.</p></li>
+                    <li><p><i class="fas fa-industry icon text-orange-600"></i>Resulta <strong><u>más factible exigir ciertas condiciones a las nuevas industrias</u></strong> que <u>modificar industrias existentes</u>.</p></li>
+                    <li><p><i class="fas fa-euro-sign icon text-green-600"></i>El <strong><u>aumento del precio del agua</u></strong> ha sido el <strong><u>causante</u></strong>, entre otros, de la <strong><u>revisión y optimización del proceso productivo</u></strong> de los <u>grandes consumidores de agua</u> en la industria.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-cogs icon text-cyan-600"></i>En operaciones como:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-snowflake icon text-gray-500"></i>La <strong>refrigeración</strong>.</p></li>
+                                <li><p><i class="fas fa-soap icon text-gray-500"></i>O el <strong>lavado de materiales</strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Card 3: Evaluación de la carga contaminante -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-industry"></i></div>
+                <h2>3. Evaluación de la carga contaminante por sector industrial. Categorización del sector industrial</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>La <strong><u>contaminación de los efluentes</u></strong> dependerá del <strong><u>tipo de industria</u></strong> y del <strong><u>proceso de fabricación</u></strong>, ya que el contacto con el agua de una materia prima la hace susceptible de aparecer en el efluente.</p></li>
+                    <li><p><i class="fas fa-gavel icon text-amber-700"></i>En las <span class="law-pill"><strong>legislaciones autonómicas</strong></span> o <span class="law-pill"><strong>normas municipales</strong></span> o en los <span class="plan-pill"><strong>planes hidrológicos de cuenca</strong></span> se establecen <strong><u>requisitos de depuración</u></strong> para determinadas actividades industriales que suelen estar recogidas en una <u>lista según su clasificación nacional de actividades económicas</u>.</p></li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-utensils icon text-green-700"></i>Industria agroalimentaria</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-list icon text-gray-500"></i><strong>Productos:</strong> alimentación, mataderos, salas de despiece, granjas, industria láctea.</p></li>
+                        <li><p><i class="fas fa-vial icon text-gray-500"></i><strong>Efluentes:</strong> <u>orgánicos</u> y <u>biodegradables</u> con rápida tendencia a la <u>acidificación y fermentación</u>.</p></li>
+                        <li><p><i class="fas fa-recycle icon text-gray-500"></i><strong>Tratamiento:</strong> pueden tratarse con <u>métodos biológicos</u>.</p></li>
+                        <li><p><i class="fas fa-exclamation-triangle icon text-red-500"></i><strong>Problemas:</strong> pueden presentar <u>materiales groseros</u> como restos de carne, tripas, residuos de estabulación que pueden <u>disminuir la sección de colectores</u> e, incluso, llegar a <u>romperlos</u>, <u>alta carga en grasas</u>, en mataderos <u>sangre con una carga orgánica enorme</u> que puede <u>saturar la depuradora municipal</u>.</p></li>
+                        <li><p><i class="fas fa-tasks icon text-gray-500"></i><strong>Parámetros:</strong> <span class="formula-pill">DQO</span>, <span class="formula-pill">DBO</span>, <span class="formula-pill">sólidos en suspensión (SS)</span>, <span class="formula-pill">aceites y grasas</span>.</p></li>
+                    </ul>
+                </div>
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-shoe-prints icon text-yellow-800"></i>Industria del curtido</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong>Proceso:</strong> emplea <u>taninos</u> y <u>sales de cromo</u> en el proceso de curtido.</p></li>
+                        <li><p><i class="fas fa-recycle icon text-gray-500"></i><strong>Tratamiento:</strong> pueden tratarse con <u>métodos biológicos</u>, pero además necesitarán una <u>precipitación del cromo</u> para eliminarlo.</p></li>
+                        <li><p><i class="fas fa-tasks icon text-gray-500"></i><strong>Parámetros:</strong> <span class="formula-pill">DQO</span>, <span class="formula-pill">DBO</span>, <span class="formula-pill">SS</span>, <span class="formula-pill">aceites</span>, <span class="formula-pill">grasas</span> y <span class="formula-pill">cromo trivalente</span>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tshirt icon text-blue-500"></i>Industria textil</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-gray-500"></i><strong>Características:</strong> es <u>muy diversa</u>.</p></li>
+                        <li><p><i class="fas fa-vial icon text-gray-500"></i><strong>Efluentes:</strong> en general contienen <u>SS</u>, <u>grasas</u>, <u>sales orgánicas</u>, <u>tintes y colorantes</u>, y en lavanderías <u>detergentes</u>.</p></li>
+                        <li><p><i class="fas fa-tasks icon text-gray-500"></i><strong>Parámetros a controlar:</strong> <span class="formula-pill">DQO</span>, <span class="formula-pill">DBO</span>, y la <u>concentración del resto de sustancias</u> indicadas.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-scroll icon text-orange-500"></i>Industria papelera</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-gray-500"></i><strong>Distinción:</strong> hay que distinguir entre la industria de la <u>pulpa del papel</u> y la del <u>papel propiamente dicha</u>.</p></li>
+                        <li><p><i class="fas fa-vial icon text-gray-500"></i><strong>Efluentes:</strong> existen efluentes procedentes del <u>blanqueo</u>, del <u>lavado</u> y del <u>condensado</u> de los procesos de evaporación.</p></li>
+                        <li><p><i class="fas fa-tasks icon text-gray-500"></i><strong>Parámetros:</strong> <u>alta cantidad de sólidos insolubles</u> de los cuales un <span class="pill-blue">10-30%</span> no son sedimentables, <u>alta DBO y DQO</u>, y ser <u>resistente a procesos biológicos</u>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-gas-pump icon text-black"></i>Industria del petróleo</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong>Actividades:</strong> 4 tipos: <u>producción de petróleo</u>, <u>transporte de crudo y productos refinados</u>, <u>refinerías</u> e <u>industria petroquímica</u>.</p></li>
+                        <li><p><i class="fas fa-vial icon text-gray-500"></i><strong>Efluentes:</strong> generan efluentes <u>muy diversos</u> con presencia de <u>sosa</u>, <u>sulfuros</u>, <u>fenoles</u>, <u>parafinas</u>, <u>alcoholes pesados</u>, <u>benceno</u>, <u>cianuros</u>, <u>ácidos orgánicos</u>, etc.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tools icon text-gray-600"></i>Industria del acero</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-vial icon text-gray-500"></i><strong>Efluentes:</strong> con <u>amoniaco</u>, <u>hierro</u>, <u>cinc</u>, <u>plomo</u>, <u>ácido sulfúrico</u>, <u>aceites</u>, <u>SS</u>, etc.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-car icon text-red-600"></i>Industria de la automoción</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong>Actividades:</strong> <u>fabricación</u>, <u>talleres de mecánica</u>, <u>chapa y pintura</u>, <u>limpieza</u>.</p></li>
+                        <li><p><i class="fas fa-vial icon text-gray-500"></i><strong>Efluentes:</strong> pueden aparecer <u>metales pesados</u> como el <u>plomo</u> o el <u>cromo</u>, <u>detergentes</u>, <u>grasas</u>, <u>SS</u>, <u>hidrocarburos</u>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-paint-roller icon text-purple-600"></i>Industria del tratamiento de superficies</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong>Proceso:</strong> de un <u>metal con otros metales</u> para hacerlo más <u>resistente a la corrosión</u>, <u>más estético</u>, etc.</p></li>
+                        <li><p><i class="fas fa-vial icon text-gray-500"></i><strong>Efluentes:</strong> <u>Elevada carga en metales pesados</u> como el <u>zinc</u>, <u>níquel</u>, <u>cromo hexavalente</u>, etc. así como <u>cianuros</u> y <u>fluoruros</u>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-industry icon text-gray-800"></i>Otras industrias</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-list icon text-gray-500"></i>Existen <strong><u>muchas otras industrias</u></strong> con múltiples variantes: industria <u>energética</u>, <u>química</u>, <u>vidrio</u>, <u>cosméticos</u>, <u>abrasivos</u>, <u>cerámica</u>, <u>adhesivos</u>, <u>explosivos</u>, etc.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-table icon text-blue-800"></i>Tabla Comparativa de Sectores Industriales</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Sector Industrial</th>
+                                <th>Características / Proceso / Actividades</th>
+                                <th>Efluentes Típicos</th>
+                                <th>Parámetros Clave / Problemas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong><i class="fas fa-utensils icon text-green-700"></i>Agroalimentaria</strong></td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-apple-alt icon"></i>Productos: alimentación, mataderos, salas de despiece, granjas, industria láctea.</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-recycle icon"></i>Orgánicos y biodegradables.</li>
+                                        <li><i class="fas fa-vial icon"></i>Tendencia a acidificación y fermentación.</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-exclamation-triangle icon"></i>Materiales groseros (restos de carne, tripas).</li>
+                                        <li><i class="fas fa-oil-can icon"></i>Alta carga en grasas.</li>
+                                        <li><i class="fas fa-tint icon"></i>Sangre con enorme carga orgánica.</li>
+                                        <li><strong>Parámetros:</strong> DQO, DBO, SS, aceites y grasas.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-shoe-prints icon text-yellow-800"></i>Curtido</strong></td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-atom icon"></i>Emplea taninos y sales de cromo.</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-recycle icon"></i>Tratables biológicamente.</li>
+                                        <li><i class="fas fa-plus-circle icon"></i>Requieren precipitación de cromo.</li>
+                                    </ul>
+                                </td>
+                                <td><strong>Parámetros:</strong> DQO, DBO, SS, aceites, grasas y cromo trivalente.</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-tshirt icon text-blue-500"></i>Textil</strong></td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-info-circle icon"></i>Muy diversa.</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-cubes icon"></i>SS, grasas, sales orgánicas.</li>
+                                        <li><i class="fas fa-palette icon"></i>Tintes y colorantes.</li>
+                                        <li><i class="fas fa-soap icon"></i>Detergentes (en lavanderías).</li>
+                                    </ul>
+                                </td>
+                                <td><strong>Parámetros:</strong> DQO, DBO y concentración del resto de sustancias.</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-scroll icon text-orange-500"></i>Papelera</strong></td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-columns icon"></i>Distinción entre pulpa y papel.</li>
+                                        <li><i class="fas fa-wind icon"></i>Efluentes de blanqueo, lavado y condensado.</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-cubes icon"></i>Alta cantidad de sólidos insolubles (10-30% no sedimentables).</li>
+                                        <li><i class="fas fa-ban icon"></i>Resistente a procesos biológicos.</li>
+                                    </ul>
+                                </td>
+                                <td><strong>Parámetros:</strong> Alta DBO y DQO.</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-gas-pump icon text-black"></i>Petróleo</strong></td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-cogs icon"></i>Producción, transporte, refinerías, petroquímica.</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-flask icon"></i>Muy diversos: sosa, sulfuros, fenoles, parafinas, alcoholes pesados, benceno, cianuros, ácidos orgánicos, etc.</li>
+                                    </ul>
+                                </td>
+                                <td>Amplia gama de contaminantes tóxicos.</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-tools icon text-gray-600"></i>Acero</strong></td>
+                                <td>-</td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-atom icon"></i>Amoniaco, hierro, cinc, plomo.</li>
+                                        <li><i class="fas fa-vial icon"></i>Ácido sulfúrico, aceites, SS, etc.</li>
+                                    </ul>
+                                </td>
+                                <td>Metales pesados y compuestos químicos variados.</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-car icon text-red-600"></i>Automoción</strong></td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-wrench icon"></i>Fabricación, talleres, chapa y pintura, limpieza.</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-weight-hanging icon"></i>Metales pesados (plomo, cromo).</li>
+                                        <li><i class="fas fa-soap icon"></i>Detergentes, grasas, SS, hidrocarburos.</li>
+                                    </ul>
+                                </td>
+                                <td>Mezcla de contaminantes orgánicos e inorgánicos.</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-paint-roller icon text-purple-600"></i>Tratamiento de Superficies</strong></td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-layer-group icon"></i>Recubrimiento de metales para mejorar resistencia y estética.</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-weight-hanging icon"></i>Elevada carga en metales pesados (zinc, níquel, cromo hexavalente).</li>
+                                        <li><i class="fas fa-atom icon"></i>Cianuros y fluoruros.</li>
+                                    </ul>
+                                </td>
+                                <td>Alta toxicidad por metales pesados y cianuros.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Características de los efluentes -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-vial"></i></div>
+                <h2>4. Características de los efluentes</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tags icon text-blue-600"></i>Clasificación por Contaminantes</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Se pueden <strong><u>clasificar en función de los contaminantes</u></strong> que contienen:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-flask icon text-purple-600"></i><span class="definition-pill"><strong>Químicos</strong></span>, tanto productos químicos <u>orgánicos</u> como <u>inorgánicos</u>.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-recycle icon text-gray-500"></i>Los <strong>primeros</strong> disminuyen el <u>oxígeno</u> por la <u>degradación biológica</u> de esos compuestos.</p></li>
+                                                <li><p><i class="fas fa-atom icon text-gray-500"></i>Y los <strong>segundos</strong>, aunque también pueden disminuir el <u>oxígeno por oxidación</u>, el resultado más importante es su posible <u>efecto tóxico</u>.</p></li>
+                                                <li><p><i class="fas fa-weight-hanging icon text-red-500"></i>Los <strong><u>iones de metales pesados</u></strong> es otra importante parte de este grupo, son <strong><u>tóxicos</u></strong> para los seres humanos: <u>mercurio</u>, <u>arsénico</u>, <u>cobre</u>, <u>níquel</u>, <u>cromo</u>, <u>plomo</u>, <u>cadmio</u>, <u>hierro</u>, <u>aluminio</u>, etc.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-ruler-combined icon text-orange-600"></i><span class="definition-pill"><strong>Físicos</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-thermometer-half icon text-gray-500"></i>Cambios <strong>térmicos</strong>.</p></li>
+                                                <li><p><i class="fas fa-palette icon text-gray-500"></i><strong>Color</strong>.</p></li>
+                                                <li><p><i class="fas fa-eye-slash icon text-gray-500"></i><strong>Turbidez</strong>.</p></li>
+                                                <li><p><i class="fas fa-soap icon text-gray-500"></i><strong>Espumas</strong>.</p></li>
+                                                <li><p><i class="fas fa-radiation-alt icon text-gray-500"></i><strong>Radioactividad</strong>.</p></li>
+                                                <li><p><i class="fas fa-cubes icon text-gray-500"></i>Y <strong>sólidos gruesos</strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-bacterium icon text-red-700"></i><span class="definition-pill"><strong>Biológicos</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-medkit icon text-gray-500"></i>Son los <strong><u>responsables de la transmisión de enfermedades</u></strong> en las aguas de abastecimiento como el <u>cólera</u> o las <u>fiebres tifoideas</u>.</p></li>
+                                                <li><p><i class="fas fa-shield-alt icon text-gray-500"></i><strong><u>Inusual</u></strong> en <u>países desarrollados</u>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-recycle icon text-green-700"></i>Clasificación por Tratamiento</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Otra forma de clasificarlos es en <strong><u>función de los tratamientos</u></strong> que pueden eliminarlos:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-compress-arrows-alt icon text-gray-500"></i><strong>Sustancias insolubles</strong> que pueden separarse físicamente con o sin floculación (<u>grasas flotantes</u> y <u>SS</u>).</p></li>
+                                    <li><p><i class="fas fa-magic icon text-gray-500"></i><strong>Sustancias orgánicas</strong> separables por adsorción (<u>tintes</u>, <u>detergentes</u>, <u>derivados clorados</u>, etc.).</p></li>
+                                    <li><p><i class="fas fa-arrow-down icon text-gray-500"></i><strong>Sustancias separables</strong> por precipitación (<u>metales</u>, <u>fosfatos</u>, <u>sulfatos</u>, <u>fluoruros</u>).</p></li>
+                                    <li><p><i class="fas fa-wind icon text-gray-500"></i><strong>Sustancias separables</strong> por aireación (<u>sustancias volátiles</u>, <u>amoniaco</u>, <u>fenoles</u>, <u>hidrocarburos aromáticos</u>, etc.).</p></li>
+                                    <li><p><i class="fas fa-flask icon text-gray-500"></i><strong>Ácidos y bases minerales</strong> (<u>ácido clorhídrico</u>, <u>ácido sulfhídrico</u>).</p></li>
+                                    <li><p><i class="fas fa-sync-alt icon text-gray-500"></i><strong>Sustancias que se pueden concentrar</strong> por ósmosis inversa o intercambio iónico (<u>sales de ácidos y bases fuertes</u> y <u>compuestos ionizados</u>).</p></li>
+                                    <li><p><i class="fas fa-leaf icon text-gray-500"></i><strong>Sustancias biodegradables</strong> (<u>azúcares</u>, <u>proteínas</u>).</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5: Selección de parámetros contaminantes -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-tasks"></i></div>
+                <h2>5. Selección de parámetros contaminantes a efectos de establecimiento de niveles de emisión</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-industry icon text-blue-600"></i>El <strong><u>tipo de actividad industrial</u></strong> y los <strong><u>procesos productivos</u></strong> son <strong><u>fundamentales</u></strong> para <u>establecer los parámetros característicos</u> de los efluentes.</p></li>
+                    <li><p><i class="fas fa-check-double icon text-green-600"></i>Y para <strong><u>comprobar si cumplen con los límites</u></strong> establecidos por la <u>legislación para los contaminantes</u>.</p></li>
+                    <li><p><i class="fas fa-vial icon text-purple-600"></i>Las <strong><u>muestras que se tomen</u></strong> para determinar los contaminantes deberán ser <strong><u>características de la actividad industrial</u></strong>, tomándolas cuando <u>todos los procesos productivos</u> de la fábrica están en <u>funcionamiento</u>.</p></li>
+                    <li><p><i class="fas fa-book-open icon text-cyan-700"></i>Como norma general, se intentará <strong><u>conocer el proceso de fabricación</u></strong> y las <strong><u>materias primas</u></strong> que se utilizan.</p></li>
+                    <li><p><i class="fas fa-file-signature icon text-orange-600"></i>Para ello, en múltiples <span class="law-pill"><strong>normativas de vertido</strong></span>, junto con la <u>solicitud de autorización de vertido</u> se debe adjuntar una <strong><u>relación de las materias primas y finales</u></strong> de la industria, así como las <u>cantidades de las mismas</u>.</p></li>
+                    <li><p><i class="fas fa-search icon text-indigo-600"></i>Se deben <strong><u>determinar cuáles son los contaminantes</u></strong> que aparecerán en el vertido.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-exclamation-triangle icon text-red-600"></i>Hay que tener en cuenta que en los <strong><u>procesos de limpieza</u></strong> se produce una <strong><u>gran parte de la contaminación</u></strong> de una industria, utilizando en muchas ocasiones <u>productos especialmente agresivos</u>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-soap icon text-gray-500"></i>Por ejemplo, para <u>eliminar la grasa</u> se recurre mucho a la <strong>sosa</strong> que produce un <u>elevado pH</u> en los efluentes.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 6: Tecnologías disponibles para reducir la contaminación -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-tools"></i></div>
+                <h2>6. Tecnologías disponibles para reducir la contaminación de efluentes: medidas internas y tratamiento de efluentes</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-arrow-down icon text-blue-600"></i>La <strong><u>reducción de la contaminación</u></strong> de efluentes lleva <strong><u>3 fases</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-list-ol icon text-purple-600"></i><span class="definition-pill"><strong>Fase 1</strong></span>, <strong><u>revisión e inventario</u></strong> de todos los <u>efluentes de la planta</u> con <u>determinación de caudales y cargas contaminantes</u>.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-tasks icon text-orange-600"></i><span class="definition-pill"><strong>Fase 2</strong></span>, <strong><u>revisión de los datos</u></strong> obtenidos en la fase 1 para <strong><u>establecer objetivos de reducción</u></strong> de la contaminación posible, como son:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-recycle icon"></i>Incrementar <strong>reciclaje</strong> en los sistemas de aguas de refrigeración.</p></li>
+                                            <li><p><i class="fas fa-undo icon"></i><strong>Recuperación</strong> de productos químicos.</p></li>
+                                            <li><p><i class="fas fa-exchange-alt icon"></i><strong>Sustitución</strong> de productos por otros menos contaminantes.</p></li>
+                                            <li><p><i class="fas fa-redo-alt icon"></i><strong>Reutilización</strong> de aguas.</p></li>
+                                            <li><p><i class="fas fa-wrench icon"></i><strong>Eliminación de escapes</strong> y mejora del mantenimiento.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-calculator icon text-green-600"></i><span class="definition-pill"><strong>Fase 3</strong></span>, <strong><u>evaluación de los ahorros potenciales</u></strong> considerando la <u>inversión</u> y los <u>costes de explotación</u> de una posible <u>planta de tratamiento separada</u>.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-balance-scale icon"></i><strong><u>Comparando situación actual</u></strong> con <strong><u>situación nueva</u></strong> con <u>efluente con menos caudal</u> y <u>menos carga contaminante</u> y <u>planta de tratamiento</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-lightbulb icon text-cyan-700"></i>Para poder llevar a cabo una <strong><u>reducción de la contaminación en origen</u></strong>, se requiere un <strong><u>gran conocimiento</u></strong> de los <u>procesos</u> y de las <u>posibilidades de modificación</u>.</p></li>
+                    <li><p><i class="fas fa-gavel icon text-amber-800"></i>En este sentido las <span class="actor-pill"><strong>directrices de la UE</strong></span> obligan al <strong><u>empleo de las mejores técnicas limpias disponibles</u></strong> y al objetivo de tender a “<strong><u>descarga cero</u></strong>”.</p></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <!-- Script para la funcionalidad desplegable -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Selecciona todos los elementos que servirán como disparadores
+            const triggers = document.querySelectorAll('.collapsible-trigger');
+
+            // Itera sobre cada disparador para añadirle un detector de clics
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', function (event) {
+                    // Evita que el clic en un desplegable anidado afecte a su contenedor padre
+                    event.stopPropagation();
+                    
+                    // Encuentra el elemento de contenido que sigue inmediatamente al disparador
+                    const content = this.nextElementSibling;
+                    
+                    // Alterna la clase 'open' en el disparador (para rotar el icono)
+                    this.classList.toggle('open');
+                    
+                    // Verifica que el siguiente elemento sea un contenido desplegable y alterna la clase 'hidden'
+                    if (content && content.classList.contains('collapsible-content')) {
+                        content.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
