@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Principios generales de la administración pública del agua</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-landmark"></i> MEA1T8. Principios generales de la administración pública del agua <i class="fas fa-gavel"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Principios generales de la administración pública del agua -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-info-circle"></i></div>
+                <h2>1. Principios generales de la administración pública del agua</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-gavel icon text-amber-800"></i>El <span class="law-pill"><strong>TRLA</strong></span> establece los siguientes <strong><u>principios rectores de la gestión</u></strong> en materia de aguas para el ejercicio de las funciones del <span class="actor-pill">Estado</span>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-tasks icon text-blue-500"></i><span class="principle-pill"><strong>Unidad de gestión</strong></span>, <span class="principle-pill"><strong>tratamiento integral</strong></span>, <span class="principle-pill"><strong>economía del agua</strong></span>, <span class="principle-pill"><strong>desconcentración</strong></span>, <span class="principle-pill"><strong>descentralización</strong></span>, <span class="principle-pill"><strong>coordinación</strong></span>, <span class="principle-pill"><strong>eficacia</strong></span> y <span class="principle-pill"><strong>participación de los usuarios</strong></span>.</p></li>
+                                <li><p><i class="fas fa-recycle icon text-purple-500"></i><strong><u>Respeto a la unidad</u></strong> de la <u>cuenca hidrográfica</u>, de los <u>sistemas hidráulicos</u> y del <u>ciclo hidrológico</u>.</p></li>
+                                <li><p><i class="fas fa-leaf icon text-green-500"></i><strong><u>Compatibilidad de la gestión pública del agua</u></strong> con la <u>ordenación del territorio</u>, la <u>conservación y protección del medio ambiente</u> y la <u>restauración de la naturaleza</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>Por tanto, se utiliza el <span class="principle-pill"><strong>principio de unidad de cuenca hidrográfica</strong></span> como el <strong><u>criterio territorial de delimitación</u></strong> de competencias.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>Según la ley, la <span class="definition-pill"><strong>cuenca hidrográfica</strong></span> es el <strong><u>territorio</u></strong> en el que las <u>aguas fluyen al mar</u> a través de una <u>red de cauces secundarios que convergen en un cauce principal único</u>.</p></li>
+                                <li><p><i class="fas fa-lock icon text-gray-500"></i>La <span class="definition-pill">cuenca hidrográfica</span>, como una <u>unidad de gestión del recurso</u>, se considera <strong><u>indivisible</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-map-marked-alt icon text-cyan-600"></i>La <span class="definition-pill"><strong>Demarcación Hidrográfica</strong></span> según la ley es la <strong><u>zona terrestre y marina</u></strong> compuesta por <u>una o varias cuencas hidrográficas vecinas</u> y las <u>aguas de transición, subterráneas y costeras</u> asociadas a dichas cuencas.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-sitemap icon text-gray-500"></i>La <span class="definition-pill">demarcación hidrográfica</span> es la <strong><u>principal unidad</u></strong> a efectos de <u>gestión de cuencas</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-orange-600"></i>Las <strong><u>demarcaciones hidrográficas competencia exclusiva de las <span class="actor-pill">CCAA</span></u></strong> son (<span class="pill-blue">13</span>):</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-map-marker-alt icon text-gray-500"></i>Cuencas internas de <strong><u>Cataluña</u></strong>, <strong><u>Galicia- Costa</u></strong>, cuenca <strong><u>Mediterránea Andaluza</u></strong>, DH del <strong><u>Tinto, Odiel y Piedras</u></strong>, DH del <strong><u>Guadalete-Barbate</u></strong>, <strong><u>Baleares</u></strong>.</p></li>
+                                <li><p><i class="fas fa-map-marker-alt icon text-gray-500"></i>Y las <span class="pill-blue"><strong>7</strong></span> <strong><u>Canarias</u></strong> (una por cada isla).</p></li>
+                                <li><p><i class="fas fa-handshake icon text-gray-500"></i>El <span class="actor-pill"><strong>País Vasco</strong></span> tiene <strong><u>competencias compartidas</u></strong> con el <span class="actor-pill">Estado</span> en la <u>DH del Cantábrico Oriental</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-landmark icon text-indigo-600"></i>El <strong><u>resto de cuencas</u></strong> están organizadas en <span class="pill-blue"><strong>12</strong></span> <strong><u>demarcaciones hidrográficas competencia de la <span class="actor-pill">AGE</span></u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-water icon text-blue-500"></i><strong><u>Cuencas intercomunitarias</u></strong> situadas en territorio español (<span class="pill-blue">4</span>):</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-map-pin icon text-gray-400"></i>DH <strong><u>Guadalquivir</u></strong>, DH <strong><u>Segura</u></strong>, DH <strong><u>Júcar</u></strong> y DH <strong><u>Cantábrico Occidental</u></strong> (Asturias y Cantabria aproximadamente).</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-globe-europe icon text-green-500"></i><strong><u>Parte española de las cuencas hidrográficas compartidas</u></strong> con otros países (<span class="pill-blue">8</span>):</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-map-pin icon text-gray-400"></i>DH <strong><u>Miño-Sil</u></strong>, DH <strong><u>Cantábrico Oriental</u></strong>, DH <strong><u>Duero</u></strong>, DH <strong><u>Tajo</u></strong>, DH <strong><u>Guadiana</u></strong>, DH <strong><u>Ebro</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-map-pin icon text-gray-400"></i>DH <strong><u>Ceuta</u></strong> y DH <strong><u>Melilla</u></strong> (adscritas a la CH del Guadalquivir).</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 2: El Consejo Nacional del Agua -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-university"></i></div>
+                <h2>2. El Consejo Nacional del Agua</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i><span class="definition-pill"><strong>Órgano consultivo superior</strong></span> en la materia creado por el <span class="law-pill"><strong>TRLA</strong></span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-users-cog icon text-purple-600"></i>Que <strong><u>integra</u></strong> a:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-landmark icon text-gray-500"></i>La <span class="actor-pill"><strong>AGE</strong></span>.</p></li>
+                                <li><p><i class="fas fa-map-marked-alt icon text-gray-500"></i><span class="actor-pill"><strong>CCAA</strong></span>.</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i><span class="actor-pill"><strong>Organismos de cuenca</strong></span>.</p></li>
+                                <li><p><i class="fas fa-city icon text-gray-500"></i><span class="actor-pill"><strong>Entes locales</strong></span> a través de la <u>asociación de ámbito estatal con mayor implantación</u>.</p></li>
+                                <li><p><i class="fas fa-leaf icon text-gray-500"></i><span class="actor-pill"><strong>Entidades sin fines lucrativos</strong></span> de ámbito estatal cuyo objeto esté constituido por la <u>defensa de intereses ambientales</u>.</p></li>
+                                <li><p><i class="fas fa-briefcase icon text-gray-500"></i><span class="actor-pill"><strong>Organizaciones profesionales y económicas</strong></span> más representativas de ámbito estatal <u>relacionadas con el agua</u>.</p></li>
+                                <li><p><i class="fas fa-industry icon text-gray-500"></i>Y las <span class="actor-pill"><strong>organizaciones empresariales y sindicales</strong></span> más representativas en el <u>ámbito estatal</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-file-alt icon text-orange-600"></i><strong><u>Informa preceptivamente</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-map icon text-gray-500"></i>El <span class="plan-pill"><strong>Plan Hidrológico Nacional</strong></span> y los <span class="plan-pill"><strong>Planes Hidrológicos de Cuenca</strong></span> antes de su aprobación por el <span class="actor-pill">Gobierno</span>.</p></li>
+                                <li><p><i class="fas fa-book-open icon text-gray-500"></i><strong><u>Disposiciones de carácter general</u></strong> de aplicación en todo el territorio nacional relativas a la <u>protección de la calidad de las aguas</u> y a la <u>ordenación del DPH</u>.</p></li>
+                                <li><p><i class="fas fa-project-diagram icon text-gray-500"></i>Los <strong><u>planes y proyectos de interés general</u></strong> de ordenación del territorio que afecten a la <u>planificación hidrológica</u> o a los <u>usos del agua</u>.</p></li>
+                                <li><p><i class="fas fa-comments icon text-gray-500"></i>Las <strong><u>cuestiones comunes a dos o más organismos de cuenca</u></strong> en relación con los <u>aprovechamientos del DPH</u>.</p></li>
+                                <li><p><i class="fas fa-question-circle icon text-gray-500"></i>Informará también <strong><u>todas aquellas cuestiones</u></strong> formuladas por el <span class="actor-pill">Gobierno</span> o las <span class="actor-pill">CCAA</span> relacionadas con el <span class="definition-pill">DPH</span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 3: Los organismos de cuenca -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-water"></i></div>
+                <h2>3. Los organismos de cuenca: configuración y funciones. Atribuciones y cometidos. Órganos de gobierno, administración y cooperación. Comité de autoridades competentes de las Demarcaciones Hidrográficas intercomunitarias. Hacienda y patrimonio</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Los <span class="actor-pill"><strong>organismos de cuenca</strong></span>, en <u>cuencas intercomunitarias</u>, con la denominación de <span class="definition-pill"><strong>Confederaciones Hidrográficas</strong></span>, son <strong><u>organismos autónomos</u></strong> adscritos al <span class="actor-pill">MITECO</span> a través de la <span class="actor-pill">Dirección General del Agua</span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-purple-600"></i>Disponen de <strong><u>autonomía</u></strong> para:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong><u>Administrar los intereses</u></strong> que les sean confiados.</p></li>
+                                <li><p><i class="fas fa-exchange-alt icon text-gray-500"></i>Para <strong><u>adquirir y enajenar bienes y derechos</u></strong>.</p></li>
+                                <li><p><i class="fas fa-file-signature icon text-gray-500"></i>Para <strong><u>contratar y obligarse</u></strong>.</p></li>
+                                <li><p><i class="fas fa-gavel icon text-gray-500"></i>Y para <strong><u>ejercer ante los Tribunales</u></strong> todo género de acciones.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-flag-checkered icon text-orange-600"></i>Sus <strong><u>actos y resoluciones</u></strong> ponen <strong><u>fin a la vía administrativa</u></strong>.</p></li>
+                    <li><p><i class="fas fa-stream icon text-cyan-600"></i>Hay <span class="pill-blue"><strong>9</strong></span> <strong><u>Confederaciones Hidrográficas</u></strong>: <u>Cantábrico</u>, <u>Miño-Sil</u>, <u>Duero</u>, <u>Tajo</u>, <u>Guadiana</u>, <u>Guadalquivir</u>, <u>Segura</u>, <u>Júcar</u> y <u>Ebro</u>.</p></li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-clipboard-list icon text-green-700"></i>Funciones</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Sus <strong><u>funciones</u></strong> son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-file-alt icon text-gray-500"></i>La <strong><u>elaboración, seguimiento y revisión</u></strong> del <span class="plan-pill">Plan Hidrológico de Cuenca</span>.</p></li>
+                                    <li><p><i class="fas fa-user-shield icon text-gray-500"></i>La <strong><u>administración y control del DPH</u></strong> y los aprovechamientos.</p></li>
+                                    <li><p><i class="fas fa-stamp icon text-gray-500"></i>El <strong><u>otorgamiento de concesiones y autorizaciones</u></strong> referentes al <span class="definition-pill">DPH</span>, salvo las actuaciones de Interés General de Estado que corresponden al <span class="actor-pill">MITECO</span> a través de la <span class="actor-pill">Dirección General del Agua</span>.</p></li>
+                                    <li><p><i class="fas fa-search icon text-gray-500"></i>La <strong><u>inspección y vigilancia</u></strong> del cumplimiento de las <u>concesiones y autorizaciones</u> relativas al <span class="definition-pill">DPH</span>.</p></li>
+                                    <li><p><i class="fas fa-chart-bar icon text-gray-500"></i>La realización de <strong><u>aforos</u></strong>, <strong><u>estudios de hidrología</u></strong>, <strong><u>información sobre crecidas</u></strong> y <strong><u>Control de la calidad de las aguas</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-hard-hat icon text-gray-500"></i>El <strong><u>proyecto, la construcción y explotación</u></strong> de las <u>obras con cargo a sus fondos</u> y las que les sean <u>encomendadas por el Estado</u>.</p></li>
+                                    <li><p><i class="fas fa-handshake icon text-gray-500"></i>Las <strong><u>derivadas de convenios</u></strong> con <span class="actor-pill">CCAA</span>, <span class="actor-pill">entidades locales</span>, <span class="actor-pill">entidades públicas o privadas</span> o <span class="actor-pill">particulares</span>.</p></li>
+                                    <li><p><i class="fas fa-bullseye icon text-gray-500"></i>La <strong><u>definición de objetivos y programas de calidad</u></strong> de acuerdo con la <u>planificación hidrológica</u>.</p></li>
+                                    <li><p><i class="fas fa-lightbulb icon text-gray-500"></i>La <strong><u>realización de planes y programas</u></strong> para una <u>adecuada gestión de las demandas</u>, promoviendo el <u>ahorro y la eficiencia</u> de los diferentes usos del agua mediante el <u>aprovechamiento de las aguas subterráneas</u>.</p></li>
+                                    <li><p><i class="fas fa-headset icon text-gray-500"></i>La <strong><u>prestación de servicios técnicos y el asesoramiento</u></strong> a la <span class="actor-pill">AGE</span>, <span class="actor-pill">CCAA</span>, <span class="actor-pill">corporaciones locales</span> y <span class="actor-pill">entidades públicas o privadas</span> o <span class="actor-pill">particulares</span> que lo soliciten.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-sitemap icon text-indigo-700"></i>Órganos</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Las <span class="actor-pill">Confederaciones Hidrográficas</span> tienen sus propios <strong><u>órganos de gobierno, de gestión, de planificación y de cooperación</u></strong>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-user-tie icon text-purple-600"></i>De la <strong><u>Presidencia</u></strong> dependen:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i><strong><u>Comisaría de Aguas</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-tools icon text-gray-500"></i><strong><u>Dirección Técnica</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-user-edit icon text-gray-500"></i><strong><u>Secretaría General</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-map icon text-gray-500"></i>Y <strong><u>Oficina de Planificación Hidrológica</u></strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-landmark icon text-orange-600"></i>Son <strong><u>órganos de gobierno</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-users icon text-gray-500"></i>La <strong><u>Junta de Gobierno</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-user-tie icon text-gray-500"></i>Y el <strong><u>Presidente</u></strong> que es nombrado y cesado por <span class="actor-pill">Consejo de Ministros</span> a propuesta del <span class="actor-pill">Ministro para la Transición Ecológica</span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-cogs icon text-cyan-600"></i>Son <strong><u>órganos de gestión</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-users icon text-gray-500"></i>La <strong><u>Asamblea de usuarios</u></strong>, constituida por todos los que forman parte de las <u>juntas de explotación</u>.</p></li>
+                                    <li><p><i class="fas fa-sync-alt icon text-gray-500"></i>Las <strong><u>Juntas de explotación</u></strong>, órganos que <u>coordinan la explotación</u> de las obras hidráulicas.</p></li>
+                                    <li><p><i class="fas fa-tint icon text-gray-500"></i>La <strong><u>Comisión de desembalse</u></strong>, órgano encargado de <u>deliberar y formular propuestas</u> para <u>llenado y vaciado de embalses y acuíferos</u>.</p></li>
+                                    <li><p><i class="fas fa-hard-hat icon text-gray-500"></i>Y las <strong><u>Juntas de obras</u></strong>, órganos de <u>futuros usuarios de las obras</u> para estar <u>informados de sus incidencias</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-tasks icon text-green-600"></i>El <strong><u>órgano de participación y planificación</u></strong> es el <span class="actor-pill"><strong>Consejo del Agua de la demarcación</strong></span>, que <strong><u>eleva al <span class="actor-pill">Gobierno</span></u></strong> por medio del <span class="actor-pill">MITECO</span> el <span class="plan-pill">Plan Hidrológico de Cuenca</span> para su aprobación.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-handshake icon text-blue-800"></i>El <strong><u>órgano de cooperación</u></strong> para la protección de las aguas es el <span class="actor-pill"><strong>Comité de Autoridades Competentes de la demarcación</strong></span>, con las siguientes características:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-users-cog icon text-gray-500"></i><strong><u>Composición</u></strong>: representantes de la <span class="actor-pill">AGE</span>, las <span class="actor-pill">CCAA</span>, y las <span class="actor-pill">entidades locales</span>, cuyo territorio forme parte total o parcialmente de la demarcación hidrográfica. El nº de representantes de la <span class="actor-pill">AGE</span> no será superior al de las <span class="actor-pill">CCAA</span>.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-clipboard-list icon text-gray-500"></i><strong><u>Funciones</u></strong>:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-hands-helping icon text-gray-400"></i><strong><u>Favorecer la cooperación</u></strong> entre administraciones en la elaboración de planes y programas.</p></li>
+                                                <li><p><i class="fas fa-file-signature icon text-gray-400"></i><strong><u>Impulsar la adopción de acuerdos y convenios</u></strong> entre administraciones.</p></li>
+                                                <li><p><i class="fas fa-search icon text-gray-400"></i><strong><u>Supervisar la actualización</u></strong> del <span class="doc-pill">Registro de zonas protegidas</span>.</p></li>
+                                                <li><p><i class="fas fa-paper-plane icon text-gray-400"></i><strong><u>Proporcionar a la <span class="actor-pill">UE</span></u></strong> a través del <span class="actor-pill">MITECO</span> la <u>información de la demarcación hidrográfica</u> que se requiera.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><p><i class="fas fa-gavel icon text-gray-500"></i><strong><u>Funcionamiento</u></strong>: actuará ordinariamente en <strong><u>pleno</u></strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-gem icon text-indigo-800"></i>Hacienda y patrimonio</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Los <span class="actor-pill">organismos de cuenca</span> cuentan con un <strong><u>patrimonio propio</u></strong> constituido por:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-history icon text-gray-500"></i>El que tuvieran <strong><u>antes del <span class="law-pill">TRLA</span></u></strong>.</p></li>
+                                    <li><p><i class="fas fa-plus-circle icon text-gray-500"></i><strong><u>Adquieran con sus fondos</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-gift icon text-gray-500"></i>O <strong><u>reciban</u></strong> de las <u>administraciones, entidades públicas y privadas o de particulares</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-link icon text-purple-600"></i>También se le pueden <strong><u>adscribir bienes</u></strong> por parte del <span class="actor-pill">Estado</span> y las <span class="actor-pill">CCAA</span> para el cumplimiento de sus fines.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-gavel icon text-gray-500"></i>Estos bienes adscritos <strong><u>conservarán su calificación jurídica</u></strong>, correspondiendo tan solo al <span class="actor-pill">organismo de cuenca</span> su <u>utilización, administración y explotación</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-coins icon text-yellow-600"></i>Los <strong><u>ingresos</u></strong> de los <span class="actor-pill">organismos de cuenca</span> son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-money-bill-wave icon text-gray-500"></i>Los <strong><u>productos y rentas</u></strong> de su patrimonio.</p></li>
+                                    <li><p><i class="fas fa-tools icon text-gray-500"></i>Los de <strong><u>explotación de las obras</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-file-invoice-dollar icon text-gray-500"></i>Las <strong><u>remuneraciones</u></strong> por la <u>redacción de proyectos, dirección y ejecución de obras</u>.</p></li>
+                                    <li><p><i class="fas fa-landmark icon text-gray-500"></i>Las <strong><u>asignaciones presupuestarias</u></strong> de la <span class="actor-pill">Administración</span>.</p></li>
+                                    <li><p><i class="fas fa-receipt icon text-gray-500"></i>Los procedentes de <strong><u>recaudación de cánones</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-users icon text-gray-500"></i><strong><u>Aportaciones</u></strong> de los usuarios.</p></li>
+                                    <li><p><i class="fas fa-plus icon text-gray-500"></i>O <strong><u>cualquier otra percepción</u></strong> legalmente autorizada.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Régimen jurídico de las comunidades de usuarios -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-balance-scale"></i></div>
+                <h2>4. Régimen jurídico de las comunidades de usuarios. Derechos y obligaciones. Reparto y distribución del agua</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-gavel icon text-purple-600"></i>Régimen jurídico</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Son <strong><u>beneficiarios del agua y otros bienes de DPH</u></strong> de una misma <u>toma o concesión</u> (p.e. <span class="actor-pill">comunidades de regantes</span>).</p></li>
+                        <li><p><i class="fas fa-building icon text-indigo-600"></i>Son <span class="definition-pill"><strong>corporaciones de derecho público</strong></span> adscritas al <span class="actor-pill">organismo de cuenca</span> con sus propios <u>estatutos</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-sitemap icon text-orange-600"></i>Tienen una <strong><u>organización mínima</u></strong> constituida por:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-users icon text-gray-500"></i><strong><u>Junta general o Asamblea</u></strong>: todos los <u>usuarios</u>, <u>órgano soberano</u>, le corresponden todas las <u>facultades no atribuidas a otros órganos</u>.</p></li>
+                                    <li><p><i class="fas fa-user-tie icon text-gray-500"></i><strong><u>Junta de gobierno</u></strong>: <u>elegida por la Junta general</u>, es el <u>órgano ejecutivo</u>.</p></li>
+                                    <li><p><i class="fas fa-balance-scale-right icon text-gray-500"></i><strong><u>Jurado</u></strong>: debe <u>decidir en cuestiones entre usuarios</u>, <u>imponer sanciones o indemnizaciones</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tasks icon text-green-700"></i>Derechos y obligaciones</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-file-signature icon text-blue-600"></i>Los <span class="actor-pill">usuarios</span> <strong><u>aprueban los Estatutos</u></strong> que regulan la <u>organización de la comunidad</u> y la <u>explotación de los bienes hidráulicos</u>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-edit icon text-gray-500"></i>El <span class="actor-pill">organismo de cuenca</span> solo podrá <strong><u>modificarlos</u></strong> previo <u>dictamen del <span class="actor-pill">Consejo de Estado</span></u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-hard-hat icon text-orange-600"></i>Las <span class="actor-pill">comunidades de usuario</span> están <strong><u>obligadas a realizar las obras</u></strong> que la <span class="actor-pill">administración</span> les ordene para <u>evitar el mal uso del agua</u> o el <u>deterioro del DPH</u>.</p></li>
+                        <li><p><i class="fas fa-check-double icon text-teal-600"></i>Los <strong><u>acuerdos de la Junta General y de la Junta de Gobierno</u></strong> en el ámbito de sus competencias son <strong><u>ejecutivos</u></strong>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-landmark icon text-purple-600"></i>Las <span class="actor-pill">comunidades de usuarios</span> se <strong><u>benefician</u></strong> de:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-gavel icon text-gray-500"></i>La <strong><u>expropiación forzosa</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-link icon text-gray-500"></i>Y de la <strong><u>imposición de servidumbres</u></strong> que exijan sus aprovechamientos.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tint icon text-cyan-700"></i>Reparto y distribución del agua</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Las <strong><u>funciones más importantes</u></strong> de una <span class="actor-pill">comunidad de usuarios</span> son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-balance-scale-left icon text-gray-500"></i>La <strong><u>justa distribución del agua</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-tools icon text-gray-500"></i>Y la <strong><u>conservación de las obras</u></strong> necesarias para su reparto.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-search icon text-green-600"></i>Lo cual se ejerce con <strong><u>tareas de control, seguimiento y vigilancia</u></strong>.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Script para la funcionalidad desplegable -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Selecciona todos los elementos que servirán como disparadores
+            const triggers = document.querySelectorAll('.collapsible-trigger');
+
+            // Itera sobre cada disparador para añadirle un detector de clics
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', function (event) {
+                    // Evita que el clic en un desplegable anidado afecte a su contenedor padre
+                    event.stopPropagation();
+                    
+                    // Encuentra el elemento de contenido que sigue inmediatamente al disparador
+                    const content = this.nextElementSibling;
+                    
+                    // Alterna la clase 'open' en el disparador (para rotar el icono)
+                    this.classList.toggle('open');
+                    
+                    // Verifica que el siguiente elemento sea un contenido desplegable y alterna la clase 'hidden'
+                    if (content && content.classList.contains('collapsible-content')) {
+                        content.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
