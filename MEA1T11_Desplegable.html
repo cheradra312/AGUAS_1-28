@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Hidrología</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-water"></i> MEA1T11. Hidrología <i class="fas fa-recycle"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Hidrología -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-book-open"></i></div>
+                <h2>1. Hidrología</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-purple-600"></i>La <span class="definition-pill"><strong>hidrología</strong></span> estudia el <strong><u>ciclo del agua en la naturaleza</u></strong> y su <u>circulación superficial y subterránea</u>.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 2: Ciclo hidrológico -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-recycle"></i></div>
+                <h2>2. Ciclo hidrológico</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>Es el <strong><u>movimiento continuo de agua</u></strong> entre la <u>Tierra</u> y la <u>atmósfera</u>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-cloud-upload-alt icon text-gray-500"></i>Se produce <strong><u>vapor de agua</u></strong> por <u>evaporación</u> en la superficie terrestre y en las masas de agua, y por <u>transpiración</u> de los seres vivos.</p></li>
+                                <li><p><i class="fas fa-cloud-rain icon text-gray-500"></i>Este vapor <strong><u>circula por la atmósfera y precipita</u></strong> en forma de <u>lluvia o nieve</u>.</p></li>
+                                <li><p><i class="fas fa-arrow-down icon text-gray-500"></i>Que primero es <strong><u>interceptada</u></strong> por la cubierta vegetal, luego <strong><u>cae al terreno</u></strong>, <strong><u>rellena las depresiones</u></strong> y se <strong><u>infiltra</u></strong> para <u>humedecer el suelo</u>, <u>proporcionar agua a las raíces</u> de las plantas o <u>recargar acuíferos</u>.</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>Cuando se supera la tasa de infiltración el resto <strong><u>discurre sobre la superficie como escorrentía</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-globe-americas icon text-purple-600"></i>En el ciclo hidrológico tiene una <strong><u>importancia fundamental la atmósfera</u></strong>, que desempeña, además del papel de <u>depósito de vapor de agua</u>, el de <u>elemento de transporte</u>, de <u>distribución</u> y de <u>captador de calor</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-ruler-combined icon text-orange-600"></i>Las <strong><u>magnitudes que intervienen</u></strong>, en mayor o menor medida, en el ciclo hidrológico son las siguientes:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-tint icon text-gray-500"></i><span class="definition-pill"><strong>Índices de humedad</strong></span>, el contenido de vapor de agua en la atmósfera es muy variable y se evalúa mediante índices como la <u>humedad absoluta</u>, la <u>humedad relativa</u>, la <u>tensión de vapor</u>, etc.</p></li>
+                                <li><p><i class="fas fa-snowflake icon text-gray-500"></i><span class="definition-pill"><strong>Enfriamiento del aire</strong></span>, para que existan precipitaciones tienen que producirse previamente en la atmósfera <u>condensaciones</u>, que se llevarán a efecto tras un <u>enfriamiento del aire húmedo</u> hasta alcanzar la <u>saturación</u>, o lo que es lo mismo la <u>tensión de vapor</u> tendrá que crecer hasta alcanzar el valor de la <u>tensión de vapor saturante</u>.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-cloud-showers-heavy icon text-gray-500"></i><span class="definition-pill"><strong>Precipitación</strong></span>, agua de procedencia atmosférica que cae sobre la superficie terrestre, bien en forma <strong><u>líquida</u></strong> (<u>llovizna, lluvias o chubascos</u>) o en forma <strong><u>sólida</u></strong> (<u>nieve o granizo</u>).</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-leaf icon text-green-400"></i>A veces se depositan en el suelo ciertas cantidades de agua por <u>condensación o sublimación</u> de vapor atmosférico sobre el mismo (<u>rocíos o escarchas</u>), en general son cantidades muy pequeñas que se evaporan o subliman rápidamente por lo que <u>ni se miden ni se computan</u> en el cálculo del balance hídrico. Sin embargo, estas precipitaciones, llamadas <span class="definition-pill"><strong>ocultas</strong></span>, tienen un <u>gran interés en agricultura</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li><p><i class="fas fa-sun icon text-gray-500"></i><span class="definition-pill"><strong>Evaporación</strong></span>, es el <u>volumen de agua que se evapora</u> del suelo y la cubierta vegetal.</p></li>
+                                <li><p><i class="fas fa-tree icon text-gray-500"></i><span class="definition-pill"><strong>Transpiración</strong></span>, es el <u>volumen de agua utilizado</u> por la vegetación.</p></li>
+                                <li><p><i class="fas fa-cloud-sun icon text-gray-500"></i><span class="definition-pill"><strong>Evapotranspiración</strong></span>, es la <u>suma del volumen de agua utilizado por la vegetación</u> (transpiración) y la que se <u>evapora directamente del suelo y de la cubierta vegetal</u> (evaporación).</p></li>
+                                <li><p><i class="fas fa-chart-line icon text-gray-500"></i><span class="definition-pill"><strong>Evapotranspiración potencial</strong></span>, es la <u>cantidad de agua transpirada por unidad de tiempo</u> por un <u>cultivo herbáceo de corta altura</u>, que <u>cubra completamente el suelo</u>, con <u>altura uniforme</u> y <u>nunca escaso de agua</u>. Es el valor que hubiese alcanzado la evapotranspiración si, permanentemente, se hubiera contado con la <u>humedad suficiente</u> para que la evapotranspiración fuese la <u>máxima posible</u> acorde con las condiciones climáticas.</p></li>
+                                <li><p><i class="fas fa-hand-holding-water icon text-gray-500"></i><span class="definition-pill"><strong>Intercepción</strong></span>, es el <u>agua almacenada sobre las hojas y tallos</u> de la cubierta vegetal. Cuando se llena este almacenamiento toda la precipitación alcanza el suelo. El volumen retenido como intercepción se <u>evapora rápidamente</u> al cesar la lluvia. La capacidad máxima de almacenamiento puede oscilar entre <span class="pill-blue">1</span> y <span class="pill-blue">5 mm</span>, según la cubierta vegetal existente sobre la cuenca.</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i><span class="definition-pill"><strong>Escorrentía</strong></span>, <u>flujo sobre el terreno del agua</u> que <u>excede la tasa de infiltración</u> del suelo una vez descontada la intercepción y la evapotranspiración.</p></li>
+                                <li><p><i class="fas fa-arrow-down icon text-gray-500"></i><span class="definition-pill"><strong>Infiltración</strong></span>, parte de la precipitación que <u>penetra en el suelo</u> constituyendo su <u>humedad</u>, <u>alimentando las raíces</u> y <u>filtrándose hacia estratos inferiores</u>.</p></li>
+                                <li><p><i class="fas fa-thermometer-half icon text-gray-500"></i><strong><u>Otras magnitudes climáticas</u></strong> son la <u>temperatura</u>, la <u>velocidad y dirección de los vientos</u>, y la <u>radiación solar</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 3: Redes de control y seguimiento -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-cogs"></i></div>
+                <h2>3. Red Integrada de Estaciones de Aforos (SAIH-ROEA), el Sistema Automático de Información de Calidad de las Aguas (SAICA) y las redes de control de aguas subterráneas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-ruler-combined icon text-blue-600"></i>La red de aforos</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-purple-600"></i>La <strong><u>medida de las aguas superficiales</u></strong> en España se realiza mediante la <span class="definition-pill"><strong>Red Oficial de Estaciones de Aforo (SAIH-ROEA)</strong></span>.</p></li>
+                        <li><p><i class="fas fa-user-cog icon text-slate-700"></i>Cuya <strong><u>operación y mantenimiento</u></strong> están a cargo de los <span class="actor-pill">organismos de cuenca</span>.</p></li>
+                        <li><p><i class="fas fa-map-marked-alt icon text-orange-600"></i>Y consta de <strong><u>más de <span class="pill-blue">1.000</span> puntos de control</u></strong> que se distribuyen en <u>ríos</u>, <u>canales</u> y <u>embalses</u>.</p></li>
+                        <li><p><i class="fas fa-book-open icon text-green-600"></i>Con los datos obtenidos se publica el <span class="doc-pill"><strong>“Anuario de aforos”</strong></span> y el <span class="doc-pill"><strong>“Boletín Hidrológico”</strong></span> que permite conocer las <u>reservas hidráulicas</u>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-satellite-dish icon text-cyan-700"></i>El SAIH (sistema automático de información hidrológica)</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-history icon text-blue-600"></i>Nació en <span class="pill-blue"><strong>1983</strong></span> y en <span class="pill-blue"><strong>1985</strong></span> comenzó a implantarse en la <u>cuenca del Júcar</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-bullseye icon text-red-600"></i><strong><u>Responde a la necesidad</u></strong> de <strong><u>racionalizar y agilizar el proceso de toma de decisiones</u></strong> en <strong><u>3 aspectos fundamentales</u></strong> de la gestión hidráulica de las cuencas:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong><u>Gestión global</u></strong> de los <u>recursos hidráulicos</u>.</p></li>
+                                    <li><p><i class="fas fa-house-flood-water icon text-gray-500"></i><strong><u>Previsión y actuación</u></strong> en <u>avenidas</u>.</p></li>
+                                    <li><p><i class="fas fa-tint icon text-gray-500"></i>Y <strong><u>vigilancia de los niveles de contaminación</u></strong> de las aguas de <u>ríos y canales</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-network-wired icon text-purple-600"></i>Tiene una <strong><u>red de telemedida y telecontrol</u></strong> que <u>registra datos pluviométricos, hidrológicos y de situación de los embalses</u> en un gran número de puntos y los <u>transmite en tiempo real</u> a los <span class="actor-pill">organismos de cuenca</span>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-sitemap icon text-orange-600"></i>Se <strong><u>estructura en 3 niveles</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-map-pin icon text-gray-500"></i><strong><u>Puntos de control</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-compress-arrows-alt icon text-gray-500"></i><strong><u>Puntos de concentración</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-server icon text-gray-500"></i>Y <strong><u>centros de proceso de cuenca</u></strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tasks icon text-cyan-600"></i>Y tiene <strong><u>3 formas de funcionamiento</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-check-circle icon text-green-500"></i><span class="definition-pill"><strong>Situación normal</strong></span> (datos cada <span class="pill-blue">15 minutos</span>).</p></li>
+                                    <li><p><i class="fas fa-exclamation-triangle icon text-yellow-500"></i><span class="definition-pill"><strong>Situación de crisis</strong></span> (cada <span class="pill-blue">5 minutos</span>).</p></li>
+                                    <li><p><i class="fas fa-desktop icon text-blue-500"></i>Y <span class="definition-pill"><strong>terminal virtual</strong></span> (en <u>tiempo real</u>).</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-vial icon text-indigo-700"></i>El SAICA (sistema automático de información de calidad de las aguas)</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-history icon text-blue-600"></i>Nació en <span class="pill-blue"><strong>1993</strong></span>, cuenta con aproximadamente <span class="pill-blue"><strong>200</strong></span> estaciones.</p></li>
+                        <li><p><i class="fas fa-cogs icon text-purple-600"></i>Que <strong><u>miden de modo continuo</u></strong> en las aguas superficiales una serie de <strong><u>parámetros indicadores de calidad</u></strong> y <strong><u>envían los datos en tiempo real</u></strong> vía satélite a un <u>centro de control</u> donde <span class="actor-pill">personal especializado</span> estudia la información recibida.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-exclamation-circle icon text-red-600"></i>Si se detecta una <strong><u>alteración de calidad</u></strong> se pone en marcha un <strong><u>dispositivo</u></strong> destinado a:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-shield-alt icon text-gray-500"></i><strong><u>Evitar su propagación</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-arrow-down icon text-gray-500"></i><strong><u>Reducir los efectos</u></strong> a los usuarios.</p></li>
+                                    <li><p><i class="fas fa-search icon text-gray-500"></i>E <strong><u>investigar la causa</u></strong> de la incidencia.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tasks icon text-orange-600"></i>Los <strong><u>criterios principales de su emplazamiento</u></strong> son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-hand-holding-water icon text-gray-500"></i>La <strong><u>protección de abastecimientos importantes</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-tint-slash icon text-gray-500"></i>Y el <strong><u>control aguas abajo</u></strong> de importantes <u>focos de vertido</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-flask icon text-cyan-600"></i>En las estaciones se determinan una serie de <strong><u>parámetros</u></strong> considerados como <strong><u>indicadores generales de contaminación</u></strong>: <u>pH</u>, <u>temperatura del agua</u>, <u>conductividad</u>, <u>oxígeno disuelto</u>, <u>turbidez</u>, <u>amonio</u>, <u>carbono orgánico</u>, <u>cloruros</u> y <u>nitratos</u>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-network-wired icon text-green-800"></i>La red ICA (red integrada de la Calidad de las Aguas)</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-history icon text-blue-600"></i>Se diseñó en <span class="pill-blue"><strong>1993</strong></span> e <strong><u>integró</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-vial icon text-gray-500"></i>La red <span class="definition-pill"><strong>COCA</strong></span> (control oficial de la calidad del agua).</p></li>
+                                    <li><p><i class="fas fa-hand-holding-water icon text-gray-500"></i>La red <span class="definition-pill"><strong>COAS</strong></span> (control oficial de abastecimientos).</p></li>
+                                    <li><p><i class="fas fa-fish icon text-gray-500"></i>La red <span class="definition-pill"><strong>Ictiofauna</strong></span> (cuyo objeto es conocer la aptitud del agua para albergar peces).</p></li>
+                                    <li><p><i class="fas fa-satellite-dish icon text-gray-500"></i>Y la red <span class="definition-pill"><strong>SAICA</strong></span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-sync-alt icon text-purple-600"></i>Tras la entrada en vigor de la <span class="doc-pill"><strong>DMA</strong></span>, se ha pasado de la antigua <span class="definition-pill">red ICA</span>, formada por estaciones de control físico-químico únicamente, a la denominada <span class="definition-pill"><strong>red CEMAs (Red de Control del Estado de las Masas de Agua Superficiales)</strong></span>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-ruler-combined icon text-orange-500"></i>En la cual se miden <strong><u>indicadores físico-químicos, biológicos e hidromorfológicos</u></strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-arrow-down icon text-blue-800"></i>La red de Control de las aguas subterráneas</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-history icon text-blue-600"></i>El <span class="actor-pill"><strong>IGME (Instituto Geológico y Minero de España)</strong></span> implantó en los años 70:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-vial icon text-gray-500"></i>La <span class="definition-pill"><strong>Red de Observación de la Calidad de las Aguas Subterráneas (ROCAS)</strong></span>.</p></li>
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i>Y la <span class="definition-pill"><strong>red de observación de la intrusión marina en los acuíferos costeros (ROI)</strong></span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-database icon text-purple-600"></i>Tratando la <strong><u>información piezométrica y de calidad</u></strong> de forma sistemática a partir de <span class="pill-blue"><strong>1985</strong></span>.</p></li>
+                        <li><p><i class="fas fa-exchange-alt icon text-orange-600"></i>En <span class="pill-blue"><strong>2001</strong></span> la <strong><u>gestión de las redes se traspasa</u></strong> a la <span class="actor-pill">Dirección General del Agua</span> y a los <span class="actor-pill">Organismos de cuenca</span>, iniciando el proceso de <strong><u>adaptación a los criterios</u></strong> que establece la <span class="doc-pill">Directiva Marco del Agua</span>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-network-wired icon text-green-700"></i>Constituyendo en la actualidad <strong><u>dos redes</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-chart-area icon text-gray-500"></i>Una de <strong><u>Seguimiento y Control del Estado Cuantitativo</u></strong> (<span class="definition-pill">red piezométrica</span> con más de <span class="pill-blue">2.700</span> puntos).</p></li>
+                                    <li><p><i class="fas fa-flask icon text-gray-500"></i>Y otra de <strong><u>Seguimiento y Control del Estado Químico</u></strong> (con cerca de <span class="pill-blue">4.500</span> puntos: <u>sondeos en explotación</u>, <u>piezómetros</u> y <u>manantiales</u>).</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Los SIG y su aplicación -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-map-marked-alt"></i></div>
+                <h2>4. Los SIG y su aplicación a la gestión de los recursos hidráulicos</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Los <span class="definition-pill"><strong>SIG</strong></span> son una <strong><u>herramienta muy útil</u></strong> para la <u>gestión y procesamiento</u> de los <u>datos hidrológicos</u> y de la <u>calidad del agua</u> en una cuenca.</p></li>
+                    <li><p><i class="fas fa-bullseye icon text-red-600"></i>Con el <strong><u>fin de gestionar adecuadamente</u></strong> los <u>recursos hídricos</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-purple-600"></i>De forma simplificada se puede decir que un <span class="definition-pill">SIG</span> es un <strong><u>sistema de gestión y análisis de una base de datos geográficos</u></strong>, cuyas <strong><u>funciones básicas</u></strong> son:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-database icon text-gray-500"></i><strong><u>Adquisición de datos</u></strong> y <strong><u>preprocesado</u></strong>.</p></li>
+                                <li><p><i class="fas fa-save icon text-gray-500"></i><strong><u>Gestión, almacenamiento y recuperación</u></strong> de la información.</p></li>
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong><u>Manipulación y análisis</u></strong>.</p></li>
+                                <li><p><i class="fas fa-map icon text-gray-500"></i><strong><u>Producción de mapas</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-satellite-dish icon text-orange-600"></i>Los <span class="actor-pill"><strong>SAIH</strong></span> de las confederaciones han <strong><u>implantado SIG</u></strong> con objeto de <strong><u>analizar la información disponible</u></strong> sobre la cuenca (<u>ríos</u>, <u>infraestructuras</u>, <u>estaciones de medida</u>) y los <u>datos hidrometeorológicos</u> recibidos durante un <u>episodio de lluvia</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-plus-circle icon text-green-700"></i><strong><u>Otras aplicaciones</u></strong> son:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-satellite icon text-gray-500"></i><strong><u>Integrados con técnicas de teledetección</u></strong>, para <u>localizar y ubicar superficies de agua</u>.</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i><strong><u>Integrados con modelos hidráulicos</u></strong>, para <u>simular la propagación de caudales y niveles de agua</u> en avenidas.</p></li>
+                                <li><p><i class="fas fa-recycle icon text-gray-500"></i><strong><u>Simulación del ciclo hidrológico</u></strong> de forma <u>precisa</u>.</p></li>
+                                <li><p><i class="fas fa-search icon text-gray-500"></i><strong><u>Estudio de alteraciones</u></strong> que se producen en el <u>ciclo hidrológico</u> como consecuencia de las <u>intervenciones humanas</u> sobre las <u>características naturales de la cuenca</u>.</p></li>
+                                <li><p><i class="fas fa-lightbulb icon text-gray-500"></i><strong><u>Sistema de apoyo a decisiones (SAD)</u></strong> que permiten <u>gestionar los recursos hídricos</u> en conjunción con <u>usos económicos</u> y <u>restricciones ambientales</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 5: Orden TED/1191/2024 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-file-alt"></i></div>
+                <h2>5. Orden TED/1191/2024 por la que se regulan los sistemas electrónicos de control de los volúmenes de agua utilizados</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-gavel icon text-amber-800"></i>El <span class="law-pill"><strong>TRLA</strong></span> <strong><u>obliga a los titulares de usos privativos de aguas</u></strong> a <strong><u>instalar y mantener sistemas de medición</u></strong> que den información de:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-hand-holding-water icon text-gray-500"></i>Los <strong><u>volúmenes de agua utilizados</u></strong> por los aprovechamientos de agua del <span class="definition-pill">DPH</span>.</p></li>
+                                <li><p><i class="fas fa-undo icon text-gray-500"></i>De los <strong><u>retornos</u></strong> al citado <span class="definition-pill">DPH</span>.</p></li>
+                                <li><p><i class="fas fa-tint-slash icon text-gray-500"></i>Y de los <strong><u>vertidos</u></strong> al mismo.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-book-open icon text-purple-600"></i>La <span class="law-pill"><strong>orden TED/1191/2024</strong></span> <strong><u>regula</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i>Los referidos <strong><u>sistemas de medición</u></strong>, su <u>instalación</u> y <u>mantenimiento</u>.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-tasks icon text-gray-500"></i>Los <strong><u>procedimientos</u></strong> para:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-database icon text-gray-400"></i><strong><u>Registrar</u></strong> las mediciones.</p></li>
+                                            <li><p><i class="fas fa-save icon text-gray-400"></i><strong><u>Mantener</u></strong> esa información.</p></li>
+                                            <li><p><i class="fas fa-paper-plane icon text-gray-400"></i><strong><u>Comunicarla</u></strong> a los <span class="actor-pill">organismos de cuenca</span>.</p></li>
+                                            <li><p><i class="fas fa-search icon text-gray-400"></i>Y la <strong><u>inspección</u></strong> por parte de los mismos de los medios de medida instalados por los usuarios.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-stream icon text-cyan-600"></i>La orden <strong><u>distingue dos grupos de captaciones</u></strong>, de acuerdo con las características técnicas del tramo donde se practica la medición:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-compress-arrows-alt icon text-gray-500"></i>Captaciones de agua mediante <strong><u>tubería a presión</u></strong>.</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>O en <strong><u>lámina libre</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-chart-pie icon text-orange-600"></i>En relación con el <strong><u>volumen anual máximo autorizado</u></strong> en el título habilitante se consideran <strong><u>tres categorías</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-battery-quarter icon text-gray-500"></i><strong><u>1ª</u></strong> <span class="formula-pill">< 20.000 m³</span>.</p></li>
+                                <li><p><i class="fas fa-battery-half icon text-gray-500"></i><strong><u>2ª</u></strong> <span class="pill-blue">20.000-500.000 m³</span>.</p></li>
+                                <li><p><i class="fas fa-battery-full icon text-gray-500"></i><strong><u>3ª</u></strong> <span class="formula-pill">> 500.000 m³</span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-retweet icon text-indigo-600"></i>La <span class="law-pill">orden ministerial</span> admite que el <span class="actor-pill">organismo de cuenca</span> pueda <strong><u>autorizar</u></strong>, en su caso, el <strong><u>control de los volúmenes por métodos indirectos fiables</u></strong>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-bolt icon text-yellow-500"></i>En particular mediante la <strong><u>medida de la energía eléctrica consumida o producida</u></strong>.</p></li>
+                                <li><p><i class="fas fa-sync-alt icon text-green-500"></i>Realizando con <strong><u>periodicidad adecuada el contraste</u></strong> de la <u>equivalencia</u> entre los parámetros físicos correspondientes (<u>volumen circulante y energía consumida o producida</u>).</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <!-- Script para la funcionalidad desplegable -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Selecciona todos los elementos que servirán como disparadores
+            const triggers = document.querySelectorAll('.collapsible-trigger');
+
+            // Itera sobre cada disparador para añadirle un detector de clics
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', function (event) {
+                    // Evita que el clic en un desplegable anidado afecte a su contenedor padre
+                    event.stopPropagation();
+                    
+                    // Encuentra el elemento de contenido que sigue inmediatamente al disparador
+                    const content = this.nextElementSibling;
+                    
+                    // Alterna la clase 'open' en el disparador (para rotar el icono)
+                    this.classList.toggle('open');
+                    
+                    // Verifica que el siguiente elemento sea un contenido desplegable y alterna la clase 'hidden'
+                    if (content && content.classList.contains('collapsible-content')) {
+                        content.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
