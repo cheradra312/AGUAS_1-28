@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Hidrología de las aguas subterráneas</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-water"></i> MEA1T13. Hidrología de las aguas subterráneas <i class="fas fa-layer-group"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Hidrología de las aguas subterráneas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-layer-group"></i></div>
+                <h2>1. Hidrología de las aguas subterráneas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-book-open icon text-blue-600"></i><strong>Estudia</strong> la <u>existencia de agua en el terreno</u> y su <u>circulación por él</u>, también llamada <span class="definition-pill"><strong>hidrogeología</strong></span>.</p></li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tint icon text-cyan-600"></i>Tipos de Agua en el Terreno</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Según la <strong>forma de estar el agua</strong> en el terreno se distinguen los siguientes tipos:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-atom icon text-purple-500"></i><span class="definition-pill"><strong>Agua de constitución</strong></span>, <strong><u>combinada químicamente</u></strong> con los <u>materiales del terreno</u>.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-magnet icon text-orange-500"></i><span class="definition-pill"><strong>Agua de retención</strong></span>, <strong><u>absorbida por las partículas</u></strong> del terreno mediante <u>atracciones polares</u>, dos tipos:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-water icon text-gray-500"></i><u>Agua higroscópica</u> por <strong>fuerzas de absorción</strong>.</p></li>
+                                                <li><p><i class="fas fa-paperclip icon text-gray-500"></i><u>Agua pelicular</u> por <strong>fuerzas de adhesión</strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-sort-amount-up-alt icon text-indigo-500"></i><span class="definition-pill"><strong>Agua capilar</strong></span>, <strong><u>rellena los canalículos</u></strong> entre las partículas del terreno y se mantiene por las <u>fuerzas de capilaridad</u>, dos tipos:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-unlink icon text-gray-500"></i><u>Aislada</u> sin conexión con el agua de gravedad.</p></li>
+                                                <li><p><i class="fas fa-link icon text-gray-500"></i><u>Continua</u> conectada con el agua de gravedad con <u>presión menor que la atmosférica</u>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><p><i class="fas fa-angle-double-down icon text-green-600"></i><span class="definition-pill"><strong>Agua de gravedad o gravífica</strong></span>, que <strong><u>rellena los poros y fisuras</u></strong>, obedece solo a la <u>acción de la gravedad</u> y transmite la <u>presión hidrostática</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-layer-group icon text-blue-600"></i>Distribución Vertical del Agua</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Según la <strong>distribución vertical del agua</strong> en el suelo se distinguen <strong>2 grandes zonas</strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-fill-drip icon text-cyan-500"></i><span class="definition-pill"><strong>Zona de saturación</strong></span>, los <strong><u>intersticios están llenos de agua</u></strong>, limitada superiormente por la <u>superficie de saturación</u> que es el <u>nivel piezométrico</u>.</p></li>
+                                    <li><p><i class="fas fa-wind icon text-gray-500"></i><span class="definition-pill"><strong>Zona de aireación</strong></span>, en los intersticios <strong><u>hay agua y aire</u></strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-star icon text-yellow-500"></i>El agua que interesa desde el punto de vista del <strong><u>aprovechamiento</u></strong> y la <strong><u>hidrogeología</u></strong> es el <strong>agua de gravedad</strong> que se sitúa en los <strong><u>acuíferos</u></strong>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-mountain icon text-green-700"></i>Clasificación de Formaciones Geológicas</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Las <strong>formaciones geológicas</strong> se clasifican en función de su <strong><u>capacidad para almacenar agua, transmitirla y recargarse</u></strong> en:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-water icon text-blue-500"></i><span class="definition-pill"><strong>Acuíferos</strong></span>, formaciones geológicas que ocupan la <strong><u>zona de saturación</u></strong> y que son capaces de <strong><u>almacenar y transmitir agua</u></strong> en <u>cantidades importantes</u>, tienen una <u>permeabilidad significativa</u>, <u>extensión y espesor considerables</u>.</p></li>
+                                    <li><p><i class="fas fa-hourglass-half icon text-orange-500"></i><span class="definition-pill"><strong>Acuitardos</strong></span>, formaciones geológicas <strong><u>semipermeables</u></strong>, contienen agua en <u>gran cantidad</u>, pero la <strong><u>transmiten muy lentamente</u></strong>, pueden proporcionar <u>recarga vertical importante</u> al acuífero en contacto con él, son por ejemplo los <u>limos y las arcillas arenosas</u>.</p></li>
+                                    <li><p><i class="fas fa-lock icon text-red-500"></i><span class="definition-pill"><strong>Acuícludos</strong></span>, formaciones <strong><u>porosas pero impermeables</u></strong> que contienen agua, pero <strong><u>no la transmiten</u></strong>, como las <u>arcillas</u>.</p></li>
+                                    <li><p><i class="fas fa-ban icon text-gray-600"></i><span class="definition-pill"><strong>Acuífugos</strong></span>, formaciones de <strong><u>porosidad nula</u></strong> <strong><u>sin capacidad para almacenar agua ni para transmitirla</u></strong>, rocas plutónicas inalteradas como el <u>granito</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-stream icon text-cyan-700"></i>Tipos de Acuíferos</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Según la <strong>formación geológica</strong> en que están, existen <strong>varios tipos de acuíferos</strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-unlock icon text-green-500"></i><span class="definition-pill"><strong>Acuífero libre o freático</strong></span>, la <strong><u>superficie del agua a presión atmosférica</u></strong> y coincide con el <u>nivel piezométrico</u>.</p></li>
+                                    <li><p><i class="fas fa-compress-arrows-alt icon text-yellow-600"></i><span class="definition-pill"><strong>Acuífero cautivo o confinado</strong></span>, acuífero <strong><u>limitado por formaciones impermeables</u></strong>, que configuran la superficie superior del agua <u>independientemente del nivel piezométrico</u>.</p></li>
+                                    <li><p><i class="fas fa-adjust icon text-purple-500"></i><span class="definition-pill"><strong>Acuífero semiconfinado o semicautivo</strong></span>, es el acuífero cautivo que puede <strong><u>ganar o perder agua</u></strong> a través de los <u>niveles confinantes</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-gavel icon"></i>Conceptos Fundamentales</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-balance-scale icon text-amber-700"></i>Como concepto fundamental en la hidrología subterránea está la <span class="law-pill"><strong>Ley de Darcy</strong></span>: <span class="formula-pill"><strong>Q = k·A·(Δh/ΔL)</strong></span>, donde:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-ruler-combined icon text-gray-500"></i><strong>k</strong>: <u>coeficiente de permeabilidad</u>.</p></li>
+                                    <li><p><i class="fas fa-vector-square icon text-gray-500"></i><strong>A</strong>: <u>área de la sección</u>.</p></li>
+                                    <li><p><i class="fas fa-compress icon text-gray-500"></i><strong>Δh</strong>: <u>diferencia de presión</u>.</p></li>
+                                    <li><p><i class="fas fa-arrows-alt-h icon text-gray-500"></i><strong>ΔL</strong>: <u>distancia</u>.</p></li>
+                                    <li><p><i class="fas fa-chart-line icon text-gray-500"></i><strong>Δh/ΔL</strong>: <u>gradiente hidráulico</u> entre dos puntos.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-filter icon text-teal-600"></i>La <span class="definition-pill"><strong>permeabilidad</strong></span> es una <strong><u>característica de los suelos y las rocas</u></strong>, fundamentalmente de las <u>sedimentarias</u>, que representa la <strong><u>facilidad</u></strong> que tiene una formación geológica para <strong><u>dejarse atravesar por un fluido</u></strong> cuando existe una <u>diferencia de presión</u> entre ambas caras.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-exchange-alt icon text-gray-500"></i><strong>k varía</strong> de <span class="pill-blue">5·10<sup>-10</sup> cm/s</span> (para algunas arcillas) a <span class="pill-blue">0,5 cm/s</span> (para arenas gruesas y arenas con gravas).</p></li>
+                                    <li><p><i class="fas fa-ban icon text-red-500"></i>Para <span class="formula-pill">k &lt; 10<sup>-5</sup> cm/s</span> se consideran <strong>impermeables</strong>.</p></li>
+                                    <li><p><i class="fas fa-sync-alt icon text-blue-500"></i>La permeabilidad puede <strong><u>aumentar</u></strong> con el tiempo si el <u>agua agranda los poros</u> o <strong><u>disminuir</u></strong> si los <u>colmata por los sólidos disueltos o en suspensión</u>.</p></li>
+                                    <li><p><i class="fas fa-arrow-up icon text-green-500"></i><strong><u>Crece</u></strong> con el <u>aumento de presión y la temperatura</u>.</p></li>
+                                    <li><p><i class="fas fa-arrow-down icon text-orange-500"></i><strong><u>Disminuye</u></strong> con el <u>aumento del espesor</u> que ha de atravesar el agua y si <u>disminuye el radio medio de la red capilar</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-lightbulb icon text-yellow-500"></i>Otros Conceptos Importantes</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Otros conceptos importantes son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-exchange-alt icon text-purple-500"></i><span class="definition-pill"><strong>Transmisividad</strong></span>, <strong><u>caudal que se filtra</u></strong> a través de una <u>franja de terreno de ancho unidad y altura la del acuífero</u> en un plano ortogonal a la dirección del flujo bajo un <u>gradiente hidráulico unidad</u> y a una <u>temperatura fija determinada</u>.</p></li>
+                                    <li><p><i class="fas fa-box-open icon text-indigo-500"></i><span class="definition-pill"><strong>Coeficiente de almacenamiento</strong></span>, <strong><u>volumen de agua que puede ser liberado</u></strong> por un <u>prisma de sección unidad y altura la del acuífero</u>, cuando se produce un <u>descenso unidad de la carga hidráulica</u> (aplicable solo a <strong><u>acuíferos confinados</u></strong> porque en ellos el agua está a una presión superior a la atmosférica).</p></li>
+                                    <li><p><i class="fas fa-tachometer-alt icon text-green-600"></i><span class="definition-pill"><strong>Caudal específico</strong></span>, <strong><u>cociente entre el caudal de flujo y la superficie de la cuenca vertiente</u></strong>, se mide en <span class="formula-pill">m³/s/km²</span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Utilización y aprovechamiento de aguas subterráneas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-hand-holding-water"></i></div>
+                <h2>2. Utilización y aprovechamiento de aguas subterráneas: régimen de explotación</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-gavel icon text-amber-700"></i>Con la <span class="law-pill"><strong>ley de aguas de 1985</strong></span> <strong><u>desaparece el carácter privativo</u></strong> de las aguas subterráneas que reconocía la <span class="law-pill">ley de 1879</span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-file-signature icon text-blue-600"></i>Los <strong><u>usos privativos se adquieren ahora</u></strong> por:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-balance-scale icon text-gray-500"></i><strong>Disposición legal</strong> (<span class="pill-blue">&lt;7.000 m³/año</span> en un predio).</p></li>
+                                <li><p><i class="fas fa-stamp icon text-gray-500"></i>O por <strong>concesión administrativa</strong> que otorga el <span class="actor-pill">organismo de cuenca</span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-purple-600"></i>La <strong><u>concesión</u></strong> tiene un plazo <strong><u>no superior a <span class="pill-blue">75 años</span></u></strong> y debe <strong><u>especificar</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-cube icon text-gray-500"></i>El <strong>volumen anual</strong> utilizable.</p></li>
+                                <li><p><i class="fas fa-tachometer-alt icon text-gray-500"></i>El <strong>caudal máximo</strong> instantáneo.</p></li>
+                                <li><p><i class="fas fa-hand-holding-water icon text-gray-500"></i>El <strong>uso</strong> de las aguas.</p></li>
+                                <li><p><i class="fas fa-arrow-down icon text-gray-500"></i>La <strong>profundidad máxima</strong> del pozo.</p></li>
+                                <li><p><i class="fas fa-ruler-combined icon text-gray-500"></i>Los <strong>instrumentos de medición</strong> de volúmenes, niveles y caudal.</p></li>
+                                <li><p><i class="fas fa-clipboard-list icon text-gray-500"></i>Y <strong>cualesquiera otras condiciones</strong> que se estimen oportunas.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-bullseye icon text-red-600"></i>Para <strong><u>establecer los volúmenes máximos</u></strong> se tendrán en cuenta las determinaciones del correspondiente <span class="plan-pill"><strong>Plan Hidrológico</strong></span>, así como la <u>evolución de los niveles piezométricos</u> y de la <u>calidad del agua</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-arrows-alt-h icon text-orange-600"></i>Las <strong><u>distancias mínimas</u></strong> entre pozos en explotación, o entre pozo y manantial, serán fijadas en el correspondiente <span class="plan-pill">plan hidrológico</span>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-info-circle icon text-gray-500"></i>En su defecto, esta distancia será de:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-city icon"></i><span class="pill-blue"><strong>10 m</strong></span> en <u>suelo urbano</u> y de <span class="pill-blue"><strong>20 m</strong></span> en <u>suelo no urbanizable</u>, para caudales inferiores a <span class="formula-pill">0,15 l/s</span>.</p></li>
+                                            <li><p><i class="fas fa-arrow-up icon"></i>Ampliándose a <span class="pill-blue"><strong>100 m</strong></span> en el caso de <u>caudales superiores</u> al mencionado.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-water icon text-cyan-600"></i>Cuando el pozo se sitúe en <strong><u>márgenes fluviales</u></strong> dentro de la <strong><u>zona de policía</u></strong> será necesaria la <strong><u>autorización</u></strong> del <span class="actor-pill">organismo de cuenca</span>, que verificará si con la extracción se detraen <u>aguas superficiales con derecho preferente</u>.</p></li>
+                    <li><p><i class="fas fa-book icon text-green-600"></i>Los <span class="actor-pill">organismos de cuenca</span> llevarán un <span class="doc-pill"><strong>Registro de aguas</strong></span> en el que se <strong><u>inscribirán de oficio</u></strong> tanto las <u>concesiones de aguas superficiales</u> como las de <u>aguas subterráneas</u>, así como los <u>cambios autorizados</u> que se produzcan en su titularidad o en sus características esenciales.</p></li>
+                    <li><p><i class="fas fa-file-alt icon text-indigo-600"></i>Los <span class="plan-pill"><strong>planes hidrológicos de cuenca</strong></span> establecerán para cada <u>unidad hidrogeológica</u>, en la medida en que sea posible, <strong><u>normas para el otorgamiento de autorizaciones</u></strong> de investigación o concesiones.</p></li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-cogs icon text-gray-700"></i>Régimen de explotación</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-calendar-check icon text-blue-600"></i>Las explotaciones de aguas subterráneas iniciadas con <strong><u>posterioridad al <span class="pill-blue">1 de enero de 1986</span></u></strong> deben realizarse según las <strong><u>cláusulas de la correspondiente concesión</u></strong>, o en su caso con arreglo al <span class="law-pill">TRLA</span>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-history icon text-orange-600"></i>El régimen de las <strong><u>iniciadas antes</u></strong>, que constituyen la gran mayoría de las existentes, debía <strong><u>ajustarse a una de estas dos opciones</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-clock icon text-gray-500"></i>Durante <span class="pill-blue">3 años</span>, de <strong><u>inscribir el aprovechamiento como temporal</u></strong> de aguas privadas por un plazo máximo de <span class="pill-blue">50 años</span>, teniendo al final de ese plazo <u>preferencia para obtener la concesión</u>.</p></li>
+                                    <li><p><i class="fas fa-book-dead icon text-gray-500"></i>Otra opción era la <strong><u>inclusión en el “catálogo de aguas privadas”</u></strong> sin protección administrativa, que finalizó con la entrada en vigor de la ley del <span class="plan-pill">Plan Hidrológico Nacional</span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-purple-600"></i>En <strong><u>ambos casos</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                     <li><p><i class="fas fa-edit icon text-gray-500"></i>La <strong><u>modificación de las características</u></strong> esenciales del aprovechamiento <strong><u>requiere concesión</u></strong>.</p></li>
+                                     <li><p><i class="fas fa-exclamation-triangle icon text-red-500"></i>Además son aplicables a ambos casos las <strong><u>normas que regulan la sobreexplotación</u></strong> y, en general, las relativas a las <strong><u>limitaciones en caso de sequía grave</u></strong> o de <strong><u>urgente necesidad</u></strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Card 3: Masas de agua subterráneas en riesgo -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-exclamation-triangle"></i></div>
+                <h2>3. Masas de agua subterráneas en riesgo de no alcanzar el buen estado cuantitativo o químico</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-bullhorn icon text-red-600"></i>La <span class="actor-pill"><strong>Junta de Gobierno del Organismo de cuenca</strong></span>, <u>sin necesidad de consulta</u> al <span class="actor-pill">Consejo del Agua de la demarcación hidrográfica</span>, podrá <strong><u>declarar</u></strong> que una masa de agua subterránea está en <strong><u>riesgo de no alcanzar un buen estado</u></strong> cuantitativo o químico.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-cogs icon text-blue-600"></i>En este caso, en el plazo de <span class="pill-blue"><strong>6 meses</strong></span>, el <span class="actor-pill"><strong>Organismo de cuenca</strong></span>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-users icon text-gray-500"></i><strong>Constituirá una comunidad de usuarios</strong> si no la hubiere.</p></li>
+                                <li><p><i class="fas fa-user-friends icon text-gray-500"></i>O <strong>encomendará sus funciones</strong> con carácter temporal a una <u>entidad representativa de los intereses concurrentes</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-file-alt icon text-purple-600"></i>También, previa consulta con la comunidad de usuarios, la <span class="actor-pill"><strong>Junta de Gobierno</strong></span> aprobará en el plazo máximo de <span class="pill-blue"><strong>un año</strong></span>, desde que haya tenido lugar la declaración, un <span class="plan-pill"><strong>programa de actuación</strong></span> para la <u>recuperación del buen estado de la masa de agua</u>.</p></li>
+                    <li><p><i class="fas fa-shield-alt icon text-orange-500"></i><strong><u>Hasta la aprobación del programa de actuación</u></strong>, se podrá adoptar las <strong><u>limitaciones de extracción</u></strong>, así como las <strong><u>medidas de protección de la calidad</u></strong> del agua subterránea que sean necesarias como <u>medida cautelar</u>.</p></li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tasks icon text-green-700"></i>Contenido del Programa de Actuación</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-ruler-vertical icon text-blue-600"></i>El <span class="plan-pill"><strong>programa de actuación</strong></span> <strong><u>ordenará el régimen de extracciones</u></strong> para lograr una <u>explotación racional de los recursos</u> con el fin de:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-check-circle icon text-gray-500"></i>Alcanzar un <strong>buen estado</strong> de las masas de agua subterránea.</p></li>
+                                    <li><p><i class="fas fa-leaf icon text-gray-500"></i><strong>Proteger y mejorar</strong> los ecosistemas asociados.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-plus-circle icon text-indigo-600"></i>Y <strong><u>contemplará las condiciones</u></strong> en las que temporalmente se puedan <strong><u>superar las limitaciones establecidas</u></strong>, permitiendo <u>extracciones superiores a los recursos disponibles</u> de una masa de agua subterránea cuando esté garantizado el <u>cumplimiento de los objetivos medioambientales</u>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-chart-line icon text-cyan-700"></i>Mejora del Estado de la Masa de Agua</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Cuando como consecuencia de la aplicación del <span class="plan-pill">programa de actuación</span> se <strong><u>mejore el estado</u></strong> de la masa de agua subterránea, el <span class="actor-pill"><strong>organismo de cuenca</strong></span>, de <u>oficio</u> o a <u>instancia de parte</u>, podrá:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-arrow-down icon text-green-500"></i><strong>Reducir progresivamente</strong> las <u>limitaciones del programa</u>.</p></li>
+                                    <li><p><i class="fas fa-arrow-up icon text-green-500"></i>Y <strong>aumentar</strong>, de forma <u>proporcional y equitativa</u>, el <strong><u>volumen que se puede utilizar</u></strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-exclamation-circle icon text-red-500"></i>Teniendo en cuenta, en todo caso, que <strong><u>no se ponga en riesgo</u></strong> la permanencia de los <strong><u>objetivos generales ambientales</u></strong>.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Técnicas de investigación hidrogeológica y evaluación de recursos -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-search-location"></i></div>
+                <h2>4. Técnicas de investigación hidrogeológica y evaluación de recursos</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>Existen <strong><u>diversos métodos de exploración</u></strong> de aguas subterráneas:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-mountain icon text-green-600"></i><span class="definition-pill"><strong>Métodos geológicos</strong></span>, <strong><u>estudian las formaciones geológicas</u></strong> donde queda <u>retenida el agua</u>.</p></li>
+                                <li><p><i class="fas fa-broadcast-tower icon text-purple-600"></i><span class="definition-pill"><strong>Métodos geofísicos</strong></span>, <u>resistividad eléctrica</u>, <u>sísmica</u>, <u>gravimetría</u> y <u>testificación geofísica de sondeos</u>.</p></li>
+                                <li><p><i class="fas fa-tools icon text-orange-600"></i><span class="definition-pill"><strong>Métodos mecánicos</strong></span>, <u>sondeos verticales y horizontales</u>.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-flask icon text-cyan-600"></i><span class="definition-pill"><strong>Técnicas hidrogeológicas</strong></span>, conducen a una <strong><u>cuantificación más aproximada</u></strong> de los <u>acuíferos subterráneos</u> localizados en estudios previos de reconocimiento, se pueden enumerar las siguientes:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li>
+                                                <div class="collapsible-trigger">
+                                                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                    <p><i class="fas fa-database icon text-gray-500"></i><strong><u>Obtención de datos básicos</u></strong> mediante una <u>red de pozos y piezómetros</u> que permiten conocer:</p>
+                                                </div>
+                                                <div class="collapsible-content hidden">
+                                                    <ul class="even-deeper-nested-list">
+                                                        <li><p><i class="fas fa-ruler-vertical icon"></i>El <strong>espesor del acuífero</strong> y sus <strong>oscilaciones de nivel</strong>.</p></li>
+                                                        <li><p><i class="fas fa-chart-bar icon"></i>El <strong>valor aproximado</strong> de <u>permeabilidad</u>, <u>transmisividad</u> o <u>coeficiente de almacenamiento</u>.</p></li>
+                                                        <li><p><i class="fas fa-vial icon"></i>Obtener <strong>muestras de agua</strong>.</p></li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <li><p><i class="fas fa-map-marked-alt icon text-gray-500"></i><strong><u>Métodos de estimación</u></strong> de las <u>características geométricas e hidrogeológicas</u> de los acuíferos a partir de <u>mapas litológicos</u> y <u>datos puntuales</u> en piezómetros o pozos.</p></li>
+                                            <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong><u>Estimación de funcionamiento del acuífero</u></strong>, en base a datos de <u>precipitaciones</u> y <u>evapotranspiración</u> y de las <u>características geológicas y topográficas</u> de la zona (da <strong><u>órdenes de magnitud</u></strong> y se debe tomar como una <strong><u>primera aproximación</u></strong>).</p></li>
+                                            <li><p><i class="fas fa-atom icon text-gray-500"></i><strong><u>Empleo de técnicas especiales</u></strong> <u>radioisotrópicas</u>, <u>teledetección</u> o el <u>estudio hidroquímico</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-calculator icon text-indigo-700"></i>Evaluación de los recursos</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-cube icon text-blue-600"></i><strong>Volumen de agua</strong> = <span class="formula-pill">volumen del acuífero x porosidad</span>.</p></li>
+                        <li><p><i class="fas fa-exclamation-triangle icon text-red-600"></i>Aunque <strong><u>no toda el agua del acuífero puede ser extraída</u></strong>, quedando una parte “<u>atrapada</u>”, que es el valor de <strong><u>retención específico</u></strong>.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Script para la funcionalidad desplegable -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Selecciona todos los elementos que servirán como disparadores
+            const triggers = document.querySelectorAll('.collapsible-trigger');
+
+            // Itera sobre cada disparador para añadirle un detector de clics
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', function (event) {
+                    // Evita que el clic en un desplegable anidado afecte a su contenedor padre
+                    event.stopPropagation();
+                    
+                    // Encuentra el elemento de contenido que sigue inmediatamente al disparador
+                    const content = this.nextElementSibling;
+                    
+                    // Alterna la clase 'open' en el disparador (para rotar el icono)
+                    this.classList.toggle('open');
+                    
+                    // Verifica que el siguiente elemento sea un contenido desplegable y alterna la clase 'hidden'
+                    if (content && content.classList.contains('collapsible-content')) {
+                        content.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
