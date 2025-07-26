@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Depuración de aguas residuales</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Estilos para la tabla comparativa */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem;
+            text-align: left;
+            vertical-align: top;
+        }
+        .comparison-table th {
+            background-color: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+        .comparison-table td ul {
+            padding-left: 0;
+            margin-top: 0;
+        }
+        .comparison-table td li {
+            padding-left: 1.75rem;
+            margin-top: 0.5rem;
+        }
+        .comparison-table td li::before {
+            content: '▪️';
+            position: absolute;
+            left: 0;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-recycle"></i> MEA1T17. Depuración de aguas residuales <i class="fas fa-water"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Depuración de aguas residuales -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-cogs"></i></div>
+                <h2>1. Depuración de aguas residuales</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Los <strong><u>procesos habituales</u></strong> de los que consta la <strong><u>depuración de aguas residuales</u></strong> son:</p></li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-layer-group icon text-purple-600"></i>Tratamiento primario</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-filter icon text-blue-600"></i>Es un <strong><u>tratamiento físico</u></strong> de <strong><u>separación de los sólidos</u></strong> que contiene el agua.</p></li>
+                        <li><p><i class="fas fa-tachometer-alt icon text-cyan-600"></i>Las <strong><u>condiciones de funcionamiento son hidráulicas</u></strong> con el <u>tiempo de retención</u>, la <u>velocidad de paso</u> y el <u>caudal circulante</u> constantes.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-bullseye icon text-red-600"></i>Puede tener <strong><u>dos objetivos</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-chart-line icon text-gray-500"></i><strong>Máximo rendimiento</strong>.</p></li>
+                                    <li><p><i class="fas fa-check-circle icon text-gray-500"></i>O <strong>rendimiento suficiente</strong> para la segunda etapa.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-layer-group icon text-orange-600"></i>Tratamiento secundario</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-code-branch icon text-blue-600"></i>Hay <strong><u>2 opciones</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-flask icon text-purple-500"></i><span class="definition-pill"><strong>Tratamiento químico</strong></span> que <strong><u>introduce reactivos</u></strong> con <u>dosificaciones precisas y cambiantes</u>.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-bacteria icon text-green-600"></i><span class="definition-pill"><strong>Proceso biológico</strong></span> con <strong><u>floculación</u></strong> gracias a la <u>acción enzimática y metabólica</u> de los <u>microorganismos</u> que están en el agua residual.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-heartbeat icon"></i>Para que funcione hay que <strong><u>mantener las condiciones vitales</u></strong> de los microorganismos.</p></li>
+                                                <li><p><i class="fas fa-balance-scale icon"></i>E introducir un <strong><u>caudal y una carga biológica constante</u></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-euro-sign icon text-red-600"></i>El <strong><u>tratamiento químico es más caro</u></strong> por el <u>consumo de reactivos</u> (<span class="pill-blue">90-250 mg/l</span>) y el <u>personal especializado</u> para el <u>control permanente de su dosificación</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-times-circle icon text-gray-700"></i>Por lo que se <strong><u>descarta en la mayoría de los casos</u></strong>, salvo <strong><u>excepciones</u></strong> como:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-umbrella-beach icon text-gray-500"></i><strong>Depuradoras de zonas turísticas</strong> con vertidos limitados a ciertas épocas del año.</p></li>
+                                    <li><p><i class="fas fa-industry icon text-gray-500"></i><strong>Depuradoras de efluentes industriales</strong> con <span class="formula-pill">DBO5/DQO≤0,25</span>.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-layer-group icon text-gray-500"></i>O <strong>tratamientos terciarios</strong> para <u>eliminación completa de contaminantes</u> o de <u>compuestos orgánicos y nutrientes</u> como el <span class="formula-pill">N</span> y el <span class="formula-pill">P</span>.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-burn icon"></i>En este caso consumo de reactivos entre <span class="pill-blue">40-150 mg/l</span>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-star icon text-yellow-500"></i>El <strong><u>tratamiento biológico</u></strong> es pues la <strong><u>base fundamental</u></strong> del tratamiento de aguas residuales.</p></li>
+                        <li><p><i class="fas fa-chart-pie icon text-indigo-600"></i>Es muy importante <strong><u>controlar la relación de nutrientes</u></strong> <span class="formula-pill">DBO5/N=20</span> y <span class="formula-pill">DBO5/P=100</span> para un <strong><u>desarrollo favorable</u></strong> de la actividad de los microorganismos.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Card 2: Control e índices de contaminación -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-chart-bar"></i></div>
+                <h2>2. Control e índices de contaminación</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-wind icon text-blue-600"></i><span class="definition-pill"><strong>Oxígeno disuelto (OD)</strong></span>, es un <strong><u>índice fundamental</u></strong> para la <u>definición y control</u> de las aguas residuales.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-arrow-up icon text-green-500"></i>Puede <strong><u>aumentar</u></strong> por:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-exchange-alt icon"></i>La <strong>captación</strong> a través de la <u>interfase agua-aire</u>.</p></li>
+                                            <li><p><i class="fas fa-leaf icon"></i>Y por la <strong>acción fotosintética</strong> de las <u>algas verdes</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-arrow-down icon text-red-500"></i>Y <strong><u>disminuir</u></strong> por:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-bacteria icon"></i>La <strong>respiración y acción metabólica</strong> de los <u>microorganismos</u>.</p></li>
+                                            <li><p><i class="fas fa-thermometer-half icon"></i><strong>Elevación de temperatura</strong>.</p></li>
+                                            <li><p><i class="fas fa-flask icon"></i>Y <strong>reacciones químicas</strong>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-lungs icon text-purple-600"></i><span class="definition-pill"><strong>Demanda Bioquímica de Oxígeno (DBO)</strong></span>, es la <strong><u>cantidad de oxígeno en mg/l consumida</u></strong> a <u>20ºC</u>, <u>presión atmosférica</u> y <u>oscuridad</u> en un tiempo dado.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-info-circle icon text-gray-500"></i><strong><u>Indica el oxígeno necesario</u></strong> para los <u>microorganismos</u>.</p></li>
+                                <li><p><i class="fas fa-recycle icon text-gray-500"></i>Reflejando la <strong><u>materia orgánica</u></strong> que existe en el agua.</p></li>
+                                <li><p><i class="fas fa-clock icon text-gray-500"></i>Se suele utilizar la <span class="formula-pill"><strong>DBO5</strong></span> (a los 5 días) para <strong><u>controlar los procesos de depuración</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-fire-alt icon text-orange-600"></i><span class="definition-pill"><strong>Demanda Química de Oxígeno (DQO)</strong></span>, <strong><u>mide la cantidad de sustancias</u></strong> susceptibles de ser <strong><u>oxidadas</u></strong>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-tachometer-alt icon text-gray-500"></i>Su <strong><u>ensayo es muy rápido</u></strong>: <u>1 o 2 h en frío</u> y <u>20 o 30 min si se realiza en caliente</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-cubes icon text-indigo-600"></i><span class="definition-pill"><strong>Sólidos en suspensión y contenido de materia orgánica</strong></span></p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-stream icon text-gray-500"></i>Se distinguen <strong><u>Sólidos Totales (ST)</u></strong> que se dividen en:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-wave-square icon"></i><strong>Sólidos en suspensión (SS)</strong> (y éstos a su vez en <u>sólidos sedimentables</u> o <u>no sedimentables</u>).</p></li>
+                                            <li><p><i class="fas fa-tint icon"></i>Y <strong>Sólidos disueltos (SD)</strong>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-stream icon text-gray-500"></i>Por otro lado, se dividen también en:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-gem icon"></i><strong>Sólidos fijos o inorgánicos (SF)</strong>.</p></li>
+                                            <li><p><i class="fas fa-leaf icon"></i>Y <strong>sólidos volátiles u orgánicos (SV)</strong>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li><p><i class="fas fa-tasks icon text-gray-500"></i>Para <strong><u>determinar la cantidad de sólidos</u></strong> se <strong><u>deseca la muestra</u></strong> a <span class="pill-blue">103ºC</span> (ST) y a <span class="pill-blue">550ºC</span> (SF) porque a esa temperatura la <u>materia orgánica se volatiliza</u>.</p></li>
+                                <li><p><i class="fas fa-vial icon text-gray-500"></i>Para <strong><u>determinar los sólidos sedimentables</u></strong> se realiza un ensayo introduciendo <u>un litro de muestra</u> en un <span class="formula-pill">cono Imhoff</span>, los sólidos separados al cabo de <u>2 horas</u> son los sólidos sedimentables.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-bacterium icon text-red-700"></i><span class="definition-pill"><strong>Índices de contaminación bacteriana</strong></span>, es habitual realizar <strong><u>colimetría</u></strong> y <strong><u>estreptometría</u></strong>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-industry icon text-gray-800"></i><span class="definition-pill"><strong>Índices de vertidos industriales</strong></span>, existen <strong><u>gran variedad</u></strong>, pero se podrían resumir en índices que definan el contenido en:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-flask icon text-gray-500"></i>Ácidos, bases.</p></li>
+                                <li><p><i class="fas fa-gas-pump icon text-gray-500"></i>Productos petrolíferos.</p></li>
+                                <li><p><i class="fas fa-oil-can icon text-gray-500"></i>Grasas poco degradables.</p></li>
+                                <li><p><i class="fas fa-soap icon text-gray-500"></i>Detergentes.</p></li>
+                                <li><p><i class="fas fa-weight-hanging icon text-gray-500"></i>Metales pesados.</p></li>
+                                <li><p><i class="fas fa-atom icon text-gray-500"></i>Productos radiactivos, etc.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Card 3: Autodepuración en cursos naturales -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-leaf"></i></div>
+                <h2>3. Autodepuración en cursos naturales</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Son <strong><u>procesos que devuelven</u></strong> una masa de agua contaminada a su <strong><u>estado normal original</u></strong> <u>sin la intervención humana</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-industry icon text-purple-600"></i>Se producen <strong><u>fenómenos similares</u></strong> a los de una <strong><u>estación depuradora</u></strong> con <strong><u>4 zonas diferencias</u></strong> a lo largo del río:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-arrow-down icon text-red-500"></i><span class="definition-pill"><strong>Zona de degradación</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-tint-slash icon text-gray-500"></i>Al <strong><u>incorporarse las aguas contaminadas</u></strong> al río.</p></li>
+                                            <li><p><i class="fas fa-exclamation-triangle icon text-gray-500"></i>Apareciendo <strong><u>sólidos flotantes</u></strong>, <strong><u>turbidez</u></strong>, <strong><u>reducción de oxígeno</u></strong>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-recycle icon text-orange-600"></i><span class="definition-pill"><strong>Zona de descomposición activa</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-palette icon text-gray-500"></i>Agua <strong><u>grisácea oscura</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-chart-line icon text-gray-500"></i><strong><u>Baja el oxígeno a 0</u></strong> para luego <strong><u>subir lentamente</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-fish icon text-gray-500"></i><strong><u>No viven peces</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-bacteria icon text-gray-500"></i>Los <strong><u>organismos de descomposición orgánica trabajan activamente</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-smog icon text-gray-500"></i>Pueden desprenderse <strong><u>gases</u></strong> como el <u>metano</u> y otros de <u>mal olor</u>.</p></li>
+                                            <li><p><i class="fas fa-soap icon text-gray-500"></i>Puede formarse <strong><u>espuma</u></strong> en la superficie.</p></li>
+                                            <li><p><i class="fas fa-wind icon text-gray-500"></i>Cuando va disminuyendo la descomposición activa es cuando <strong><u>aumenta el oxígeno</u></strong>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-sync-alt icon text-yellow-500"></i><span class="definition-pill"><strong>Zona de recuperación</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-arrow-up icon text-gray-500"></i><strong><u>Aumento del oxígeno</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-eye icon text-gray-500"></i>Agua <strong><u>más clara</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-life-ring icon text-gray-500"></i><strong><u>Vida acuática macroscópica</u></strong> y <strong><u>algas</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-flask icon text-gray-500"></i>Puede tener <strong><u>nitratos, fosfatos, sulfatos y carbonatos</u></strong>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-check-circle icon text-green-600"></i><span class="definition-pill"><strong>Zona de agua limpia</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-wind icon text-gray-500"></i><strong><u>Oxígeno disuelto cerca de la saturación</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-undo icon text-gray-500"></i>Se <strong><u>restauran condiciones</u></strong> de la corriente natural.</p></li>
+                                            <li><p><i class="fas fa-fish icon text-gray-500"></i><strong><u>Peces útiles para la pesca</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-bacterium icon text-gray-500"></i><strong><u>Quedan organismos patógenos</u></strong> y parte de <strong><u>compuestos metálicos</u></strong> pues no se ven alterados por los procesos bioquímicos existentes.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-table icon"></i>Tabla Comparativa</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-arrow-down icon text-red-500"></i>Zona de Degradación</th>
+                                <th><i class="fas fa-recycle icon text-orange-600"></i>Zona de Descomposición Activa</th>
+                                <th><i class="fas fa-sync-alt icon text-yellow-500"></i>Zona de Recuperación</th>
+                                <th><i class="fas fa-check-circle icon text-green-600"></i>Zona de Agua Limpia</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-tint-slash icon"></i>Incorporación de aguas contaminadas.</li>
+                                        <li><i class="fas fa-eye-slash icon"></i>Aparición de sólidos flotantes y turbidez.</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-palette icon"></i>Agua grisácea oscura.</li>
+                                        <li><i class="fas fa-fish icon"></i>No viven peces.</li>
+                                        <li><i class="fas fa-bacteria icon"></i>Organismos de descomposición trabajan activamente.</li>
+                                        <li><i class="fas fa-smog icon"></i>Desprendimiento de gases (metano, mal olor).</li>
+                                        <li><i class="fas fa-soap icon"></i>Formación de espuma.</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-eye icon"></i>Agua más clara.</li>
+                                        <li><i class="fas fa-life-ring icon"></i>Aparece vida acuática macroscópica y algas.</li>
+                                        <li><i class="fas fa-flask icon"></i>Presencia de nitratos, fosfatos, sulfatos y carbonatos.</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li><i class="fas fa-undo icon"></i>Se restauran las condiciones naturales.</li>
+                                        <li><i class="fas fa-fish icon"></i>Peces útiles para la pesca.</li>
+                                        <li><i class="fas fa-bacterium icon"></i>Quedan organismos patógenos y compuestos metálicos.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bg-gray-50">
+                                    <strong><i class="fas fa-wind icon"></i>Oxígeno Disuelto</strong><br>
+                                    Reducción inicial.
+                                </td>
+                                <td class="bg-gray-50">
+                                    <strong><i class="fas fa-wind icon"></i>Oxígeno Disuelto</strong><br>
+                                    Baja a 0 y luego sube lentamente.
+                                </td>
+                                <td class="bg-gray-50">
+                                    <strong><i class="fas fa-wind icon"></i>Oxígeno Disuelto</strong><br>
+                                    Aumento progresivo.
+                                </td>
+                                <td class="bg-gray-50">
+                                    <strong><i class="fas fa-wind icon"></i>Oxígeno Disuelto</strong><br>
+                                    Cerca del nivel de saturación.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Tecnología de la depuración físico-química -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-flask"></i></div>
+                <h2>4. Tecnología de la depuración físico-química: pretratamiento y tratamientos primarios</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-arrow-alt-circle-right icon text-blue-600"></i>Pretratamiento</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i><strong><u>Elimina la contaminación más visible</u></strong> y consta de:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-bars icon text-purple-600"></i><span class="definition-pill"><strong>Desbaste</strong></span>, <strong><u>retiene y separa los sólidos más voluminosos</u></strong> mediante <u>rejas verticales o inclinadas</u> situadas a la entrada de la depuradora.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-ruler-combined icon text-gray-500"></i><strong>Desbaste grueso</strong> (<span class="pill-blue">50-150 mm</span> entre barrotes).</p></li>
+                                                <li><p><i class="fas fa-ruler-combined icon text-gray-500"></i>Y <strong>desbaste fino</strong> (<span class="pill-blue">10-20 mm</span>).</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-hourglass-start icon text-orange-600"></i><span class="definition-pill"><strong>Desarenado</strong></span>, <strong><u>extraer del agua partículas <span class="pill-blue">&gt;200 micras (0,2 mm)</span></u></strong> mediante <u>depósito en el fondo</u> por <u>circulación del agua a velocidad controlada</u>.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-recycle icon text-gray-500"></i>La <strong>arena sedimentada</strong> no tiene casi materia orgánica y es <strong><u>evacuada a un clasificador de arenas</u></strong> mediante bombas y luego a un contenedor.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-oil-can icon text-gray-700"></i><span class="definition-pill"><strong>Desengrasado</strong></span>, <strong><u>elimina grasas, aceites</u></strong>, y en general <strong><u>flotantes</u></strong>.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-wind icon text-gray-500"></i>Se <strong><u>inyecta aire</u></strong> para provocar la <u>desemulsión de las grasas</u> y su <u>ascenso a la superficie</u> de donde se extraen con algún dispositivo de recogida superficial como <u>rasquetas</u>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><p><i class="fas fa-tachometer-alt icon text-cyan-600"></i><span class="definition-pill"><strong>Aliviadero y medidor de caudal</strong></span>, permiten que la <strong><u>EDAR funcione con el caudal de proyecto</u></strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-layer-group icon text-green-700"></i>Tratamiento primario</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-bullseye icon text-blue-600"></i>Tiene como <strong><u>misión separar por decantación</u></strong> las <u>partículas en suspensión no retenidas</u> en el pretratamiento.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-chart-pie icon text-purple-600"></i>Con el tratamiento primario se <strong><u>eliminan aproximadamente</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-percentage icon text-gray-500"></i>El <span class="pill-blue"><strong>90%</strong></span> de las <strong>materias decantables</strong>.</p></li>
+                                    <li><p><i class="fas fa-percentage icon text-gray-500"></i><span class="pill-blue"><strong>65%</strong></span> de las <strong>materias en suspensión</strong>.</p></li>
+                                    <li><p><i class="fas fa-percentage icon text-gray-500"></i>Y <span class="pill-blue"><strong>35%</strong></span> de la <strong>DBO</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5: Tecnología de eliminación biológica de nutrientes -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-bacteria"></i></div>
+                <h2>5. Tecnología de eliminación biológica de nutrientes: tratamientos secundarios</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-stream icon text-blue-600"></i>Existen <strong><u>dos tipos</u></strong>: los <u>lechos bacterianos</u> y los <u>fangos activos</u>.</p></li>
+                    <li><p><i class="fas fa-cogs icon text-purple-600"></i>En estos tipos de tratamiento se emplean <strong><u>cultivos biológicos</u></strong> para conseguir una <strong><u>descomposición aeróbica</u></strong> y <strong><u>oxidación</u></strong> de la <u>materia orgánica</u>, pasando a <u>compuestos más estables</u>.</p></li>
+                    <li><p><i class="fas fa-chart-line icon text-green-600"></i>Se obtiene así un <strong><u>rendimiento mayor</u></strong> que el alcanzado por una <u>sedimentación primaria</u>, y por una <u>depuración de tipo químico</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-check-circle icon text-orange-600"></i>El <strong><u>éxito de la operación</u></strong> estriba en:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-wind icon text-gray-500"></i><strong>Mantener las condiciones aerobias</strong>, que son necesarias para el <u>ciclo vital de los organismos</u>.</p></li>
+                                <li><p><i class="fas fa-balance-scale icon text-gray-500"></i>Y en <strong>controlar la cantidad de materia orgánica</strong> que descompongan.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-utensils icon text-indigo-600"></i>La <strong><u>materia orgánica es el alimento</u></strong> que sustenta a estos organismos, y su <strong><u>eficiencia disminuye</u></strong> tanto por:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-arrow-up icon text-gray-500"></i>Una <strong>sobrealimentación</strong>.</p></li>
+                                <li><p><i class="fas fa-arrow-down icon text-gray-500"></i>Como por una <strong>alimentación deficiente o no equilibrada</strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-layer-group icon text-cyan-700"></i>Lechos bacterianos</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-sync-alt icon text-blue-600"></i>Se hace <strong><u>circular a través de un medio poroso</u></strong> <u>agua residual y aire</u>.</p></li>
+                        <li><p><i class="fas fa-film icon text-purple-600"></i>Donde se va formando una <strong><u>película biológica</u></strong> compuesta por <u>microorganismos</u>.</p></li>
+                        <li><p><i class="fas fa-unlink icon text-orange-600"></i>Que se <strong><u>desprende al aumentar de espesor</u></strong> y es <strong><u>arrastrada por el agua residual</u></strong> hacia la <u>decantación secundaria</u>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-bacterium icon text-green-700"></i>Fangos activos</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-map-marker-alt icon text-blue-600"></i>Este método es <strong><u>más usual en España</u></strong> a pesar de tener <u>costes de instalación y explotación más elevados</u>.</p></li>
+                        <li><p><i class="fas fa-vial icon text-purple-600"></i>En el <strong><u>reactor biológico o cuba de aireación</u></strong> se provoca el <strong><u>desarrollo de un cultivo biológico</u></strong> formado por gran número de <u>microorganismos agrupados en flóculos</u> (<span class="definition-pill"><strong>fangos activos</strong></span>).</p></li>
+                        <li><p><i class="fas fa-balance-scale-right icon text-cyan-600"></i>Que se debe <strong><u>mantener en un determinado nivel de equilibrio</u></strong> con la <u>carga orgánica a eliminar</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-cogs icon text-orange-600"></i>El proceso <strong><u>necesita un sistema de aireación y agitación</u></strong> para que:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-wind icon text-gray-500"></i>Haya <strong>oxígeno suficiente</strong>.</p></li>
+                                    <li><p><i class="fas fa-random icon text-gray-500"></i>Se <strong>distribuyan los fangos activos</strong> de forma homogénea.</p></li>
+                                    <li><p><i class="fas fa-anchor icon text-gray-500"></i>Y <strong>no se produzca la sedimentación</strong> de los flóculos en el reactor.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-arrow-right icon text-indigo-600"></i>Una vez que la materia orgánica ha sido suficientemente oxidada el <strong><u>licor mezcla pasa al decantador secundario</u></strong>.</p></li>
+                        <li><p><i class="fas fa-exchange-alt icon text-green-600"></i>Donde se <strong><u>separan los fangos floculados</u></strong>, una parte se <strong><u>recircula al reactor biológico</u></strong> para <u>mantener la concentración suficiente de bacterias</u> y la otra va al <u>tratamiento de fangos</u>.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Card 6: Tecnología del tratamiento terciario -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-award"></i></div>
+                <h2>6. Tecnología del tratamiento terciario: filtración y esterilización</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Es el <strong><u>tratamiento más completo</u></strong> para las aguas residuales, pero <strong><u>no es comúnmente utilizado</u></strong> por su <u>elevado coste</u>.</p></li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-filter icon text-cyan-700"></i>Filtración</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-bullseye icon text-blue-600"></i>Tiene por <strong><u>objeto retener las partículas sólidas</u></strong> al hacer pasar el agua por un <u>material poroso</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-cogs icon text-purple-600"></i>Este material sirve de <strong><u>soporte a una membrana</u></strong> que:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-magic icon text-gray-500"></i>Ejerce una <strong>acción coagulante</strong>.</p></li>
+                                    <li><p><i class="fas fa-magnet icon text-gray-500"></i><strong>Fija por absorción</strong> las partículas pequeñas.</p></li>
+                                    <li><p><i class="fas fa-hand-paper icon text-gray-500"></i>Y <strong>retiene mecánicamente</strong> las partículas mayores.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-microscope icon text-red-700"></i>Esterilización</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-bullseye icon text-blue-600"></i>Busca la <strong><u>eliminación de los patógenos</u></strong>.</p></li>
+                        <li><p><i class="fas fa-flask icon text-purple-600"></i>Se emplea fundamentalmente el <strong><u>cloro y sus compuestos</u></strong> aplicándose con <u>dosificaciones determinadas mediante ensayos</u>.</p></li>
+                        <li><p><i class="fas fa-atom icon text-cyan-600"></i>También se utiliza el <strong><u>ozono</u></strong>, pero a <u>menor escala</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-sliders-h icon text-orange-600"></i>Los <strong><u>factores que influyen</u></strong> en la esterilización son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-bacterium icon text-gray-500"></i>La <strong>naturaleza y el número de microorganismos</strong> a ser destruidos.</p></li>
+                                    <li><p><i class="fas fa-vial icon text-gray-500"></i>El <strong>tipo y concentración del desinfectante</strong> usado.</p></li>
+                                    <li><p><i class="fas fa-thermometer-half icon text-gray-500"></i>La <strong>temperatura del agua</strong> a ser desinfectada, cuanto <u>más alta la temperatura, más rápida</u> es la desinfección.</p></li>
+                                    <li><p><i class="fas fa-clock icon text-gray-500"></i>El <strong>tiempo de contacto</strong>, <u>mejor desinfección</u> cuando los desinfectantes permanecen <u>más tiempo en contacto</u> con el agua.</p></li>
+                                    <li><p><i class="fas fa-tint icon text-gray-500"></i>La <strong>naturaleza del agua</strong> a ser desinfectada, si el agua contiene <u>materia de naturaleza coloidal y orgánica</u>, el proceso de desinfección es <u>obstaculizado</u>.</p></li>
+                                    <li><p><i class="fas fa-adjust icon text-gray-500"></i>El <strong>pH</strong> del agua.</p></li>
+                                    <li><p><i class="fas fa-random icon text-gray-500"></i>Y la <strong>mezcla</strong>, ya que una <u>buena mezcla</u> asegura la <u>adecuada dispersión del desinfectante</u> a través de toda el agua y <u>mejora el proceso</u> de desinfección.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 7: Tratamientos avanzados de eliminación de nutrientes -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-atom"></i></div>
+                <h2>7. Tratamientos avanzados de eliminación de nutrientes: fósforo y nitrógeno</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-flask icon text-orange-600"></i>Fósforo</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-percentage icon text-blue-600"></i>El <strong><u>fósforo se elimina en un <span class="pill-blue">25-30%</span></u></strong> en los procesos de <u>decantación primaria y secundaria</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-cogs icon text-purple-600"></i>Para <strong><u>eliminar el resto</u></strong> se recurre a:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-vial icon text-cyan-600"></i><span class="definition-pill"><strong>Procesos químicos</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-plus-circle icon"></i>Mediante la <strong><u>adición de sales</u></strong> de <u>hierro</u>, <u>aluminio</u> o <u>calcio</u>.</p></li>
+                                                <li><p><i class="fas fa-arrow-down icon"></i>Que producen <strong><u>fosfatos que decantan rápidamente</u></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-bacteria icon text-green-600"></i><span class="definition-pill"><strong>Procesos biológicos</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-sync-alt icon"></i>Se basan en la <strong><u>exposición alternativa</u></strong> de los microorganismos a condiciones <strong><u>aerobias y anaerobias</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-bullseye icon"></i>Que permitan el <strong><u>desarrollo de bacterias desfosfatantes</u></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-check-circle icon text-green-700"></i>Se debe cumplir que <span class="formula-pill"><strong>DBO5/P > 15</strong></span>, siendo <strong><u>mayor la reducción del fósforo</u></strong> cuanto <u>más alta sea esta relación</u>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-atom icon text-indigo-700"></i>Nitrógeno</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Para <strong><u>eliminar el nitrógeno</u></strong> lo más usual es diseñar una <strong><u>nitrificación-desnitrificación simultánea</u></strong> en el <u>mismo reactor biológico</u>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-arrow-up icon text-purple-500"></i><span class="definition-pill"><strong>Nitrificación</strong></span>: obtención de <strong><u>nitratos</u></strong> por <u>oxidación de nitritos</u>.</p></li>
+                                    <li><p><i class="fas fa-arrow-down icon text-cyan-500"></i><span class="definition-pill"><strong>Desnitrificación</strong></span>: los <strong><u>nitratos se convierten en nitrógeno molecular</u></strong> (gas), en <u>ausencia de oxígeno</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-cogs icon text-orange-600"></i>En el reactor biológico se mantiene una <strong><u>zona de anoxia en cabeza</u></strong> a la que se <strong><u>recirculan los nitratos</u></strong> producidos en la <u>fase de aireación posterior</u>.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Script para la funcionalidad desplegable -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Selecciona todos los elementos que servirán como disparadores
+            const triggers = document.querySelectorAll('.collapsible-trigger');
+
+            // Itera sobre cada disparador para añadirle un detector de clics
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', function (event) {
+                    // Evita que el clic en un desplegable anidado afecte a su contenedor padre
+                    event.stopPropagation();
+                    
+                    // Encuentra el elemento de contenido que sigue inmediatamente al disparador
+                    const content = this.nextElementSibling;
+                    
+                    // Alterna la clase 'open' en el disparador (para rotar el icono)
+                    this.classList.toggle('open');
+                    
+                    // Verifica que el siguiente elemento sea un contenido desplegable y alterna la clase 'hidden'
+                    if (content && content.classList.contains('collapsible-content')) {
+                        content.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
