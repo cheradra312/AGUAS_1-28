@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Convenios internacionales en materia de aguas</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-globe-europe"></i> MEA1T4. Convenios internacionales en materia de aguas <i class="fas fa-handshake"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Cooperación internacional y participación pública -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-users"></i></div>
+                <h2>1. Cooperación internacional y participación pública</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-globe icon text-blue-600"></i>Dentro de la <strong><u>cooperación internacional</u></strong>, además de los convenios que se detallan en el siguiente apartado, existe un <strong><u>destacado ejemplo</u></strong> que es la <span class="doc-pill"><strong>Convención de los cursos de agua</strong></span>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-check-circle icon text-green-500"></i>(aprobada por la <span class="actor-pill">Asamblea General de las Naciones Unidas</span> en <span class="pill-blue">1997</span>).</p></li>
+                                <li><p><i class="fas fa-water icon text-cyan-500"></i>Sobre los <strong><u>derechos de los usos de cursos de aguas internacionales</u></strong> para <u>usos distintos de la navegación</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-users-cog icon text-purple-600"></i>La <strong><u>participación pública</u></strong> está basada en:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-file-alt icon text-gray-500"></i>El <span class="doc-pill"><strong>Convenio de Aarhus de 1998</strong></span>.</p></li>
+                                <li><p><i class="fas fa-file-alt icon text-gray-500"></i>Y en distintas <span class="doc-pill"><strong>directivas europeas</strong></span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 2: Principales convenios internacionales -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-file-signature"></i></div>
+                <h2>2. Principales convenios internacionales relacionados con la gestión de los recursos transfronterizos</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-water text-blue-600 icon"></i>Convenio de Albufeira</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-purple-600"></i>(Firmado en <span class="pill-blue"><strong>1998</strong></span> y en vigor en <span class="pill-blue"><strong>2000</strong></span>).</p></li>
+                        <li><p><i class="fas fa-flag icon text-orange-600"></i>Suscrito entre <span class="actor-pill"><strong>España</strong></span> y <span class="actor-pill"><strong>Portugal</strong></span> para las <strong><u>5 cuencas</u></strong> que comparten: <u>Miño</u>, <u>Limia</u>, <u>Duero</u>, <u>Tajo</u> y <u>Guadiana</u>.</p></li>
+                        <li><p><i class="fas fa-bullseye icon text-red-600"></i><strong><u>Objetivos</u></strong>: <u>proteger aguas</u> y <u>aprovechamiento de recursos hídricos transfronterizos</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-users-cog icon text-indigo-600"></i>Tiene <strong><u>2 órganos de cooperación</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-users icon text-gray-500"></i><span class="definition-pill"><strong>Conferencia de las Partes</strong></span>, compuesta por <u>representantes de los respectivos gobiernos</u> y presidida por un <u>ministro de cada Estado</u>.</p></li>
+                                    <li><p><i class="fas fa-cogs icon text-gray-500"></i><span class="definition-pill"><strong>Comisión para la Aplicación y Desarrollo del Convenio</strong></span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-tint icon text-cyan-600"></i>En <span class="pill-blue"><strong>2008</strong></span> las <span class="actor-pill">Partes</span> han establecido un <strong><u>nuevo régimen de caudales</u></strong> necesarios para <u>garantizar el buen estado de las aguas</u> y los <u>usos actuales y previsibles</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-calculator icon text-blue-700"></i>El <span class="doc-pill">Convenio</span> ha <strong><u>fijado una serie de valores</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-arrow-down icon text-gray-500"></i>Los <strong><u>caudales mínimos</u></strong> que la parte española de las cuencas debe servir a la parte portuguesa en <u>situaciones hidrológicas normales</u>.</p></li>
+                                    <li><p><i class="fas fa-cloud-showers-heavy icon text-gray-500"></i>Los <strong><u>umbrales de precipitación y volumen almacenado</u></strong> en los embalses de regulación que permiten <u>determinar los periodos de excepción</u>.</p></li>
+                                    <li><p><i class="fas fa-bolt icon text-gray-500"></i>Confirma el <strong><u>reparto hidroeléctrico</u></strong> establecido en el <span class="doc-pill">Convenio de 1964</span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-leaf icon text-green-700"></i>Además, el convenio ha introducido el <strong><u>desarrollo sostenible</u></strong> en la <u>gestión de las cuencas</u> y el <u>aprovechamiento de los recursos naturales</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tasks icon text-orange-700"></i>En <span class="pill-blue"><strong>2015</strong></span> las <span class="actor-pill">Partes</span> han <strong><u>acordado</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-network-wired icon text-gray-500"></i><strong><u>Mejorar las redes de medida</u></strong> de las <u>masas de agua transfronterizas</u>, para <u>optimizar la información</u> sobre su estado y <u>cumplir los objetivos ambientales</u> que persigue la <span class="doc-pill">Directiva Marco de Aguas</span>.</p></li>
+                                    <li><p><i class="fas fa-sync-alt icon text-gray-500"></i>Así como <strong><u>intensificar la coordinación</u></strong> para <u>cumplir el régimen de caudales</u> acordado ante <u>situaciones de sequía</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-water text-blue-600 icon"></i>Convenio OSPAR</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-purple-600"></i>(Suscrito en París en <span class="pill-blue"><strong>1992</strong></span> y en vigor en <span class="pill-blue"><strong>1998</strong></span>).</p></li>
+                        <li><p><i class="fas fa-shield-alt icon text-green-600"></i><strong><u>Protección del medio marino</u></strong> del <u>Atlántico Nordeste</u>.</p></li>
+                        <li><p><i class="fas fa-compress-arrows-alt icon text-cyan-600"></i><strong><u>Refunde</u></strong> el <span class="doc-pill">convenio de Oslo</span>, de prevención de la contaminación marina provocada por buques, con el <span class="doc-pill">convenio de París</span>, para la prevención de la contaminación de origen terrestre.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tasks icon text-blue-700"></i>Sus <strong><u>obligaciones generales</u></strong> son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-steps icon text-gray-500"></i>Dar <strong><u>pasos para prevenir y eliminar la contaminación</u></strong> con <u>programación concreta</u> y <u>empleo de las mejores técnicas disponibles</u>.</p></li>
+                                    <li><p><i class="fas fa-balance-scale icon text-gray-500"></i><strong><u>Aplicación del <span class="principle-pill">principio de precaución</span></u></strong> con <u>medidas preventivas</u> y el <span class="principle-pill"><strong>principio de “quien contamina paga”</strong></span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-list-ul icon text-orange-700"></i>Sus <strong><u>obligaciones específicas</u></strong> son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-tint-slash icon text-gray-500"></i><strong><u>Prevención y eliminación</u></strong> de la <u>contaminación de origen terrestre</u>.</p></li>
+                                    <li><p><i class="fas fa-fire-extinguisher icon text-gray-500"></i><strong><u>Prevención y eliminación</u></strong> de la <u>contaminación por vertido o incineración</u>.</p></li>
+                                    <li><p><i class="fas fa-industry icon text-gray-500"></i><strong><u>Prevención y eliminación</u></strong> de la <u>contaminación procedentes de fuentes mar adentro</u>, como <u>emisarios o plataformas</u>.</p></li>
+                                    <li><p><i class="fas fa-search icon text-gray-500"></i><strong><u>Evaluación de la calidad</u></strong> del <u>medio marino</u>.</p></li>
+                                    <li><p><i class="fas fa-leaf icon text-gray-500"></i>Y <strong><u>Protección y conservación</u></strong> de los <u>ecosistemas y la diversidad biológica</u> en la zona marítima.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-bullseye icon text-red-600"></i><strong><u>Objetivo general</u></strong>: <u>conservar los ecosistemas marinos</u>, la <u>salud humana</u> y <u>restaurar las áreas marinas</u>, afectadas negativamente por las actividades humanas.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-crosshairs icon text-indigo-600"></i><strong><u>Objetivos estratégicos</u></strong> para el periodo <span class="pill-blue">2010-2020</span>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-dna icon text-gray-500"></i><strong><u>Detener la pérdida de biodiversidad</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i><strong><u>Luchar contra la eutrofización</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-smog icon text-gray-500"></i><strong><u>Reducir emisiones de sustancias peligrosas</u></strong> hasta <u>valor 0 en 2020</u>.</p></li>
+                                    <li><p><i class="fas fa-oil-can icon text-gray-500"></i><strong><u>Proteger contra efectos nocivos</u></strong> de <u>actividades offshore de gas y petróleo</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-water text-blue-600 icon"></i>Plan de Acción del Mediterráneo y Convenio de Barcelona</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-purple-600"></i>El <span class="plan-pill"><strong>Plan de Acción del Mediterráneo (PAM)</strong></span> (<span class="pill-blue">1975</span>) fue el <strong><u>primer acuerdo regional del <span class="actor-pill">PNUMA</span></u></strong>, adoptado por <span class="pill-blue">16</span> países mediterráneos y la <span class="actor-pill">CEE</span> para la <u>protección del Mar Mediterráneo</u> contra la contaminación.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-gavel icon text-amber-800"></i>Como <strong><u>marco jurídico del <span class="plan-pill">PAM</span></u></strong> se adopta el <span class="doc-pill"><strong>Convenio para la protección del mar Mediterráneo contra la contaminación (Convenio de Barcelona)</strong></span> (<span class="pill-blue">1976</span>), y una serie de <strong><u>protocolos</u></strong> sobre:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-ship icon text-gray-500"></i>La <strong><u>prevención de la contaminación</u></strong> causada por <u>vertidos desde buques y aeronaves</u>.</p></li>
+                                    <li><p><i class="fas fa-hands-helping icon text-gray-500"></i>Sobre <strong><u>cooperación para combatir la contaminación</u></strong> en <u>situaciones de emergencia</u> causadas por <u>hidrocarburos y otras sustancias perjudiciales</u>.</p></li>
+                                    <li><p><i class="fas fa-tint-slash icon text-gray-500"></i>Sobre la <strong><u>protección contra la contaminación de origen terrestre</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-shield-alt icon text-gray-500"></i>Sobre <strong><u>áreas protegidas</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-industry icon text-gray-500"></i>Para la <strong><u>protección contra la contaminación resultante de la exploración y explotación</u></strong> de la <u>plataforma continental y del fondo del mar y su subsuelo</u>.</p></li>
+                                    <li><p><i class="fas fa-biohazard icon text-gray-500"></i>Para la <strong><u>prevención de la contaminación por movimientos transfronterizos</u></strong> de <u>sustancias peligrosas</u>.</p></li>
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i>Y para la <strong><u>gestión integrada de las zonas costeras</u></strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tasks icon text-blue-700"></i><strong><u>Obligaciones generales</u></strong> para las partes:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-arrow-down icon text-gray-500"></i><strong><u>Tomar medidas</u></strong> para <u>reducir o eliminar la contaminación</u> en el mar Mediterráneo.</p></li>
+                                    <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong><u>Tomar las medidas apropiadas</u></strong> para <u>implementar el <span class="plan-pill">PAM</span></u>.</p></li>
+                                    <li><p><i class="fas fa-leaf icon text-gray-500"></i><strong><u>Proteger el medio ambiente</u></strong> y <strong><u>contribuir al desarrollo sostenible</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-check-double icon text-gray-500"></i><strong><u>Implementar el convenio y sus protocolos</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-bullhorn icon text-gray-500"></i><strong><u>Promover</u></strong>, dentro de los <span class="actor-pill">organismos internacionales competentes</span>, las <strong><u>medidas referentes a la implementación de programas</u></strong> de <u>desarrollo sostenible, protección, conservación y rehabilitación</u> del medioambiente y los recursos naturales en el área del mar Mediterráneo.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-sitemap icon text-indigo-600"></i><strong><u>Organización administrativa</u></strong> del Convenio:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-user-tie icon text-gray-500"></i>El Convenio designa al <span class="actor-pill"><strong>PNUMA</strong></span> para las funciones de <strong><u>Secretaría</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-flag icon text-gray-500"></i>El <span class="actor-pill"><strong>Gobierno español</strong></span> es el <strong><u>depositario</u></strong> del Convenio y sus protocolos.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-building icon text-gray-500"></i>La <strong><u>organización institucional</u></strong> incluye:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-users icon text-gray-400"></i><u>Conferencia de las partes</u> y <u>reuniones de plenipotenciarios</u>.</p></li>
+                                                <li><p><i class="fas fa-user-friends icon text-gray-400"></i><u>Reuniones de expertos</u>.</p></li>
+                                                <li><p><i class="fas fa-map-marked-alt icon text-gray-400"></i><u>Centros de actividad regional</u> para desarrollar el programa de actividades del <span class="plan-pill">PAM</span> y para la aplicación de los protocolos.</p></li>
+                                                <li><p><i class="fas fa-landmark icon text-gray-400"></i><u>Comisión mediterránea de desarrollo sostenible</u>.</p></li>
+                                                <li><p><i class="fas fa-search-location icon text-gray-400"></i><u>Programa coordinado de vigilancia continua</u> de la contaminación.</p></li>
+                                                <li><p><i class="fas fa-building icon text-gray-400"></i>Y <u>Centros nacionales de coordinación</u>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-handshake text-purple-700 icon"></i>Convenio Ramsar</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-feather-alt icon text-blue-600"></i><strong><u>Conservación de humedales</u></strong> de importancia internacional como <strong><u>hábitats de aves acuáticas</u></strong>.</p></li>
+                        <li><p><i class="fas fa-university icon text-indigo-600"></i>Depositaria la <span class="actor-pill"><strong>UNESCO</strong></span> (organización de las naciones unidas para la educación, la ciencia y la cultura).</p></li>
+                        <li><p><i class="fas fa-flag icon text-red-600"></i><span class="actor-pill"><strong>España</strong></span> es miembro desde <span class="pill-blue"><strong>1982</strong></span>, lo firmó en <span class="pill-blue">1971</span>, pero no lo ratificó hasta <span class="pill-blue">1982</span>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tasks icon text-orange-600"></i>Cuando un país se adhiere contrae una serie de <strong><u>compromisos</u></strong> en materia de <u>conservación y uso racional de sus humedales</u>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-list-ul icon text-gray-500"></i>Con la <strong><u>obligación de incluir al menos 1 humedal</u></strong> en la <span class="doc-pill"><strong>“Lista de humedales de Importancia Internacional”</strong></span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-globe icon text-cyan-600"></i>El Convenio incluye a <span class="pill-blue"><strong>172</strong></span> países, con más de <span class="pill-blue"><strong>2.500</strong></span> humedales que ocupan una superficie que supera los <span class="pill-blue"><strong>250 millones</strong></span> de hectáreas.</p></li>
+                        <li><p><i class="fas fa-map-marker-alt icon text-green-600"></i>En <span class="actor-pill"><strong>España</strong></span> hay <strong><u>más de <span class="pill-blue">70</span> humedales</u></strong> incluidos en la lista (<span class="pill-blue">3%</span> del total), ocupando más de <span class="pill-blue"><strong>300.000 ha</strong></span> (<span class="pill-blue">0,1%</span> del total).</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-handshake text-purple-700 icon"></i>Acuerdo de Toulouse</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Bajo los antecedentes del <span class="doc-pill">Convenio de Helsinki</span> y de la <span class="doc-pill">Directiva Marco del Agua (DMA)</span>.</p></li>
+                        <li><p><i class="fas fa-flag icon text-orange-600"></i><span class="actor-pill"><strong>España</strong></span> y <span class="actor-pill"><strong>Francia</strong></span> formalizaron en <span class="pill-blue"><strong>2006</strong></span> un <strong><u>acuerdo administrativo sobre gestión del agua</u></strong>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-bullseye icon text-red-600"></i>Con el <strong>fin</strong> de:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-sync-alt icon text-gray-500"></i><strong><u>Coordinar las medidas</u></strong> tomadas en las <u>cuencas hidrográficas</u> situadas a ambos lados de la frontera.</p></li>
+                                    <li><p><i class="fas fa-users-cog icon text-gray-500"></i>E <strong><u>instaurar una cooperación administrativa regular</u></strong> entre los dos países en lo relativo a la <u>implantación de la DMA</u>, realizando una <u>gestión del agua sostenible e integrada</u> de los cursos de agua de ambos países.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-users text-cyan-800 icon"></i>Conferencia de Directores Iberoamericanos del Agua (CODIA)</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>La <strong><u>X Cumbre Iberoamericana de Jefes de Estado y de Gobierno</u></strong> (<span class="pill-blue">2000</span>) encomendó a <span class="actor-pill">España</span> la organización del <span class="doc-pill"><strong>I Foro de Ministros de Medio Ambiente</strong></span>, que se celebró en <span class="pill-blue">2001</span>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-check-circle icon text-green-600"></i>En él se acordó la <strong><u>constitución de la <span class="actor-pill">Conferencia de Directores Iberoamericanos del Agua (CODIA)</span></u></strong>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-tools icon text-gray-500"></i>Como <strong><u>instrumento técnico de apoyo</u></strong> a los Foros.</p></li>
+                                    <li><p><i class="fas fa-bullseye icon text-red-500"></i>Y con el <strong><u>objetivo de examinar e instrumentar modalidades de cooperación</u></strong> en el área de los <u>recursos hídricos</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-calendar-alt icon text-purple-600"></i>Desde la creación de la <span class="actor-pill">CODIA</span> se han celebrado <strong><u>Conferencias anuales</u></strong> que han reunido a los <u>responsables políticos de la gestión de los recursos hídricos</u> de <span class="pill-blue">22</span> países iberoamericanos, con representación de diferentes organismos del sector.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-handshake text-purple-700 icon"></i>Convenio de Helsinki</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>El <span class="doc-pill"><strong>Convenio sobre la Protección y Utilización de los Cursos de Agua Transfronterizos y de los Lagos Internacionales (Convenio del Agua o de Helsinki)</strong></span> se firmó en <span class="pill-blue"><strong>1992</strong></span>, y entró en vigor en <span class="pill-blue"><strong>1996</strong></span>.</p></li>
+                        <li><p><i class="fas fa-flag icon text-red-600"></i><span class="actor-pill"><strong>España</strong></span> lo ratificó en el año <span class="pill-blue"><strong>2000</strong></span>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-bullseye icon text-red-600"></i>El <strong><u>objetivo primordial</u></strong> del Convenio es <strong><u>reforzar las medidas de ámbito local, nacional y regional</u></strong> destinadas a:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-shield-alt icon text-gray-500"></i><strong><u>Proteger y asegurar la cantidad y calidad</u></strong> de los <u>recursos hídricos transfronterizos</u>.</p></li>
+                                    <li><p><i class="fas fa-leaf icon text-gray-500"></i>Y su <strong><u>uso sostenible</u></strong> en la región de la <span class="actor-pill"><strong>Comisión Económica de las Naciones Unidas para Europa (CEPE o UNECE)</strong></span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-file-alt icon text-orange-600"></i>Derivado de este Convenio se estableció en <span class="pill-blue">1999</span> el <span class="doc-pill"><strong>Protocolo sobre Agua y Salud</strong></span>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-award icon text-green-500"></i><strong><u>Primer acuerdo internacional</u></strong> que une las cuestiones en materia de <u>gestión del agua</u> y de <u>salud</u>.</p></li>
+                                    <li><p><i class="fas fa-user-tie icon text-indigo-500"></i>El <strong><u>Secretariado</u></strong> de este Protocolo es <strong><u>compartido</u></strong> entre la <span class="actor-pill">Oficina Regional Europea de la Organización Mundial de la Salud (OMS)</span> y la <span class="actor-pill">Comisión Económica de las Naciones Unidas para Europa</span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Principales organismos internacionales -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-users"></i></div>
+                <h2>3. Principales organismos internacionales relacionados con la gestión de los recursos hídricos</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-building icon text-blue-600"></i><span class="actor-pill"><strong>ONU</strong></span> y <span class="actor-pill"><strong>OCDE</strong></span> (organización para la cooperación y el desarrollo económico).</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-users icon text-gray-500"></i>Incluye <span class="pill-blue"><strong>38</strong></span> estados.</p></li>
+                                <li><p><i class="fas fa-map-marker-alt icon text-gray-500"></i>Sede en <strong><u>París</u></strong>.</p></li>
+                                <li><p><i class="fas fa-calendar-alt icon text-gray-500"></i>Y fundada en <span class="pill-blue"><strong>1960</strong></span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-hand-holding-water icon text-green-600"></i><span class="actor-pill"><strong>Asociación Mundial para el Agua</strong></span>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-door-open icon text-gray-500"></i><strong><u>Abierta a todas las organizaciones</u></strong> involucradas en la <u>gestión sostenible de los recursos hídricos</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-globe icon text-purple-600"></i><span class="actor-pill"><strong>Consejo Mundial del Agua</strong></span> (<span class="pill-blue">1996</span>).</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-info-circle icon text-gray-500"></i><strong><u>Plataforma internacional multiactor</u></strong> que busca <strong><u>promover la protección y la gestión eficiente del agua</u></strong> a todos los niveles, incluido el más alto.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-hands-helping icon text-orange-600"></i><span class="actor-pill"><strong>Agencia española de Cooperación Internacional para el Desarrollo</strong></span>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-coins icon text-gray-500"></i>Que gestiona el <span class="plan-pill"><strong>Fondo de Cooperación para Agua y Saneamiento</strong></span> para las <u>poblaciones más necesitadas</u> de <u>América Latina y Caribe</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <!-- Script para la funcionalidad desplegable -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Selecciona todos los elementos que servirán como disparadores
+            const triggers = document.querySelectorAll('.collapsible-trigger');
+
+            // Itera sobre cada disparador para añadirle un detector de clics
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', function (event) {
+                    // Evita que el clic en un desplegable anidado afecte a su contenedor padre
+                    event.stopPropagation();
+                    
+                    // Encuentra el elemento de contenido que sigue inmediatamente al disparador
+                    const content = this.nextElementSibling;
+                    
+                    // Alterna la clase 'open' en el disparador (para rotar el icono)
+                    this.classList.toggle('open');
+                    
+                    // Verifica que el siguiente elemento sea un contenido desplegable y alterna la clase 'hidden'
+                    if (content && content.classList.contains('collapsible-content')) {
+                        content.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
