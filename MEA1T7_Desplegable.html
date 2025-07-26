@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: El régimen económico financiero de la Ley de Aguas</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-euro-sign"></i> MEA1T7. El régimen económico financiero de la Ley de Aguas <i class="fas fa-landmark"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: El régimen económico financiero de la Ley de Aguas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-coins"></i></div>
+                <h2>1. El régimen económico financiero de la Ley de Aguas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Las <span class="actor-pill"><strong>Administraciones públicas competentes</strong></span>, en virtud del <span class="principle-pill"><strong>principio de recuperación de costes</strong></span> y teniendo en cuenta <u>proyecciones económicas a largo plazo</u>, <strong><u>establecerán los oportunos mecanismos</u></strong> para <strong><u>repercutir los costes</u></strong> de los servicios relacionados con la <u>gestión del agua</u>, incluyendo los <u>costes ambientales y del recurso</u>, en los diferentes <span class="actor-pill">usuarios finales</span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-purple-600"></i>La <strong><u>aplicación del principio de recuperación</u></strong> de los mencionados costes deberá hacerse:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-tint icon text-green-500"></i>De manera que <strong><u>incentive el uso eficiente del agua</u></strong> y, por tanto, <strong><u>contribuya a los objetivos medioambientales</u></strong> perseguidos.</p></li>
+                                <li><p><i class="fas fa-users icon text-orange-500"></i>Con una <strong><u>contribución adecuada de los diversos usos</u></strong>, de acuerdo con el <span class="principle-pill"><strong>principio del que contamina paga</strong></span>, y considerando al menos los usos de <u>abastecimiento</u>, <u>agricultura</u> e <u>industria</u>.</p></li>
+                                <li><p><i class="fas fa-eye icon text-cyan-500"></i>Todo ello con aplicación de <strong><u>criterios de transparencia</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-chart-bar icon text-indigo-600"></i>A tal fin la <span class="actor-pill"><strong>Administración con competencias en materia de suministro de agua</strong></span> establecerá las <strong><u>estructuras tarifarias por tramos de consumo</u></strong>, con la finalidad de:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-check-circle icon text-gray-500"></i><strong><u>Atender las necesidades básicas</u></strong> a un <u>precio asequible</u>.</p></li>
+                                <li><p><i class="fas fa-arrow-down icon text-gray-500"></i>Y <strong><u>desincentivar los consumos excesivos</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-balance-scale icon text-yellow-600"></i>Para la aplicación del <span class="principle-pill">principio de recuperación de costes</span> se tendrán en cuenta las <strong><u>consecuencias sociales, ambientales y económicas</u></strong>, así como las <strong><u>condiciones geográficas y climáticas</u></strong> de cada territorio y de las poblaciones afectadas.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-exclamation-triangle icon text-red-500"></i>Siempre y cuando ello <strong><u>no comprometa los fines ni el logro</u></strong> de los <u>objetivos ambientales</u> establecidos.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-gavel icon text-amber-800"></i>Mediante <strong><u>resolución de la Administración competente</u></strong> (que en el ámbito de la <span class="actor-pill">Administración General del Estado</span> corresponderá al <span class="actor-pill">MITECO</span>), se podrán establecer <strong><u>motivadamente excepciones al principio de recuperación de costes</u></strong> para determinados usos.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-info icon text-gray-500"></i>Teniendo en cuenta las <strong><u>mismas consecuencias y condiciones</u></strong> mencionadas.</p></li>
+                                <li><p><i class="fas fa-ban icon text-red-500"></i>Y sin que, en ningún caso, se <strong><u>comprometan los fines ni el logro</u></strong> de los <u>objetivos ambientales</u> correspondientes.</p></li>
+                                <li><p><i class="fas fa-file-alt icon text-blue-500"></i>Para ello, los <span class="actor-pill">organismos de cuenca</span> <strong><u>emitirán en el plazo de tres meses</u></strong>, con carácter <u>preceptivo y previo</u> a la resolución que se adopte, <strong><u>informe motivado</u></strong> que, en todo caso, justifique que <u>no se comprometen ni los fines ni los logros ambientales</u> establecidos en las respectivas <u>planificaciones hidrológicas</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-file-invoice-dollar icon text-green-700"></i>El <span class="law-pill"><strong>Texto Refundido de la Ley de Aguas</strong></span> contempla las siguientes <strong><u>exacciones</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-hand-holding-water icon text-gray-500"></i><span class="definition-pill"><strong>Canon de utilización de bienes de DPH</strong></span>, por la <u>ocupación de terrenos</u> (<u>cauces de corrientes naturales</u> o <u>lechos de lagos, lagunas y embalses</u>) o <u>utilización de bienes de DPH</u>, incluyendo el <u>aprovechamiento de sus materiales</u>, que requieran <u>concesión o autorización</u>.</p></li>
+                                <li><p><i class="fas fa-tint-slash icon text-gray-500"></i><span class="definition-pill"><strong>Canon de control de vertidos</strong></span>, cuyo objeto es el <u>vertido al DPH</u>.</p></li>
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i><span class="definition-pill"><strong>Canon de regulación</strong></span>, cuyo objeto son las <u>mejoras producidas por la regulación de caudales</u> para los distintos usos (<u>regadíos, abastecimiento, industria, etc.</u>).</p></li>
+                                <li><p><i class="fas fa-money-bill-wave icon text-gray-500"></i><span class="definition-pill"><strong>Tarifa de utilización del agua</strong></span>, cuyo objeto es el <u>aprovechamiento o disponibilidad del agua</u> hecha posible por <u>obras hidráulicas específicas</u> financiadas total o parcialmente a cargo del <span class="actor-pill">Estado</span>.</p></li>
+                                <li><p><i class="fas fa-bolt icon text-gray-500"></i><span class="definition-pill"><strong>Canon por utilización de las aguas continentales</strong></span> para la <u>producción de energía eléctrica</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 2: Canon de ocupación o utilización -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-hand-holding-water"></i></div>
+                <h2>2. Canon de ocupación o utilización</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-bullseye icon text-red-600"></i><strong><u>Fin</u></strong>: <strong><u>protección y mejora</u></strong> del <span class="definition-pill">DPH</span>.</p></li>
+                    <li><p><i class="fas fa-user-check icon text-green-600"></i><strong><u>Beneficiario</u></strong>: <span class="actor-pill"><strong>organismo de cuenca</strong></span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-users icon text-purple-600"></i><strong><u>Sujetos pasivos</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-user-tie icon text-gray-500"></i><strong><u>Concesionarios o personas autorizadas</u></strong>.</p></li>
+                                <li><p><i class="fas fa-user-slash icon text-orange-500"></i><strong><u>Exentos</u></strong>: <span class="actor-pill">concesionarios de aguas</span> por la <u>ocupación o utilización de los terrenos de dominio público</u> necesarios para llevar a cabo la concesión.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-calendar-day icon text-cyan-600"></i><strong><u>Devengo de la tasa</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-stamp icon text-gray-500"></i>Con el <strong><u>otorgamiento inicial</u></strong>.</p></li>
+                                <li><p><i class="fas fa-sync-alt icon text-gray-500"></i>Y el <strong><u>mantenimiento anual</u></strong> de la <u>concesión y autorización</u>.</p></li>
+                                <li><p><i class="fas fa-file-invoice-dollar icon text-gray-500"></i>Según <strong><u>cuantía y plazos</u></strong> fijados en la <u>concesión o autorización</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-calculator icon text-blue-700"></i><strong><u>Base imponible</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-map-marked-alt icon text-gray-500"></i><strong><u>Ocupación</u></strong> (valor de los terrenos).</p></li>
+                                <li><p><i class="fas fa-hand-holding-usd icon text-gray-500"></i><strong><u>Utilización</u></strong> (valor de la utilización o del beneficio obtenido de ella).</p></li>
+                                <li><p><i class="fas fa-cubes icon text-gray-500"></i>Y <strong><u>aprovechamiento</u></strong> (por el valor de los materiales consumidos o la utilidad que reporten).</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-percentage icon text-indigo-600"></i><strong><u>Tipo de gravamen</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-chart-pie icon text-gray-500"></i><span class="pill-blue"><strong>5%</strong></span> para <u>ocupación y utilización</u>.</p></li>
+                                <li><p><i class="fas fa-chart-pie icon text-gray-500"></i>Y <span class="pill-blue"><strong>100%</strong></span> para <u>aprovechamiento</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-user-cog icon text-slate-700"></i><strong><u>Recaudador</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-water icon text-gray-500"></i>En <strong><u>cuencas intercomunitarias</u></strong>:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-building icon text-gray-400"></i>El <span class="actor-pill"><strong>organismo de cuenca</strong></span>.</p></li>
+                                            <li><p><i class="fas fa-landmark icon text-gray-400"></i>O <span class="actor-pill"><strong>administración tributaria del Estado</strong></span>, en virtud de <u>convenio</u> con el <span class="actor-pill">organismo de cuenca</span>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 3: El canon de control de vertidos -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-tint-slash"></i></div>
+                <h2>3. El canon de control de vertidos</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-bullseye icon text-red-600"></i><strong><u>Fin</u></strong>: <u>estudio</u>, <u>control</u>, <u>protección</u> y <u>mejora</u> del <span class="definition-pill">medio receptor</span>.</p></li>
+                    <li><p><i class="fas fa-user-check icon text-green-600"></i><strong><u>Beneficiario</u></strong>: <span class="actor-pill"><strong>organismo de cuenca</strong></span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-users icon text-purple-600"></i><strong><u>Sujetos pasivos</u></strong>: quienes lleven a cabo el <strong><u>vertido</u></strong>, ya sea como:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-user-tie icon text-gray-500"></i><strong><u>Titulares</u></strong> de las <u>autorizaciones de vertido</u>.</p></li>
+                                <li><p><i class="fas fa-user-secret icon text-gray-500"></i>O como <strong><u>responsables</u></strong> de <u>vertidos no autorizados</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-calendar-day icon text-cyan-600"></i><strong><u>Devengo de la tasa</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-calendar-alt icon text-gray-500"></i>El <span class="pill-blue"><strong>31-12 de cada año</strong></span> y se abona en el <u>primer trimestre del año siguiente</u>.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-exclamation-triangle icon text-yellow-500"></i>En caso de <strong><u>vertidos no autorizados</u></strong>, además de imponer las <u>sanciones que correspondan</u>, se practica una <strong><u>sola liquidación por todos los ejercicios no prescritos</u></strong>.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-calendar-times icon text-gray-400"></i>(<span class="pill-blue"><strong>3 años</strong></span> para infracciones <u>muy graves</u>, <span class="pill-blue"><strong>2 años</strong></span> para <u>graves</u> y <span class="pill-blue"><strong>6 meses</strong></span> para <u>leves</u>).</p></li>
+                                            <li><p><i class="fas fa-file-alt icon text-gray-400"></i>Que se hará en la <strong><u>resolución de cese de vertidos</u></strong> si no son autorizados.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-ruler-combined icon text-blue-700"></i><strong><u>Base imponible</u></strong>: <u>volumen vertido</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-percentage icon text-indigo-600"></i><strong><u>Tipo de gravamen</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-calculator icon text-gray-500"></i><strong><u>Precio básico</u></strong> <span class="pill-blue"><strong>0,01751 €/m³</strong></span> para <u>agua residual urbana</u> y <span class="pill-blue"><strong>0,04377 €/m³</strong></span> para <u>agua residual industrial</u>.</p></li>
+                                <li><p><i class="fas fa-times icon text-gray-500"></i>Multiplicado por un <strong><u>coeficiente de mayoración o minoración</u></strong> cuyo valor es <span class="formula-pill"><strong>igual o inferior a 5</strong></span>.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-cogs icon text-gray-500"></i>Y que se obtiene como el <strong><u>producto de 3 coeficientes</u></strong> en función de:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-industry icon text-gray-400"></i>Las <strong><u>características del vertido</u></strong> (<u>agua residual urbana o industrial</u>).</p></li>
+                                            <li><p><i class="fas fa-flask icon text-gray-400"></i>Del <strong><u>grado de contaminación</u></strong> del vertido (<u>tratado o sin tratar</u>).</p></li>
+                                            <li><p><i class="fas fa-water icon text-gray-400"></i>Y de la <strong><u>calidad del medio receptor</u></strong> (se distinguen <u>3 categorías</u>), debe constar en la <u>autorización de vertido</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-user-cog icon text-slate-700"></i><strong><u>Recaudador</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>En <strong><u>cuencas intercomunitarias</u></strong> el <span class="actor-pill">organismo de cuenca</span> o <span class="actor-pill">administración tributaria del Estado</span>, en virtud de <u>convenio</u> con el <span class="actor-pill">organismo de cuenca</span>.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-handshake icon text-gray-500"></i>Asimismo, en virtud de <u>convenio</u> las <span class="actor-pill"><strong>Comunidades Autónomas</strong></span> podrán <strong><u>recaudar el canon</u></strong> en su ámbito territorial.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-exchange-alt icon text-gray-400"></i>En este supuesto, la <span class="actor-pill">Comunidad Autónoma</span> <strong><u>pondrá a disposición del <span class="actor-pill">Organismo de cuenca</span></u></strong> la cuantía que se estipule en el convenio, en atención a las funciones que en virtud del mismo se encomienden a la <span class="actor-pill">Comunidad Autónoma</span>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-balance-scale-left icon text-orange-700"></i>Este canon es <strong><u>independiente</u></strong> del que puedan establecer las <span class="actor-pill">CCAA</span> o las <span class="actor-pill">corporaciones locales</span> para financiar <u>obras de saneamiento y depuración</u>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-arrow-down icon text-green-500"></i>Si el sujeto pasivo del canon de vertido es gravado por otro de la <span class="actor-pill">C.A.</span> con el mismo fin, podrá <strong><u>deducirse en el canon de vertido estatal</u></strong> ese <u>canon autonómico</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 4: Canon de regulación y tarifa de utilización del agua -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-coins"></i></div>
+                <h2>4. Canon de regulación y tarifa de utilización del agua. Distribución entre los beneficiarios</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-bullseye icon text-red-600"></i><strong><u>Fin</u></strong>: <strong><u>compensar los costes de inversión</u></strong> y los <strong><u>gastos de explotación y conservación</u></strong> de:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i>Las <strong><u>obras de regulación</u></strong> (para el <span class="definition-pill">canon de regulación</span>).</p></li>
+                                <li><p><i class="fas fa-tools icon text-gray-500"></i>O de las <strong><u>obras hidráulicas específicas</u></strong> (para la <span class="definition-pill">tarifa de utilización del agua</span>) financiadas total o parcialmente por el <span class="actor-pill">Estado</span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-user-check icon text-green-600"></i><strong><u>Beneficiario</u></strong>: <span class="actor-pill"><strong>organismo de cuenca</strong></span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-users icon text-purple-600"></i><strong><u>Sujetos pasivos</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-hand-holding-water icon text-gray-500"></i><strong><u>Beneficiados por las obras de regulación</u></strong> de aguas superficiales o subterráneas financiadas por el <span class="actor-pill">Estado</span> (para el <span class="definition-pill">canon de regulación</span>).</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>O por las <strong><u>obras hidráulicas específicas</u></strong> (para la <span class="definition-pill">tarifa de utilización del agua</span>).</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-calculator icon text-blue-700"></i>La <strong><u>cuantía de las exacciones</u></strong> para cada ejercicio presupuestario será <strong><u>suma</u></strong> de:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-wrench icon text-gray-500"></i><strong><u>Gastos de funcionamiento y conservación</u></strong>.</p></li>
+                                <li><p><i class="fas fa-user-cog icon text-gray-500"></i><strong><u>Gastos de administración</u></strong> del <span class="actor-pill">organismo gestor</span> imputables a dichas obras.</p></li>
+                                <li><p><i class="fas fa-percentage icon text-gray-500"></i><span class="pill-blue"><strong>4%</strong></span> de las <strong><u>inversiones realizadas por el <span class="actor-pill">Estado</span></u></strong> (debidamente <u>actualizado</u>, teniendo en cuenta la <u>amortización técnica</u>).</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-balance-scale icon text-indigo-600"></i>Para el <strong><u>cálculo de los cánones y exacciones</u></strong> se introducirá un <span class="definition-pill"><strong>factor corrector</strong></span> (entre <span class="pill-blue">0,5</span> y <span class="pill-blue">2</span>) según el beneficiado por la obra hidráulica <strong><u>consuma en cantidades inferiores o superiores</u></strong> a las <u>dotaciones de referencia</u> del <span class="plan-pill">Plan Hidrológico de cuenca</span>.</p></li>
+                    <li><p><i class="fas fa-user-cog icon text-slate-700"></i><strong><u>Recaudador</u></strong>: en <u>cuencas intercomunitarias</u> el <span class="actor-pill">organismo de cuenca</span> o <span class="actor-pill">administración tributaria del Estado</span>, en virtud de <u>convenio</u> con el <span class="actor-pill">organismo de cuenca</span>.</p></li>
+                </ul>
+                
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-users-cog icon text-cyan-800"></i>Distribución entre beneficiados</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>La <strong><u>distribución del importe total</u></strong> entre todos los beneficiados de las obras se hará según <strong><u>criterios</u></strong> de:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-lightbulb icon text-gray-500"></i><strong><u>Racionalización</u></strong> del uso del agua.</p></li>
+                                    <li><p><i class="fas fa-equals icon text-gray-500"></i><strong><u>Equidad</u></strong> en el reparto de las obligaciones.</p></li>
+                                    <li><p><i class="fas fa-coins icon text-gray-500"></i><strong><u>Autofinanciación</u></strong> del servicio.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-users icon text-purple-600"></i>Se <strong><u>repartirá entre todos los usuarios actuales</u></strong> pudiendo establecerse un <u>régimen transitorio</u> cuando la puesta en servicio se efectúe <u>gradualmente</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tasks icon text-orange-600"></i>Para <strong><u>conseguir la equidad</u></strong> en el reparto de las obligaciones, se puede establecer según:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-seedling icon text-gray-500"></i>Unidades de <strong><u>superficie cultivable</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-tint icon text-gray-500"></i><strong><u>Caudal</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-hand-holding-water icon text-gray-500"></i><strong><u>Consumo de agua</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-bolt icon text-gray-500"></i><strong><u>Energía</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-ruler icon text-gray-500"></i>O cualquier otro tipo de <strong><u>medida adecuada</u></strong> al uso de que se trate.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-handshake icon text-green-700"></i>Cuando los <strong><u>obligados al pago</u></strong> estén agrupados en una <span class="actor-pill"><strong>Comunidad de Usuarios</strong></span> el <strong><u>pago se podrá realizar a través de ella</u></strong>.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5: Canon por utilización de las aguas continentales para la producción de energía eléctrica -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-bolt"></i></div>
+                <h2>5. Canon por utilización de las aguas continentales para la producción de energía eléctrica</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-bullseye icon text-red-600"></i><strong><u>Fin</u></strong>: <strong><u>protección y mejora del <span class="definition-pill">DPH</span></u></strong>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-info-circle icon text-gray-500"></i>Este canon solo es <strong><u>aplicable</u></strong> a las <u>cuencas hidrográficas de competencia estatal</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-user-check icon text-green-600"></i><strong><u>Beneficiario</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-percentage icon text-gray-500"></i><span class="pill-blue"><strong>50%</strong></span> <span class="actor-pill"><strong>organismo de cuenca</strong></span>, destinado a <u>financiar actividades de control, mejora y protección</u> del <span class="definition-pill">DPH</span> que se definirán reglamentariamente.</p></li>
+                                <li><p><i class="fas fa-percentage icon text-gray-500"></i>Y el <span class="pill-blue"><strong>50%</strong></span> restante para <strong><u>financiar los costes del sistema eléctrico</u></strong> previstos en la <span class="law-pill">Ley 24/2013 del sector eléctrico</span>, referidos a <u>fomento de energías renovables</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-users icon text-purple-600"></i><strong><u>Sujetos pasivos</u></strong>: los <strong><u>titulares de un aprovechamiento hidroeléctrico</u></strong>.</p></li>
+                    <li><p><i class="fas fa-calendar-day icon text-cyan-600"></i><strong><u>Devengo de la tasa</u></strong>: con el <strong><u>otorgamiento inicial</u></strong> y el <strong><u>mantenimiento anual</u></strong> de la <u>concesión hidroeléctrica</u>.</p></li>
+                    <li><p><i class="fas fa-calculator icon text-blue-700"></i><strong><u>Base imponible</u></strong>: <strong><u>valor económico de la energía hidroeléctrica producida</u></strong> en cada <u>periodo impositivo anual</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-percentage icon text-indigo-600"></i><strong><u>Tipo de gravamen</u></strong>: <span class="pill-blue"><strong>25,5%</strong></span>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-arrow-down icon text-green-500"></i>Se <strong><u>reducirá</u></strong>:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-industry icon text-gray-400"></i>En un <span class="pill-blue"><strong>92%</strong></span> para <strong><u>instalaciones hidroeléctricas ≤50 MW</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-water icon text-gray-400"></i>Y un <span class="pill-blue"><strong>90%</strong></span> para <strong><u>instalaciones hidroeléctricas de bombeo y potencia superior a 50 MW</u></strong>, sobre la parte de la base imponible compuesta por el <u>valor de la energía procedente de bombeo</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li><p><i class="fas fa-cogs icon text-orange-500"></i>En la forma que <strong><u>reglamentariamente se determine</u></strong> por <u>incentivos de política energética general</u>.</p></li>
+                                <li><p><i class="fas fa-user-slash icon text-red-500"></i>Están <strong><u>exentos</u></strong> del canon los <strong><u>aprovechamientos explotados directamente por la <span class="actor-pill">AGE</span></u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-user-cog icon text-slate-700"></i><strong><u>Recaudador</u></strong>: el <span class="actor-pill"><strong>Organismo de cuenca</strong></span> o la <span class="actor-pill"><strong>Administración Tributaria del Estado</strong></span>, en virtud de <u>convenio</u> con aquel.</p></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <!-- Script para la funcionalidad desplegable -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Selecciona todos los elementos que servirán como disparadores
+            const triggers = document.querySelectorAll('.collapsible-trigger');
+
+            // Itera sobre cada disparador para añadirle un detector de clics
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', function (event) {
+                    // Evita que el clic en un desplegable anidado afecte a su contenedor padre
+                    event.stopPropagation();
+                    
+                    // Encuentra el elemento de contenido que sigue inmediatamente al disparador
+                    const content = this.nextElementSibling;
+                    
+                    // Alterna la clase 'open' en el disparador (para rotar el icono)
+                    this.classList.toggle('open');
+                    
+                    // Verifica que el siguiente elemento sea un contenido desplegable y alterna la clase 'hidden'
+                    if (content && content.classList.contains('collapsible-content')) {
+                        content.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
