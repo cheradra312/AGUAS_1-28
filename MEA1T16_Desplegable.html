@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Condiciones de potabilidad del agua</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-check-circle"></i> MEA1T16. Condiciones de potabilidad del agua <i class="fas fa-tint"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Condiciones de potabilidad del agua -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-vial"></i></div>
+                <h2>1. Condiciones de potabilidad del agua</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-gavel icon text-amber-700"></i>Las <strong><u>aguas destinadas al abastecimiento</u></strong> deberán <strong><u>cumplir las exigencias</u></strong> del <span class="law-pill"><strong>RD 3/2023</strong></span> por el que se establecen los <strong><u>criterios técnico-sanitarios de la calidad del agua de consumo, su control y suministro</u></strong>.</p></li>
+                    <li><p><i class="fas fa-tasks icon text-blue-600"></i>Deben <strong><u>cumplir</u></strong> las <u>aguas de consumo humano</u> y las <u>instalaciones que permiten su suministro</u> desde la <u>captación hasta el grifo del consumidor</u> y el <u>control de éstas</u>.</p></li>
+                    <li><p><i class="fas fa-bullseye icon text-red-600"></i>Garantizando su <strong><u>salubridad, calidad y limpieza</u></strong>, con el fin de <strong><u>proteger la salud de las personas</u></strong> de los <u>efectos adversos</u> derivados de cualquier tipo de <u>contaminación de las aguas</u>.</p></li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tint icon text-cyan-600"></i>Definición de Aguas de Consumo</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>En el <span class="law-pill"><strong>RD 3/2023</strong></span> se definen las <span class="definition-pill"><strong>aguas de consumo</strong></span> como todas aquellas <strong><u>aguas de uso humano</u></strong>, ya sea en su <u>estado original</u>, ya sea <u>después del tratamiento</u>, que sean:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-glass-martini-alt icon text-gray-500"></i><strong><u>Utilizadas para beber, cocinar, preparar alimentos, higiene personal y para otros usos domésticos</u></strong>, sea cual fuere su origen e independientemente de que se suministren al consumidor, a través de <u>redes de distribución públicas o privadas</u>, de <u>cisternas</u>, de <u>depósitos públicos o privados</u>.</p></li>
+                                    <li><p><i class="fas fa-industry icon text-gray-500"></i><strong><u>Utilizadas en la industria alimentaria</u></strong> para fines de <u>fabricación, tratamiento, conservación o comercialización</u> de productos o sustancias destinadas al consumo humano, así como a las utilizadas en la <u>limpieza de las superficies, objetos y materiales</u> que puedan estar en contacto con los alimentos.</p></li>
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i><strong><u>Aguas de la zona de captación</u></strong> en las masas de agua, que vayan a ser <strong><u>utilizadas para la producción de agua de consumo</u></strong>, independientemente de su <u>origen</u> y del <u>tratamiento requerido</u>, en su caso.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-check-double icon text-green-700"></i>Requisitos de Calidad</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-medkit icon text-red-600"></i>El agua de consumo humano deberá ser <strong><u>salubre y limpia</u></strong>, <strong><u>sin contener ningún tipo de microorganismo, parásito o sustancia</u></strong>, en una cantidad o concentración que pueda suponer un <strong><u>riesgo para la salud humana</u></strong>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-clipboard-check icon text-purple-600"></i>Cumpliendo con:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-microscope icon text-gray-500"></i><strong>Parámetros microbiológicos</strong> (<u>Escherichia coli</u>, <u>Enterococo</u> y <u>Clostridium perfringens</u>).</p></li>
+                                    <li><p><i class="fas fa-flask icon text-gray-500"></i><strong>Parámetros químicos</strong> (<u>antimonio</u>, <u>arsénico</u>, <u>benceno</u>, <u>cianuro</u>, <u>cobre</u>, <u>cromo</u>, <u>mercurio</u>, <u>plomo</u>, etc.).</p></li>
+                                    <li><p><i class="fas fa-atom icon text-gray-500"></i>Y <strong>parámetros de radiactividad</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Técnicas de potabilización, desalación y tratamiento de aguas industriales -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-cogs"></i></div>
+                <h2>2. Técnicas de potabilización, desalación y técnicas de tratamiento de aguas industriales</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-check-circle icon text-green-600"></i>Potabilización</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i><strong><u>Proceso</u></strong> para darle al agua las <strong><u>características adecuadas</u></strong> para que sea <strong><u>potable</u></strong> con las siguientes fases:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-broom icon text-purple-600"></i><span class="definition-pill"><strong>Clarificación</strong></span> o <strong><u>eliminación de impurezas</u></strong> contenidas en el agua.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-th-large icon text-gray-500"></i>Para partículas <u>mayores de 3 mm</u> se emplean <strong>rejas y tamices</strong>.</p></li>
+                                                <li>
+                                                    <div class="collapsible-trigger">
+                                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                        <p><i class="fas fa-th icon text-gray-500"></i>Para las de <u>tamaño inferior</u> se emplean técnicas de:</p>
+                                                    </div>
+                                                    <div class="collapsible-content hidden">
+                                                        <ul class="even-deeper-nested-list">
+                                                            <li>
+                                                                <div class="collapsible-trigger">
+                                                                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                                    <p><i class="fas fa-magic icon text-teal-500"></i><span class="definition-pill"><strong>Floculación</strong></span></p>
+                                                                </div>
+                                                                <div class="collapsible-content hidden">
+                                                                    <ul class="nested-list">
+                                                                        <li><p><i class="fas fa-flask icon"></i>Mediante un <u>coagulante</u> (<span class="formula-pill">sulfito de aluminio</span> o <span class="formula-pill">sal de hierro</span>).</p></li>
+                                                                        <li><p><i class="fas fa-magnet icon"></i>Se pueden <strong><u>absorber las partículas en suspensión</u></strong> para formar <u>flóculos o copos</u>.</p></li>
+                                                                        <li><p><i class="fas fa-check icon"></i>Fácilmente <strong><u>separables por decantación y filtración</u></strong>.</p></li>
+                                                                    </ul>
+                                                                </div>
+                                                            </li>
+                                                            <li>
+                                                                <div class="collapsible-trigger">
+                                                                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                                    <p><i class="fas fa-arrow-down icon text-blue-500"></i><span class="definition-pill"><strong>Decantación</strong></span></p>
+                                                                </div>
+                                                                <div class="collapsible-content hidden">
+                                                                    <ul class="nested-list">
+                                                                        <li><p><i class="fas fa-hourglass-end icon"></i>Consiste en dejar que los <strong><u>flóculos se depositen</u></strong> en el fondo de los decantadores.</p></li>
+                                                                        <li><p><i class="fas fa-stream icon"></i>Puede ser <strong><u>estática</u></strong> o <strong><u>acelerada</u></strong> para tratar grandes caudales.</p></li>
+                                                                    </ul>
+                                                                </div>
+                                                            </li>
+                                                            <li>
+                                                                <div class="collapsible-trigger">
+                                                                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                                    <p><i class="fas fa-filter icon text-orange-500"></i><span class="definition-pill"><strong>Filtración</strong></span></p>
+                                                                </div>
+                                                                <div class="collapsible-content hidden">
+                                                                    <ul class="nested-list">
+                                                                        <li><p><i class="fas fa-hand-paper icon"></i>Consiste en <strong><u>retener partículas sólidas</u></strong> al hacer pasar el agua por un <u>material poroso</u>.</p></li>
+                                                                        <li><p><i class="fas fa-layer-group icon"></i>El material poroso sirve de <strong><u>soporte a una membrana</u></strong> que ejerce una <u>acción coagulante</u>.</p></li>
+                                                                        <li><p><i class="fas fa-compress-arrows-alt icon"></i><strong><u>Fija por absorción</u></strong> las partículas pequeñas y <strong><u>retiene mecánicamente</u></strong> las partículas mayores.</p></li>
+                                                                        <li><p><i class="fas fa-tachometer-alt icon"></i>Hay dos tipos: <strong><u>lenta</u></strong> y <strong><u>rápida</u></strong>.</p></li>
+                                                                        <li><p><i class="fas fa-sync-alt icon"></i>Los filtros se limpian haciendo circular <strong><u>agua y aire en sentido contrario</u></strong>.</p></li>
+                                                                    </ul>
+                                                                </div>
+                                                            </li>
+                                                            <li><p><i class="fas fa-oil-can icon text-gray-700"></i><strong>Cámaras de grasas</strong>, que eliminan <u>grasas y aceites</u>.</p></li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-microscope icon text-red-600"></i><span class="definition-pill"><strong>Esterilización</strong></span>, se emplea fundamentalmente el <strong><u>cloro y sus compuestos</u></strong> aplicándose con <u>dosificaciones determinadas</u> mediante ensayos.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-atom icon text-gray-500"></i>También se utiliza el <strong>ozono</strong>, pero a menor escala.</p></li>
+                                                <li><p><i class="fas fa-bolt icon text-gray-500"></i>Y ya muy raros los procedimientos por <strong>rayos ultravioleta</strong>, <strong>eléctricos</strong>, etc.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><p><i class="fas fa-plus-circle icon text-orange-600"></i><span class="definition-pill"><strong>Tratamientos complementarios</strong></span>, <u>eliminación de sabores y olores</u>, <u>ablandamiento o descalcificación</u>, <u>desferrización</u>, <u>desmanganesificación</u>, <u>eliminación del flúor</u>, etc.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tint-slash icon text-cyan-700"></i>Desalación</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i><strong><u>Proceso</u></strong> al que someten las <strong><u>aguas salinas</u></strong> para <strong><u>separar las sales</u></strong> que llevan en disolución.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-cogs icon text-purple-600"></i>Los <strong><u>principales métodos</u></strong> de desalación industrial son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-layer-group icon text-gray-500"></i><span class="definition-pill"><strong>Destilación multietapa</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-industry icon"></i>Conjunto de <strong><u>evaporadores</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-arrow-down icon"></i>Que funcionan con <strong><u>presiones cada vez más débiles</u></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-wind icon text-gray-500"></i><span class="definition-pill"><strong>Evaporación relámpago (flash)</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-cloud-meatball icon"></i>Consiste en la <strong><u>evaporación de agua salada</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-compress-arrows-alt icon"></i>A <strong><u>baja presión</u></strong> y <strong><u>menor temperatura</u></strong> que si fuera a la presión atmosférica.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-compress icon text-gray-500"></i><span class="definition-pill"><strong>Evaporación por termocompresión</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-sync-alt icon"></i>El <strong><u>vapor obtenido</u></strong> en primer lugar es <strong><u>condensado</u></strong> utilizando el agua salada que se irá destilando a continuación.</p></li>
+                                                <li><p><i class="fas fa-bolt icon"></i>Este sistema exige un <strong><u>gran consumo de energía</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-tools icon"></i>Y la utilización de <strong><u>grandes compresores</u></strong> de difícil construcción.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-snowflake icon text-gray-500"></i><span class="definition-pill"><strong>Cristalización</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-spray-can icon"></i>Se <strong><u>pulveriza agua de mar</u></strong> en una <u>cámara refrigerada</u>.</p></li>
+                                                <li><p><i class="fas fa-icicles icon"></i>Donde se forman <strong><u>cristales de hielo</u></strong> que se separan.</p></li>
+                                                <li><p><i class="fas fa-tint icon"></i>Para obtener <strong><u>agua dulce al fundirlos</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-flask icon"></i>Este proceso está en <strong><u>fase experimental</u></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-sync-alt icon text-green-600"></i><span class="definition-pill"><strong>Ósmosis inversa</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-star icon"></i>Es el <strong><u>más usado</u></strong> (<span class="pill-blue">más del 90%</span>).</p></li>
+                                                <li><p><i class="fas fa-compress icon"></i>Aplica <strong><u>presión superior a la osmótica</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-exchange-alt icon"></i>Provoca el <strong><u>movimiento de las moléculas de agua en sentido contrario</u></strong> a la difusión natural.</p></li>
+                                                <li><p><i class="fas fa-layer-group icon"></i>Hay que disponer de <strong><u>membranas adecuadas</u></strong> para <u>bloquear el paso de iones</u>.</p></li>
+                                                <li><p><i class="fas fa-exclamation-triangle icon"></i>El principal inconveniente es la <strong><u>corta duración de las membranas</u></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-magnet icon text-gray-500"></i><span class="definition-pill"><strong>Electrodiálisis de membranas selectivas</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-atom icon"></i>Consiste en la <strong><u>separación de iones de cloro y sodio</u></strong> y su paso por <u>membranas catiónicas y aniónicas</u>.</p></li>
+                                                <li><p><i class="fas fa-check icon"></i>Adecuado para <strong><u>salinidad <span class="formula-pill">&lt;10g/l</span></u></strong>.</p></li>
+                                                <li><p><i class="fas fa-water icon"></i>Se utiliza para ciertas <strong><u>aguas salobres</u></strong>, ya que en los océanos la salinidad media es de <span class="pill-blue">35 g/l</span>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-industry icon text-indigo-700"></i>Técnicas de tratamiento de aguas industriales</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Se refiere a las <strong><u>aguas efluentes de las industrias</u></strong> que presentan una <strong><u>gran variedad de características</u></strong> dependiendo del <u>tipo de industria</u>.</p></li>
+                        <li><p><i class="fas fa-exclamation-triangle icon text-red-600"></i>Requieren <strong><u>tratamientos previos</u></strong> antes de ir a las <u>depuradoras urbanas</u> o a veces incluso <u>depuración independiente</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-recycle icon text-green-600"></i>Entre los <strong><u>procesos para tratar los efluentes</u></strong> de plantas depuradoras de aguas industriales para su <strong><u>reutilización</u></strong> están los siguientes:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-filter icon text-gray-500"></i>Filtración <strong>directa</strong> y de <strong>contacto</strong>.</p></li>
+                                    <li><p><i class="fas fa-flask icon text-gray-500"></i>Sistemas de tratamiento <strong>físico-químico</strong>.</p></li>
+                                    <li><p><i class="fas fa-microchip icon text-gray-500"></i><strong>Microfiltración</strong>.</p></li>
+                                    <li><p><i class="fas fa-compress-alt icon text-gray-500"></i><strong>Ultrafiltración</strong>.</p></li>
+                                    <li><p><i class="fas fa-atom icon text-gray-500"></i><strong>Nanofiltración</strong>.</p></li>
+                                    <li><p><i class="fas fa-sync-alt icon text-gray-500"></i><strong>Ósmosis inversa</strong>.</p></li>
+                                    <li><p><i class="fas fa-magnet icon text-gray-500"></i>O <strong>electrodiálisis</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Pretratamientos y postratamientos -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-sync-alt"></i></div>
+                <h2>3. Pretratamientos y postratamientos necesarios</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-arrow-left icon text-blue-600"></i>Pretratamientos</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Para el sistema de <strong><u>ósmosis inversa</u></strong> las <strong><u>etapas de un pretratamiento</u></strong> son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-plus-circle icon text-gray-500"></i><strong>Adición de cloro</strong> (para <u>controlar la actividad biológica</u>).</p></li>
+                                    <li><p><i class="fas fa-magic icon text-gray-500"></i><strong>Floculación</strong>.</p></li>
+                                    <li><p><i class="fas fa-filter icon text-gray-500"></i><strong>Filtración</strong>.</p></li>
+                                    <li><p><i class="fas fa-vial icon text-gray-500"></i><strong>Adición de ácido</strong> (para <u>controlar el pH</u>) y de <strong>antiincrustante</strong> (como <u>inhibidor de la incrustación de sales poco solubles</u>).</p></li>
+                                    <li><p><i class="fas fa-minus-circle icon text-gray-500"></i>Y <strong>decloración</strong> (que consiste en dosificar el agua con <u>bisulfito de sodio</u>).</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-bullseye icon text-red-600"></i>Todas estas actuaciones buscan <strong><u>proteger la instalación</u></strong> y en especial las <strong><u>membranas de ósmosis inversa</u></strong>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-arrow-right icon text-green-700"></i>Postratamientos</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>El agua procedente del sistema de desalación, <strong><u>antes de descargarse al depósito</u></strong> de agua para el abastecimiento, debe ser <strong><u>postratada</u></strong> para <strong><u>satisfacer las condiciones de calidad del agua potable</u></strong>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tasks icon text-purple-600"></i>De acuerdo con las <strong><u>dos etapas</u></strong> siguientes:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-gem icon text-cyan-600"></i><span class="definition-pill"><strong>Remineralización</strong></span>, que:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-adjust icon"></i><strong>Corrige el pH</strong> hasta <span class="pill-blue">7-8</span>.</p></li>
+                                                <li><p><i class="fas fa-arrow-up icon"></i><strong>Aumenta la dureza</strong>.</p></li>
+                                                <li><p><i class="fas fa-balance-scale icon"></i>Y <strong>corrige la alcalinidad</strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><p><i class="fas fa-microscope icon text-red-600"></i><span class="definition-pill"><strong>Esterilización</strong></span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Obras de abastecimiento y saneamiento -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-hard-hat"></i></div>
+                <h2>4. Obras de abastecimiento y saneamiento en general</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-hand-holding-water icon text-blue-600"></i>Obras de abastecimiento</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>La <span class="definition-pill"><strong>captación</strong></span> es el <strong><u>punto de origen</u></strong> de las aguas para un abastecimiento, así como las <strong><u>obras para su recogida</u></strong>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-stream icon text-purple-600"></i>Existen los <strong><u>siguientes tipos</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-sun icon text-orange-500"></i><strong>De aguas superficiales</strong>:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li>
+                                                    <div class="collapsible-trigger">
+                                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                        <p><i class="fas fa-cloud-rain icon text-gray-500"></i><strong>De aguas pluviales</strong>, que consisten en una <u>zona de recogida</u> y un <u>recipiente de almacenamiento</u>.</p>
+                                                    </div>
+                                                    <div class="collapsible-content hidden">
+                                                        <ul class="even-deeper-nested-list">
+                                                            <li><p><i class="fas fa-archway icon text-gray-500"></i>Los <strong>aljibes o cisternas</strong> podrán ser del tipo <u>cisterna veneciana</u>, <u>aljibe de filtro superior</u>, <u>aljibe americano</u> y <u>aljibe alemán</u>.</p></li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                                <li><p><i class="fas fa-water icon text-gray-500"></i><strong>De ríos, arroyos y canales</strong>, por medio de <u>obras de toma</u> en el cauce o en las márgenes de corrientes de agua con tomas que pueden ser del tipo <u>toma directa</u>, <u>toma sumergida</u> y <u>toma con filtro de malla</u>.</p></li>
+                                                <li><p><i class="fas fa-chess-rook icon text-gray-500"></i><strong>En lagos y embalses</strong>, mediante <u>torres de toma</u> o <u>tuberías unidas</u> directamente a la impulsión.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-layer-group icon text-green-700"></i><strong>De aguas subterráneas</strong>:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-leaf icon text-gray-500"></i><strong>De manantiales</strong>, las <u>tomas o arquetas</u> deben construirse con <u>materiales inertes</u> evitando las <u>obstrucciones</u> de las vías líquidas y la <u>contaminación</u> de las aguas.</p></li>
+                                                <li>
+                                                    <div class="collapsible-trigger">
+                                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                        <p><i class="fas fa-bullseye icon text-gray-500"></i>Mediante <strong>pozos ordinarios</strong>, que son <u>huecos cilíndricos excavados</u> en el terreno que, al atravesar un lecho permeable, permiten la <u>afluencia del agua</u> hacia el mismo.</p>
+                                                    </div>
+                                                    <div class="collapsible-content hidden">
+                                                        <ul class="even-deeper-nested-list">
+                                                            <li><p><i class="fas fa-ruler icon text-gray-500"></i>Diámetro entre <span class="pill-blue">1 y 8 m</span> y profundidad <u>menor de <span class="pill-blue">30 m</span></u>, a partir de ésta se recurrirá a <u>pozos entubados</u>.</p></li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                                <li><p><i class="fas fa-filter icon text-gray-500"></i><strong>Pozos cajones-filtrantes</strong>, <u>hinca en el terreno de un elemento filtro</u> que permita el paso del agua, pero no de los materiales del terreno.</p></li>
+                                                <li><p><i class="fas fa-project-diagram icon text-gray-500"></i><strong>Pozos con drenes radiales</strong>, son pozos con <u>diámetro >4m</u>, revestidos de hormigón armado desde el que se introducen en el terreno <u>tubos drenantes de acero</u> de <span class="pill-blue">2,5 m</span> <u>radiales y horizontales</u>, permiten para condiciones de infiltración similares <u>caudales muy superiores</u> a los pozos ordinarios.</p></li>
+                                                <li><p><i class="fas fa-dungeon icon text-gray-500"></i><strong>Galerías filtrantes</strong>, en la zona próxima a la <u>emergencia del acuífero</u> sirviendo como <u>elemento de drenaje</u> a la misma, son normalmente <u>visitables</u> y terminan en <u>pozos</u> donde se instala el sistema de bombeo.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-route icon text-cyan-600"></i>Las <span class="definition-pill"><strong>conducciones</strong></span> son los elementos que permiten el <strong><u>transporte de agua</u></strong> desde la captación hasta los depósitos de almacenamiento y regulación.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-stream icon text-gray-500"></i>Pueden ser <strong>forzadas</strong> (<u>tuberías</u>) o en <strong>lámina libre</strong> (<u>canales</u>).</p></li>
+                                    <li><p><i class="fas fa-plus icon text-gray-500"></i>Y requieren de <strong>obras complementarias</strong> por la topografía como <u>puentes</u>, <u>acueductos</u>, <u>sifones</u> o <u>túneles</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-warehouse icon text-indigo-600"></i>Los <span class="definition-pill"><strong>depósitos de regulación y distribución</strong></span> tienen como <strong><u>función almacenar el agua</u></strong> con funciones de:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-sliders-h icon text-gray-500"></i><strong>Regulación de caudales</strong>, para <u>compensar las diferencias</u> en el tiempo entre aportaciones y consumos.</p></li>
+                                    <li><p><i class="fas fa-tachometer-alt icon text-gray-500"></i>Y de <strong>carga</strong>, para <u>garantizar la presión mínima</u> en cada punto de la red de distribución.</p></li>
+                                    <li><p><i class="fas fa-exclamation-triangle icon text-gray-500"></i>Además de prever una <strong>reserva para emergencias</strong> como <u>averías o incendios</u>.</p></li>
+                                    <li><p><i class="fas fa-shield-alt icon text-gray-500"></i>Deben garantizar también la <strong>inalterabilidad de la calidad</strong> de las aguas.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-tags icon text-gray-500"></i>Se pueden <strong>clasificar</strong> por:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-tasks icon text-gray-400"></i>Su <strong>función</strong>: <u>regulación y carga</u>.</p></li>
+                                                <li><p><i class="fas fa-map-pin icon text-gray-400"></i><strong>Emplazamiento</strong> en relación con el terreno: <u>enterrados</u>, <u>semienterrados</u>, <u>superficiales</u> y <u>elevados</u>.</p></li>
+                                                <li><p><i class="fas fa-network-wired icon text-gray-400"></i>Su <strong>relación con la red</strong>: <u>depósito principal de cabecera</u> y <u>depósito de cola o de equilibrio</u>.</p></li>
+                                                <li><p><i class="fas fa-box icon text-gray-400"></i>Por el <strong>material</strong>: <u>fábrica de ladrillo</u>, <u>hormigón en masa, armado, pretensado, postesado</u>, <u>acero</u> o <u>plástico</u>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-network-wired icon text-orange-600"></i>Las <span class="definition-pill"><strong>redes de distribución</strong></span> que van <strong><u>desde los depósitos a los puntos de consumo</u></strong>, proporcionando el <u>caudal preciso</u>, la <u>presión conveniente</u> y la <u>calidad requerida</u>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-code-branch icon text-gray-500"></i>Hay 3 tipos: <strong>ramificada</strong>, <strong>reticular</strong> o <strong>circular</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-recycle icon text-green-700"></i>Obras de saneamiento</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i><strong><u>Conjunto de dispositivos y conductos</u></strong> para <strong><u>evacuar las aguas negras, industriales y pluviales</u></strong> (en el ámbito urbano).</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-cogs icon text-purple-600"></i>Y que se componen fundamentalmente de:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-dungeon icon text-gray-500"></i>Las <strong>redes de alcantarillado</strong>.</p></li>
+                                    <li><p><i class="fas fa-home icon text-gray-500"></i>Las <strong>acometidas domiciliarias</strong> (con <u>bajantes</u>, <u>sifones</u>, <u>sistemas de ventilación</u> y <u>arqueta de conexión a la red</u>).</p></li>
+                                    <li><p><i class="fas fa-arrow-down icon text-gray-500"></i>Y los <strong>sumideros</strong> para la escorrentía.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-network-wired icon text-cyan-600"></i>La <strong><u>red de alcantarillado</u></strong> puede ser <strong><u>única o doble</u></strong>, y está formada por <u>registros</u>, <u>cámaras de limpieza</u>, <u>sumideros</u>, <u>aliviaderos</u>, <u>sifones</u>, <u>cámaras de elevación</u>, etc.</p></li>
+                        <li><p><i class="fas fa-long-arrow-alt-right icon text-indigo-600"></i>La red confluye en los <strong><u>colectores generales</u></strong> que llegan a la <strong><u>depuradora</u></strong> y de ahí por los <strong><u>emisarios</u></strong> al <strong><u>punto de vertido</u></strong> (<u>submarino o cauce natural</u>).</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Script para la funcionalidad desplegable -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Selecciona todos los elementos que servirán como disparadores
+            const triggers = document.querySelectorAll('.collapsible-trigger');
+
+            // Itera sobre cada disparador para añadirle un detector de clics
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', function (event) {
+                    // Evita que el clic en un desplegable anidado afecte a su contenedor padre
+                    event.stopPropagation();
+                    
+                    // Encuentra el elemento de contenido que sigue inmediatamente al disparador
+                    const content = this.nextElementSibling;
+                    
+                    // Alterna la clase 'open' en el disparador (para rotar el icono)
+                    this.classList.toggle('open');
+                    
+                    // Verifica que el siguiente elemento sea un contenido desplegable y alterna la clase 'hidden'
+                    if (content && content.classList.contains('collapsible-content')) {
+                        content.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
