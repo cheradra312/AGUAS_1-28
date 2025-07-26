@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Uso del agua para regadío</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-seedling"></i> MEA1T19. Uso del agua para regadío <i class="fas fa-tractor"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Uso del agua para regadío -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-water"></i></div>
+                <h2>1. Uso del agua para regadío</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-leaf icon text-green-600"></i>Este uso <strong><u>incluye el agua</u></strong> para la <strong><u>evapotranspiración de los cultivos</u></strong>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-plus-circle icon text-blue-500"></i>Y <strong><u>otros volúmenes de menor entidad</u></strong> como los destinados al:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-soap icon text-gray-500"></i><strong>Lavado de suelos</strong>.</p></li>
+                                <li><p><i class="fas fa-snowflake icon text-gray-500"></i>O al <strong>riego antihelada</strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-chart-bar icon text-purple-600"></i>La <strong><u>demanda de agua para riego</u></strong> se caracteriza por:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-cube icon text-gray-500"></i>Su <strong>gran volumen</strong>.</p></li>
+                                <li><p><i class="fas fa-sun icon text-gray-500"></i>Y <strong>concentración</strong> en los <u>meses más secos del año</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-cogs icon text-orange-600"></i>Lo que <strong><u>obliga a regular y movilizar</u></strong> grandes cantidades de agua anualmente.</p></li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-chart-pie icon text-indigo-700"></i>Datos de Regadío en España</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-map-marked-alt icon text-green-700"></i>Los <strong><u>regadíos en España</u></strong> ocupan aproximadamente <span class="pill-blue"><strong>3,6 Mha</strong></span>.</p></li>
+                        <li><p><i class="fas fa-tractor icon text-gray-600"></i>El <span class="pill-blue"><strong>20%</strong></span> de la <u>superficie agrícola útil</u>.</p></li>
+                        <li><p><i class="fas fa-globe-europe icon text-gray-600"></i>Y el <span class="pill-blue"><strong>7%</strong></span> de la <u>superficie total</u>.</p></li>
+                        <li><p><i class="fas fa-carrot icon text-orange-500"></i>Generan casi un <span class="pill-blue"><strong>60%</strong></span> de la <strong><u>producción agrícola</u></strong>.</p></li>
+                        <li><p><i class="fas fa-users icon text-blue-500"></i>Además generan un <span class="pill-blue"><strong>30%</strong></span> de los <strong><u>jornales del sector agrario</u></strong>.</p></li>
+                        <li><p><i class="fas fa-briefcase icon text-purple-500"></i>Lo que representa unos <span class="pill-blue"><strong>600.000 empleos</strong></span> en regadíos.</p></li>
+                    </ul>
+                </div>
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-sitemap icon text-cyan-700"></i>Distribución de la Superficie de Regadío</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>La <strong><u>superficie en regadío</u></strong> se distribuye de la siguiente manera:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-dot-circle icon text-gray-500"></i>Riego <strong>localizado</strong> <span class="pill-blue">~50%</span>.</p></li>
+                                    <li><p><i class="fas fa-angle-double-down icon text-gray-500"></i>Riego por <strong>gravedad</strong> <span class="pill-blue">~25%</span>.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-tint icon text-gray-500"></i>Riego por <strong>aspersión</strong> <span class="pill-blue">~25%</span>.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-car icon text-gray-400"></i>(Dentro del cual <strong>riego automotriz</strong> <span class="pill-blue">~10%</span>).</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-arrow-up icon text-green-600"></i>En los <strong><u>últimos años</u></strong> ha habido un <strong><u>aumento de los sistemas más tecnificados</u></strong> en detrimento del riego por gravedad fundamentalmente.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: El agua en la fisiología vegetal -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-leaf"></i></div>
+                <h2>2. El agua en la fisiología vegetal</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>Se distingue:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-dna icon text-green-600"></i>El <span class="definition-pill"><strong>agua de constitución</strong></span> que <strong><u>forma parte de los tejidos vegetales</u></strong> en un <span class="pill-blue"><strong>60-95%</strong></span> del peso de la planta.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-truck icon text-cyan-600"></i>Y el <span class="definition-pill"><strong>agua vegetativa</strong></span> que interviene como <strong><u>vehículo de las sustancias nutritivas</u></strong> del suelo.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-arrow-down icon text-gray-500"></i>Se <strong>toma por las raíces</strong> del suelo.</p></li>
+                                            <li><p><i class="fas fa-arrow-up icon text-gray-500"></i>Y se <strong>devuelve a la atmósfera</strong> por transpiración.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-layer-group icon text-purple-700"></i>Posiciones del agua en el suelo</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-map-marker-alt icon text-blue-600"></i>Las <strong><u>posiciones del agua en el suelo</u></strong> son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-wind icon text-gray-500"></i><strong>Zona no saturada</strong> (<u>humedad</u>, <span class="formula-pill">p&lt;patm</span>, requiere <u>succión</u>).</p></li>
+                                    <li><p><i class="fas fa-sort-amount-up-alt icon text-gray-500"></i><strong>Franja capilar</strong> (<u>agua capilar</u>, franja <u>casi saturada</u>, agua en <u>contacto con nivel freático</u>, <span class="formula-pill">p&lt;patm</span>).</p></li>
+                                    <li><p><i class="fas fa-equals icon text-gray-500"></i><strong>Nivel freático</strong> (<span class="formula-pill">p=patm</span>).</p></li>
+                                    <li><p><i class="fas fa-fill-drip icon text-gray-500"></i><strong>Zona saturada</strong> (<u>agua freática</u>, <span class="formula-pill">p&gt;patm</span>).</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-compress-arrows-alt icon text-orange-600"></i>La <strong><u>succión varía</u></strong> desde <span class="pill-blue">0</span> para un <u>suelo saturado</u> a <span class="pill-blue">10⁷ cm</span> para un <u>suelo completamente seco</u>.</p></li>
+                        <li><p><i class="fas fa-calculator icon text-indigo-600"></i><span class="formula-pill"><strong>pF</strong></span> es el <strong><u>log₁₀ de la presión en cm</u></strong> y varía entre <span class="pill-blue">-∞ y 7</span>.</p></li>
+                        <li><p><i class="fas fa-tint icon text-green-600"></i>A la humedad a <span class="pill-blue">100 cm</span> sobre el nivel freático después de lluvia o riego y una vez que el exceso de agua ha percolado hacia el subsuelo se le denomina <span class="definition-pill"><strong>capacidad de campo</strong></span> y corresponde a un <span class="formula-pill"><strong>pF=2</strong></span>.</p></li>
+                        <li><p><i class="fas fa-leaf icon text-red-600"></i>A partir de ese punto y una vez que las plantas van retirando humedad del suelo <span class="formula-pill">pF</span> asciende lentamente hasta el <span class="definition-pill"><strong>punto de marchitez permanente</strong></span> <span class="formula-pill"><strong>pF=4,2</strong></span> situación en la que las <strong><u>plantas ya no pueden succionar agua</u></strong>.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Card 3: Técnicas de aplicación del agua al terreno -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-tractor"></i></div>
+                <h2>3. Técnicas de aplicación del agua al terreno y obras de riego en general</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Toda <strong><u>transformación en regadío</u></strong> debe tener en cuenta el <u>suelo</u>, el <u>agua</u>, el <u>clima</u>, los <u>cultivos</u>, los <u>regantes</u> y la <u>estructura de la propiedad</u>.</p></li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-sitemap icon text-purple-700"></i>Clasificación de los sistemas de riego:</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-angle-double-down icon text-orange-600"></i><span class="definition-pill"><strong>Riegos por gravedad</strong></span>, agua a <strong><u>presión atmosférica</u></strong> en el punto más alto de la parcela.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-exclamation-triangle icon text-red-500"></i>Puede generar <strong><u>excesiva percolación</u></strong>, facilitando el <u>lixiviado de contaminantes</u> y el <u>lavado de sales y nutrientes</u>, en general produce <strong><u>exceso de consumo</u></strong>.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-stream icon text-gray-500"></i>Se dividen en:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-running icon"></i><strong>Riegos por escurrimiento</strong>, desde los <u>puntos altos a los puntos bajos</u>, riego de praderas, <u>pérdidas por escorrentía superficial</u>, se adaptan bien a <u>terrenos permeables</u>.</p></li>
+                                                <li>
+                                                    <div class="collapsible-trigger">
+                                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                        <p><i class="fas fa-water icon"></i><strong>Riegos por inundación</strong>, se mantiene el <u>suelo inundado</u> para que el agua penetre por <u>infiltración</u>, se pueden producir <u>pérdidas por percolación</u>, se adaptan bien a <u>terrenos relativamente impermeables</u>, necesitan <u>terrenos casi horizontales</u>.</p>
+                                                    </div>
+                                                    <div class="collapsible-content hidden">
+                                                        <ul class="even-deeper-nested-list">
+                                                            <li><p><i class="fas fa-infinity icon"></i><strong>Inundación permanente</strong> en cultivos de <u>arroz</u> con terreno nivelado donde solo varía altura de agua según la edad de la planta.</p></li>
+                                                            <li><p><i class="fas fa-clock icon"></i><strong>Inundación temporal (riego a manta)</strong> durante el tiempo necesario para que se alcance la <u>capacidad de campo</u> en toda la profundidad de las raíces.</p></li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                                <li><p><i class="fas fa-grip-lines icon"></i><strong>Riegos por infiltración o por surcos</strong>, las plantas sobre <u>caballones elevados</u> junto a los surcos, se aplica a terrenos con <u>permeabilidad media</u>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-compress icon text-cyan-600"></i><span class="definition-pill"><strong>Riesgos a presión</strong></span>, se dispone el agua a una <strong><u>determinada presión</u></strong>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-dot-circle icon text-green-600"></i><strong>Riego localizado</strong>, aplicación del agua al suelo <strong><u>restringida a la zona de aprovechamiento</u></strong> de las plantas.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-tint icon"></i>Se riega con la <strong>frecuencia necesaria</strong> para mantener una humedad normalmente <u>por encima de la capacidad de campo</u> en el entorno reducido de la raíz.</p></li>
+                                                <li><p><i class="fas fa-stream icon"></i>Se dividen en <strong>riegos por goteo</strong> (<span class="pill-blue">&lt;12 l/h</span>) y <strong>riegos por difusores o miniaspersores</strong> (<span class="pill-blue">12-120 l/h</span>).</p></li>
+                                                <li><p><i class="fas fa-cogs icon"></i>Requieren una <strong>estación de control</strong> para <u>medir el agua</u>, <u>incorporar fertilizantes</u>, <u>medir tiempo de riego</u>, etc.</p></li>
+                                                <li><p><i class="fas fa-plus-circle icon"></i><strong>Ventajas:</strong> <u>ahorro de agua, mano de obra, abonos y fitosanitarios</u>, permite <u>regar cualquier terreno</u>, <u>aumento de producción y calidad</u>, <u>disminución de malas hierbas</u>, posibilidad de <u>empleo de aguas salinas</u>.</p></li>
+                                                <li><p><i class="fas fa-minus-circle icon"></i><strong>Inconvenientes:</strong> <u>elevado coste</u>, <u>poca flexibilidad</u> para cambiar de cultivo, <u>necesidad de lavar</u> cada 4 o 5 años para eliminar sales, <u>obstrucción de emisores</u>, <u>especialización</u> de regantes y <u>enfermedades</u> por humedad constante.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-spinner icon text-blue-500"></i><strong>Riego por aspersión</strong>, el agua se aplica en <strong><u>forma de lluvia</u></strong> a través de los aspersores en una <u>superficie circular</u>.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-info-circle icon"></i>Según el <strong>diámetro de la tobera y la presión</strong> en la misma los aspersores tienen un <u>caudal, alcance y tamaño de gota distintos</u>.</p></li>
+                                                <li><p><i class="fas fa-plus-circle icon"></i><strong>Ventajas</strong> (respecto a gravedad): no es necesario <u>movimiento de tierras</u>, <u>menor consumo de agua</u> y <u>menos mano de obra</u> y menos especializada.</p></li>
+                                                <li><p><i class="fas fa-minus-circle icon"></i><strong>Inconvenientes:</strong> <u>costes de instalación altos</u>, <u>consumo de energía</u> suplementario, <u>apelmazamientos</u> por tamaño de gota o daños a plantas, <u>pierde uniformidad con vientos intensos</u>, <u>cambios de posición de equipos dificultosos</u> con terreno regado.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Card 4: Dotaciones, garantía y calidad del agua -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-tasks"></i></div>
+                <h2>4. Dotaciones, garantía y calidad del agua</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-hand-holding-water icon text-blue-600"></i>Dotaciones</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Se establecen aquellas que den los <strong><u>rendimientos máximos de los cultivos</u></strong>.</p></li>
+                        <li><p><i class="fas fa-file-alt icon text-cyan-700"></i>Están establecidas en los <span class="plan-pill"><strong>planes hidrológicos de cuenca</strong></span> para los <u>cultivos más representativos</u> de cada cuenca (<span class="formula-pill">m³/ha y año</span>).</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-shield-alt icon text-green-700"></i>Garantía</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-check-circle icon text-blue-600"></i>Se considera <strong><u>satisfecha</u></strong> cuando, conforme a la <span class="doc-pill"><strong>instrucción de planificación hidrológica 2008</strong></span>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-calendar-day icon text-gray-500"></i>El déficit en <strong>1 año</strong> <span class="formula-pill">&lt;50%</span> de la demanda.</p></li>
+                                    <li><p><i class="fas fa-calendar-week icon text-gray-500"></i>En <strong>2 años consecutivos</strong> la suma de déficit <span class="formula-pill">&lt;75%</span> de la demanda anual.</p></li>
+                                    <li><p><i class="fas fa-calendar-alt icon text-gray-500"></i>Y en <strong>10 años consecutivos</strong> Σdéficit <span class="formula-pill">&lt;100%</span> de la demanda anual.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-vial icon text-purple-700"></i>Calidad del agua para riego</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-book-open icon text-blue-600"></i>Los criterios más comúnmente utilizados los recoge la <span class="actor-pill"><strong>FAO</strong></span> (organización de las Naciones Unidas para la Agricultura y la Alimentación).</p></li>
+                        <li><p><i class="fas fa-tint icon text-cyan-600"></i>En general las <strong><u>aguas fluviales naturales son adecuadas</u></strong> para el regadío.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5: Reutilización de caudales de riego -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-recycle"></i></div>
+                <h2>5. Reutilización de caudales de riego</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-undo icon text-blue-600"></i>La cifra de <strong><u>retorno</u></strong> que convencionalmente se admite se sitúa en el entorno del <span class="pill-blue"><strong>20%</strong></span>.</p></li>
+                    <li><p><i class="fas fa-download icon text-purple-600"></i>Que debe <strong><u>recogerse con un adecuado drenaje</u></strong> para evitar que se acumule en el suelo.</p></li>
+                    <li><p><i class="fas fa-exclamation-triangle icon text-red-600"></i>Con la consiguiente <strong><u>elevación de la capa freática</u></strong> y los correspondientes <strong><u>perjuicios a los cultivos</u></strong> ante la <u>falta de aireación de las raíces</u>.</p></li>
+                    <li><p><i class="fas fa-search icon text-orange-600"></i>Para la <strong><u>evaluación de los retornos</u></strong> se realizan <strong><u>estudios específicos</u></strong> teniendo en cuenta las <u>condiciones geológicas y de riego</u>.</p></li>
+                    <li><p><i class="fas fa-tasks icon text-cyan-700"></i>Se <strong><u>determinará el medio receptor</u></strong> de los volúmenes de retorno y se <strong><u>especificará su calidad</u></strong>.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 6: Fertilizantes y productos fitosanitarios -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-flask"></i></div>
+                <h2>6. Los fertilizantes y los productos fitosanitarios como agentes contaminantes potenciales. La contaminación difusa</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-exclamation-triangle icon text-red-600"></i>El <strong><u>empleo cada vez mayor</u></strong> de <u>fertilizantes</u> y <u>productos fitosanitarios</u>, junto con un <u>riego excesivo</u> en ocasiones, está provocando una <span class="definition-pill"><strong>contaminación difusa</strong></span>.</p></li>
+                    <li><p><i class="fas fa-water icon text-blue-600"></i>Afecta a las <strong><u>aguas superficiales</u></strong> y también <strong><u>subterráneas</u></strong> por <u>infiltración</u>.</p></li>
+                    <li><p><i class="fas fa-dam icon text-orange-600"></i>Ha llevado a que <strong><u>más de la mitad de los embalses</u></strong> haya aumentado su grado de <strong><u>eutrofización</u></strong>.</p></li>
+                    <li><p><i class="fas fa-shield-alt icon text-green-700"></i>Esta contaminación difusa solo puede <strong><u>limitarse mediante medidas preventivas</u></strong> que <u>reduzcan la aplicación</u> de estos productos.</p></li>
+                    <li><p><i class="fas fa-chart-line icon text-purple-600"></i>Esta contaminación está <strong><u>aumentando en términos relativos</u></strong> por la <u>progresiva depuración</u> y <u>limitación de los vertidos puntuales</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-users icon text-cyan-700"></i>Puede <strong><u>ayudar a reducir</u></strong> esta contaminación difusa:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-brain icon text-gray-500"></i>La progresiva <strong>concienciación ciudadana</strong> por estos temas.</p></li>
+                                <li><p><i class="fas fa-leaf icon text-gray-500"></i>Y la <strong>preferencia por los cultivos ecológicos</strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 7: Problemas de salinidad -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-gem"></i></div>
+                <h2>7. Problemas de salinidad</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-leaf icon text-green-600"></i>La <strong><u>salinidad del agua afecta a su disponibilidad</u></strong> para las plantas.</p></li>
+                    <li><p><i class="fas fa-arrow-up icon text-orange-600"></i>Ya que una <strong><u>excesiva acumulación de sales</u></strong> en el suelo <strong><u>aumentará el potencial osmótico</u></strong> del agua.</p></li>
+                    <li><p><i class="fas fa-battery-quarter icon text-red-600"></i>Y la <strong><u>energía de la planta para absorber el agua se ve mermada</u></strong>.</p></li>
+                    <li><p><i class="fas fa-recycle icon text-blue-600"></i>Es <strong><u>fundamental lavar el suelo y drenarlo</u></strong> para evitar problemas a largo plazo de <u>desertización</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-exclamation-circle icon text-purple-600"></i>Otro problema es la <strong><u>salinización de acuíferos</u></strong> por:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-hand-paper icon text-gray-500"></i>La <strong>disolución de materiales</strong> por los que circula el agua.</p></li>
+                                <li><p><i class="fas fa-sync-alt icon text-gray-500"></i>A la <strong>recirculación de aguas de riego cargadas de sales</strong> de los tratamientos agrícolas a las que se suman las sales del suelo.</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>O la <strong>intrusión marina</strong> provocada por la <u>invasión de agua de mar</u> cuando se realizan <u>bombeos excesivos</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 8: Gestión sostenible de regadíos -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-leaf"></i></div>
+                <h2>8. Gestión sostenible de regadíos. Plan Nacional de Regadíos</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-file-alt icon text-blue-600"></i>El <span class="plan-pill"><strong>Plan Nacional de Regadíos 2000-2006</strong></span>, con <u>horizonte 2008</u>, tiene los siguientes <strong><u>objetivos</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-hand-holding-water icon text-cyan-600"></i><strong>Ahorro de agua</strong>, mediante el <u>uso de tecnologías adecuadas</u>, ahora representa el <span class="pill-blue">80%</span> de la demanda total.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-recycle icon text-green-600"></i><strong>Mejora ambiental de las zonas de regadío</strong>:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-filter icon"></i>Evitando <u>filtraciones y escorrentías</u> que pueden ser fuentes de <u>contaminación</u> de las aguas subterráneas y superficiales.</p></li>
+                                            <li><p><i class="fas fa-arrow-down icon"></i>Evitando la <u>sobreexplotación de acuíferos</u>.</p></li>
+                                            <li><p><i class="fas fa-seedling icon"></i>Manteniendo <u>fertilidad de suelos</u> de regadío.</p></li>
+                                            <li><p><i class="fas fa-shield-alt icon"></i>Actuando contra la <u>desertificación</u>.</p></li>
+                                            <li><p><i class="fas fa-dna icon"></i>Preservando la <u>biodiversidad</u> de los ecosistemas de regadío.</p></li>
+                                            <li><p><i class="fas fa-gavel icon"></i>Cumpliendo con la <u>normativa ambiental española y europea</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-users icon text-purple-600"></i><strong>Mejoras sociales</strong>:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-chart-line icon"></i>Mejora del <u>nivel de vida</u> y <u>fijación de la población rural</u> en áreas deprimidas.</p></li>
+                                            <li><p><i class="fas fa-graduation-cap icon"></i><strong>Formación</strong> de agricultores.</p></li>
+                                            <li><p><i class="fas fa-cogs icon"></i>Mejora del trabajo mediante la <u>automatización</u> y la <u>telegestión</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li><p><i class="fas fa-arrow-up icon text-orange-600"></i><strong>Mejora de la productividad agraria</strong>.</p></li>
+                                <li><p><i class="fas fa-handshake icon text-indigo-600"></i><strong>Coordinación entre administraciones</strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-star icon text-yellow-500"></i>Destacar el papel del <span class="actor-pill"><strong>centro nacional de tecnología de riegos (CENTER)</strong></span> que presta <strong><u>apoyo al Plan Nacional de Regadíos</u></strong>.</p></li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tasks icon text-blue-800"></i>Programas de Actuación</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Se contemplan <strong><u>programas de actuación</u></strong> en:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-tractor icon text-gray-500"></i>Zonas de <strong>regadío existentes</strong> (<span class="pill-blue">3.000 M€</span> en <span class="pill-blue">1,1 Mha</span>).</p></li>
+                                    <li><p><i class="fas fa-hard-hat icon text-gray-500"></i>En <strong>regadíos en ejecución</strong> (<span class="pill-blue">1.100 M€</span> en <span class="pill-blue">138.000 ha</span>).</p></li>
+                                    <li><p><i class="fas fa-users icon text-gray-500"></i>Regadíos de <strong>interés social</strong> en áreas deprimidas.</p></li>
+                                    <li><p><i class="fas fa-user icon text-gray-500"></i><strong>Regadíos privados</strong>.</p></li>
+                                    <li><p><i class="fas fa-plus icon text-gray-500"></i>Y <strong>nuevos regadíos</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-euro-sign icon text-green-700"></i>En total <span class="pill-blue"><strong>5.000 M€</strong></span> actuando en casi <span class="pill-blue"><strong>1,4 Mha</strong></span>.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
