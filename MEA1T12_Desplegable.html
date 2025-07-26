@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Regulación</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-cogs"></i> MEA1T12. Regulación <i class="fas fa-water"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Regulación -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-balance-scale"></i></div>
+                <h2>1. Regulación</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Consiste en <strong><u>armonizar las aportaciones del río</u></strong> (<u>variables en el tiempo</u>) con las <strong><u>demandas a satisfacer</u></strong>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-archway icon text-purple-600"></i>Esto se consigue <strong><u>creando embalses</u></strong> que puedan:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-inbox icon text-gray-500"></i><strong><u>Almacenar los volúmenes de agua</u></strong> de <u>caudales fluyentes superiores a los consumos</u>.</p></li>
+                                <li><p><i class="fas fa-paper-plane icon text-gray-500"></i>Que serán <strong><u>suministrados</u></strong> cuando los <u>consumos sean superiores a los caudales fluyentes</u> disponibles en el río.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-orange-600"></i>Por tanto, para <strong><u>estudiar la regulación</u></strong> es preciso conocer:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>Las <strong><u>aportaciones de la cuenca</u></strong> en el punto donde se ubica el embalse.</p></li>
+                                <li><p><i class="fas fa-hand-holding-water icon text-gray-500"></i>Y las <strong><u>demandas a satisfacer</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-chart-pie icon text-green-600"></i>Obteniéndose como resultado las <strong><u>capacidades de embalse</u></strong> para diferentes <u>garantías de regulación</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-stream icon text-cyan-700"></i>Las <strong><u>aportaciones</u></strong> son el resultado de la <strong><u>superposición de fenómenos</u></strong> de ciclo <u>anual</u> y <u>superior al anual</u>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-calendar-alt icon text-indigo-500"></i>Por ello se distingue entre <strong><u>regulación anual e interanual</u></strong>:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-calendar-day icon text-gray-400"></i>Si afecta a cada <strong><u>año hidrológico por separado</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-calendar-week icon text-gray-400"></i>O si se pretende <strong><u>utilizar aportaciones de unos años para garantizar servicio en otros</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-star icon text-yellow-400"></i>La <strong><u>regulación interanual</u></strong> es con mucho la de <strong><u>mayor interés y complejidad</u></strong>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-database icon text-blue-800"></i>Para el <strong><u>estudio de las aportaciones</u></strong> se parte de <strong><u>datos existentes en los últimos años</u></strong> (cuanto más amplia es la serie de datos disponible mejor).</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-chart-line icon text-purple-500"></i>Y a partir de ellos se <strong><u>extrapola a futuro</u></strong> con diversas <strong><u>técnicas estadísticas</u></strong> más o menos depuradas:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-random icon text-gray-400"></i><strong><u>Aleatorio sin reposición</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-random icon text-gray-400"></i><strong><u>Aleatorio con reposición</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-sort-amount-up icon text-gray-400"></i><strong><u>Ajuste de ley de distribución</u></strong> a la serie disponible y <strong><u>sorteo para el futuro</u></strong>.</p></li>
+                                            <li>
+                                                <div class="collapsible-trigger">
+                                                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                    <p><i class="fas fa-link icon text-gray-400"></i><span class="definition-pill"><strong>Cadenas de Markow</strong></span>, que consideran una <u>cierta influencia de la aportación de un año en el siguiente</u>.</p>
+                                                </div>
+                                                <div class="collapsible-content hidden">
+                                                    <ul class="even-deeper-nested-list">
+                                                        <li><p><i class="fas fa-info-circle icon text-gray-300"></i>Porque está comprobada una marcada tendencia a que un <strong><u>año húmedo es sucedido por otro húmedo</u></strong> y lo mismo con los <strong><u>secos</u></strong>, como consecuencia del <u>efecto de los acuíferos sobre los caudales de un río</u> que se extiende mucho más allá del periodo de lluvias.</p></li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 2: Garantía de la regulación. Criterios de garantía -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-shield-alt"></i></div>
+                <h2>2. Garantía de la regulación. Criterios de garantía</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>La <span class="definition-pill"><strong>garantía de regulación</strong></span> es la <strong><u>probabilidad de alcanzar la demanda</u></strong> requerida.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-stream icon text-purple-600"></i>Tipos de garantía:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-tint icon text-gray-500"></i>La <span class="definition-pill"><strong>garantía en volumen</strong></span> es el <strong><u>porcentaje del volumen demandado</u></strong> que se puede atender en un <u>cierto periodo de tiempo</u>.</p></li>
+                                <li><p><i class="fas fa-clock icon text-gray-500"></i>La <span class="definition-pill"><strong>garantía en tiempo</strong></span> es el <strong><u>porcentaje de tiempo</u></strong> que se pueden <u>atender completamente las demandas volumétricas</u>, para la cual es preciso definir la <u>unidad temporal a efectos del cálculo</u> (días, semanas, meses o años).</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-orange-600"></i>Para <strong><u>establecer la garantía deseable</u></strong> se deben considerar los siguientes <strong><u>factores</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-hand-holding-water icon text-gray-500"></i><strong><u>Uso</u></strong> de que se trate, no es lo mismo <u>abastecimiento que recreativo</u>, por ejemplo.</p></li>
+                                <li><p><i class="fas fa-exclamation-triangle icon text-gray-500"></i><strong><u>Efectos</u></strong> de las <u>restricciones</u>.</p></li>
+                                <li><p><i class="fas fa-arrow-down icon text-gray-500"></i>Posible <strong><u>reducción de la demanda</u></strong> en <u>periodos de sequía</u>.</p></li>
+                                <li><p><i class="fas fa-sync-alt icon text-gray-500"></i><strong><u>Frecuencia de restricciones</u></strong> admisibles para los <u>consumidores</u>.</p></li>
+                                <li><p><i class="fas fa-plus-circle icon text-gray-500"></i><strong><u>Posibilidad de acudir a otros recursos</u></strong> existentes en periodos de sequía, por ejemplo, <u>aguas subterráneas</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-gavel icon text-amber-800"></i>La <span class="doc-pill"><strong>Instrucción de Planificación Hidrológica</strong></span> establece los <strong><u>niveles de garantía</u></strong>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-city icon text-blue-500"></i>Considera <strong><u>satisfecha la demanda urbana</u></strong> cuando:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-chart-pie icon text-gray-400"></i>El <strong><u>déficit en un mes no sea superior al <span class="pill-blue">10%</span></u></strong> de la correspondiente <u>demanda mensual</u>.</p></li>
+                                            <li><p><i class="fas fa-calendar-alt icon text-gray-400"></i>Y en <strong><u>diez años consecutivos</u></strong>, la <strong><u>suma de déficit no sea superior al <span class="pill-blue">8%</span></u></strong> de la <u>demanda anual</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-seedling icon text-green-500"></i>La <strong><u>demanda agraria</u></strong> la considera <strong><u>satisfecha</u></strong> cuando:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-chart-pie icon text-gray-400"></i>El <strong><u>déficit en un año no sea superior al <span class="pill-blue">50%</span></u></strong> de la correspondiente <u>demanda</u>.</p></li>
+                                            <li><p><i class="fas fa-calendar-alt icon text-gray-400"></i>En <strong><u>dos años consecutivos</u></strong> la <strong><u>suma de déficit no sea superior al <span class="pill-blue">75%</span></u></strong> de la <u>demanda anual</u>.</p></li>
+                                            <li><p><i class="fas fa-calendar-alt icon text-gray-400"></i>Y en <strong><u>diez años consecutivos</u></strong> la <strong><u>suma de déficit no sea superior al <span class="pill-blue">100%</span></u></strong> de la <u>demanda anual</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 3: Modelos matemáticos de regulación -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-brain"></i></div>
+                <h2>3. Modelos matemáticos de regulación</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Para la <strong><u>determinación del embalse interanual</u></strong> o para el <strong><u>cálculo de la garantía</u></strong> de un determinado embalse se construye una <strong><u>larga serie aleatoria de aportaciones</u></strong> con la que se trabaja con diversas técnicas.</p></li>
+                    <li><p><i class="fas fa-dice icon text-purple-600"></i>Es en esencia un <span class="definition-pill"><strong>“juego de simulación”</strong></span> (se suele llamar <span class="definition-pill"><strong>método Monte Carlo</strong></span>).</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-stream icon text-orange-600"></i>Existen <strong><u>diversos modelos matemáticos</u></strong> de tratamiento de estas series aleatorias artificiales, los <strong><u>más usuales</u></strong> son:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-chart-bar icon text-gray-500"></i>El de las <span class="definition-pill"><strong>diferencias acumuladas</strong></span>:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-calculator icon text-gray-400"></i>Se estudian los valores que toman las <strong><u>sumas sucesivas de las diferencias</u></strong> entre <u>volúmenes a suministrar</u> y <u>aportaciones</u>.</p></li>
+                                            <li><p><i class="fas fa-arrow-up icon text-gray-400"></i>La <strong><u>mayor de estas sumas</u></strong> da la <u>capacidad del embalse</u> necesaria para dar el servicio.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-chart-line icon text-gray-500"></i>Y el de las <span class="definition-pill"><strong>desviaciones acumuladas</strong></span>:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-calculator icon text-gray-400"></i>Se utilizan las <strong><u>sumas de diferencias de aportaciones</u></strong> respecto a la <u>aportación media</u> en periodos de <u>n años</u>.</p></li>
+                                            <li><p><i class="fas fa-search-plus icon text-gray-400"></i>Y se <strong><u>analiza la función</u></strong> que relaciona el <u>número de periodos n</u>, la <u>desviación acumulada</u> y la <u>probabilidad de superarla</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-desktop icon text-cyan-600"></i>Cualquiera que sea el método <span class="definition-pill"><strong>“estadístico-probabilístico”</strong></span> que se utilice conduce a un <strong><u>volumen de operaciones inabordable</u></strong> sin la utilización de los <u>ordenadores</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-plus-circle icon text-green-700"></i><strong><u>Otros métodos</u></strong> empleados para calcular el embalse o la garantía interanual de suministro son, entre otros:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-chart-area icon text-gray-500"></i><span class="definition-pill"><strong>Diagramas de Becerril</strong></span>, elaborados en <span class="pill-blue">1959</span>, permiten obtener el <u>volumen de embalse necesario</u> a partir de la <u>ley de frecuencia de las aportaciones anuales</u>, de la <u>demanda</u> y del <u>nivel de garantía</u>.</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i><span class="definition-pill"><strong>Método de Alexander</strong></span>, <u>generalización del método del caudal mínimo</u>, que se basa en el empleo sólo de las <u>secuencias de menores aportaciones</u> dentro de la serie histórica.</p></li>
+                                <li><p><i class="fas fa-chart-line icon text-gray-500"></i><span class="definition-pill"><strong>Método de Dincer</strong></span>, similar al de Alexander en el que se supone que las <u>sumas de aportaciones</u> siguen una <u>distribución normal</u>.</p></li>
+                                <li><p><i class="fas fa-bell-curve icon text-gray-500"></i><span class="definition-pill"><strong>Método de la distribución gamma de Gould</strong></span>, similar al de Dincer combinando la <u>distribución normal</u> con la <u>distribución gamma</u>.</p></li>
+                                <li><p><i class="fas fa-flask icon text-gray-500"></i><span class="definition-pill"><strong>Método empírico de Mc Mahon</strong></span>, desarrollado a partir del análisis de <span class="pill-blue">156</span> ríos en Australia se dedujo una <u>expresión empírica</u> que depende de los <u>niveles de demanda</u> y de las <u>probabilidades de fallo</u>.</p></li>
+                                <li><p><i class="fas fa-project-diagram icon text-gray-500"></i><span class="definition-pill"><strong>Método de Hardison</strong></span>, mediante el empleo de una <u>matriz de probabilidades</u> se obtuvieron las <u>capacidades de embalse necesarias</u> para diferentes <u>niveles de demanda y probabilidades de fallo</u> utilizando varias <u>distribuciones teóricas</u> de las aportaciones anuales, resumiendo los resultados en una serie de <u>gráficos</u> correspondientes a las diferentes distribuciones teóricas de las aportaciones anuales (<u>normal, lognormal o Weibull</u>).</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 4: Modelos de gestión de sistemas de recursos hídricos -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-cogs"></i></div>
+                <h2>4. Modelos de gestión de sistemas de recursos hídricos</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Todos estos <strong><u>métodos matemáticos</u></strong> son los empleados habitualmente en los denominados <span class="definition-pill"><strong>modelos de gestión de sistemas de recursos hídricos superficiales</strong></span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-bullseye icon text-red-600"></i>Que tratan de <strong><u>reproducir el funcionamiento</u></strong> de los mismos, para lo cual hay que <strong><u>considerar</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-cloud-rain icon text-gray-500"></i>Las <strong><u>acciones exteriores</u></strong> (<u>aportaciones</u>).</p></li>
+                                <li><p><i class="fas fa-building icon text-gray-500"></i>Las <strong><u>características de las infraestructuras</u></strong> (<u>capacidad de los embalses y las conducciones</u>).</p></li>
+                                <li><p><i class="fas fa-hand-holding-water icon text-gray-500"></i>Las <strong><u>demandas existentes</u></strong>.</p></li>
+                                <li><p><i class="fas fa-tasks icon text-gray-500"></i>Y las <strong><u>reglas de gestión</u></strong> con que se explotan los sistemas.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-stream icon text-purple-600"></i>Se utilizan tanto:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-sync icon text-gray-500"></i><span class="definition-pill"><strong>Modelos de simulación</strong></span> (que <u>reproducen de forma detallada el comportamiento</u> del sistema frente a determinadas acciones).</p></li>
+                                <li><p><i class="fas fa-star icon text-gray-500"></i>Como <span class="definition-pill"><strong>modelos de optimización</strong></span> (que <u>seleccionan directamente la solución óptima</u>).</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-check-double icon text-teal-600"></i>La <strong><u>solución más habitual</u></strong> en la que se utilizan estos modelos es la de <strong><u>analizar el sistema de recursos mediante modelos de simulación</u></strong>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-calculator icon text-orange-500"></i>En los que es preciso <strong><u>incluir con adecuados algoritmos matemáticos</u></strong> las mencionadas <u>reglas de gestión</u>.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-exclamation-triangle icon text-yellow-500"></i>Los <strong><u>resultados</u></strong> del funcionamiento del sistema en cuanto a lo satisfactorio de las demandas e infraestructuras <strong><u>solo serán válidos si las reglas de gestión incluidas en el modelo son adecuadas</u></strong>.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-arrow-down icon text-red-400"></i>Unas <strong><u>malas reglas de gestión</u></strong> pueden conducir a <u>resultados muy conservadores</u>.</p></li>
+                                            <li><p><i class="fas fa-arrow-up icon text-green-400"></i>Mientras que unas <strong><u>reglas óptimas pero imposibles de llevar a cabo</u></strong> <u>sobrevaloran el rendimiento hídrico</u> del sistema.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-question-circle icon text-red-700"></i>La <strong><u>obtención de las reglas de explotación</u></strong> no es un problema de <strong><u>fácil solución</u></strong>, máxime en los <u>sistemas reales de una gran complejidad</u>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-tools icon text-indigo-500"></i>Y es en este campo donde los <strong><u>modelos de optimización son utilizados como una herramienta de gran utilidad</u></strong>.</p></li>
+                                <li><p><i class="fas fa-info icon text-blue-500"></i>En el caso de un <strong><u>sistema simple</u></strong> compuesto por un <u>solo embalse y una zona de demanda</u> es posible <strong><u>definir de forma sencilla una regla de operación</u></strong> consistente simplemente en <u>atender la demanda cuando esto sea posible</u>.</p></li>
+                                <li><p><i class="fas fa-sitemap icon text-purple-500"></i>En el caso de <strong><u>sistemas hídricos más complejos</u></strong>, como son los habituales en la realidad, compuestos por <u>varios embalses y varias zonas de demandas</u>, el <strong><u>establecer reglas de gestión es tarea más compleja</u></strong> que depende en gran medida de la <u>experiencia del proyectista</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-laptop-code icon text-cyan-800"></i>Los <strong><u>principales modelos comerciales</u></strong> de gestión de recursos hídricos son:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>El <span class="definition-pill"><strong>HEC-3</strong></span> y <span class="definition-pill"><strong>HEC-5</strong></span> del <span class="actor-pill">Hydrologic Engineering Center del Us Army Corps of Engineers</span>.</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>Software de la <span class="actor-pill">Universidad Politécnica de Valencia</span> (<span class="definition-pill"><strong>SIMGES</strong></span> y <span class="definition-pill"><strong>OPTIGES</strong></span>).</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>O el <span class="definition-pill"><strong>MODSIM</strong></span> de la <span class="actor-pill">Universidad de Colorado</span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-balance-scale-right icon text-orange-700"></i>Por último, es importante recordar que, aunque el <strong><u>balance hídrico de una cuenca resulte positivo</u></strong>, <strong><u>no quiere decir que no vaya a haber problemas de agua</u></strong> en dicha cuenca.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-times icon text-red-500"></i>El <strong><u>balance anual no tiene en cuenta</u></strong> ni la <u>variabilidad mensual</u> de los recursos hídricos, ni la <u>variabilidad espacial</u> entre los recursos y demandas dentro de la cuenca analizada.</p></li>
+                                <li><p><i class="fas fa-search-plus icon text-green-500"></i>Por lo que <strong><u>hacen falta herramientas que contemplen estas circunstancias</u></strong>. El <u>balance hídrico no es más que una primera aproximación</u> al estado general de los recursos hídricos de un territorio, el cual permite determinar el <u>grado máximo de uso de dichos recursos</u>, pero se hace <strong><u>necesario estudiar los sistemas de explotación mediante modelos matemáticos de gestión</u></strong> que contemplen la citada <u>variabilidad temporal y espacial</u> de los recursos, así como las <u>reglas de gestión</u>, para poder así <u>diagnosticar déficits locales, faltas de garantía, etc</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 5: Leyes de distribución de aportaciones -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-info-circle"></i></div>
+                <h2>4. Leyes de distribución de aportaciones</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-database icon text-blue-600"></i>A partir de los <strong><u>datos estadísticos</u></strong> que se tengan del río se obtiene, con la precisión posible, la <strong><u>función de distribución de sus aportaciones</u></strong>.</p></li>
+                    <li><p><i class="fas fa-random icon text-purple-600"></i>Que se considera <strong><u>aleatoria en su carácter anual</u></strong>.</p></li>
+                    <li><p><i class="fas fa-link icon text-orange-600"></i>Pero <strong><u>no así en la distribución de aportaciones dentro de cada año</u></strong>, donde un mes viene muy afectado por los precedentes e influye en los que le siguen.</p></li>
+                    <li><p><i class="fas fa-gavel icon text-amber-800"></i>La <strong><u>función de distribución</u></strong> de las aportaciones anuales se ajusta bastante bien a la <span class="law-pill"><strong>Ley de Goodrick</strong></span>.</p></li>
+                    <li><p><i class="fas fa-water icon text-cyan-600"></i>Mientras que para <strong><u>caudales máximos</u></strong> se ajusta mejor la <span class="law-pill"><strong>ley de Gumbel</strong></span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-plus-circle icon text-green-700"></i><strong><u>Otras leyes estadísticas</u></strong> muy utilizadas son:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-book-open icon text-gray-500"></i><span class="law-pill"><strong>Lognormal</strong></span>.</p></li>
+                                <li><p><i class="fas fa-book-open icon text-gray-500"></i><span class="law-pill"><strong>Gamma</strong></span>.</p></li>
+                                <li><p><i class="fas fa-book-open icon text-gray-500"></i><span class="law-pill"><strong>Pearson</strong></span>.</p></li>
+                                <li><p><i class="fas fa-book-open icon text-gray-500"></i><span class="law-pill"><strong>Logpearson</strong></span>.</p></li>
+                                <li><p><i class="fas fa-book-open icon text-gray-500"></i><span class="law-pill"><strong>Weibull</strong></span>, etc.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <!-- Script para la funcionalidad desplegable -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Selecciona todos los elementos que servirán como disparadores
+            const triggers = document.querySelectorAll('.collapsible-trigger');
+
+            // Itera sobre cada disparador para añadirle un detector de clics
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', function (event) {
+                    // Evita que el clic en un desplegable anidado afecte a su contenedor padre
+                    event.stopPropagation();
+                    
+                    // Encuentra el elemento de contenido que sigue inmediatamente al disparador
+                    const content = this.nextElementSibling;
+                    
+                    // Alterna la clase 'open' en el disparador (para rotar el icono)
+                    this.classList.toggle('open');
+                    
+                    // Verifica que el siguiente elemento sea un contenido desplegable y alterna la clase 'hidden'
+                    if (content && content.classList.contains('collapsible-content')) {
+                        content.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
