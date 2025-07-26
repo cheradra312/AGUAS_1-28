@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Las zonas húmedas</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-water"></i> MEA1T6. Las zonas húmedas <i class="fas fa-leaf"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Las zonas húmedas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-feather-alt"></i></div>
+                <h2>1. Las zonas húmedas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>La <strong><u>realidad física</u></strong> sobre la que la Ley construye el concepto de <span class="definition-pill"><strong>zonas húmedas</strong></span> se caracteriza por:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-arrow-up icon text-gray-500"></i>La <strong><u>elevación del nivel freático</u></strong> con el <u>estrato saturado próximo a la superficie</u>.</p></li>
+                                <li><p><i class="fas fa-tint icon text-gray-500"></i>Que facilita el <strong><u>almacenamiento irregular</u></strong> de una <u>masa de agua</u> de <u>mayor o menor extensión</u>, pero <u>poco profunda</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-book-open icon text-purple-600"></i><strong><u>Estrictamente</u></strong>, la <span class="definition-pill">zona húmeda</span> alude a:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-clock icon text-gray-500"></i><strong><u>Encharcamiento temporal</u></strong>.</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>De <strong><u>aguas remansadas</u></strong>.</p></li>
+                                <li><p><i class="fas fa-leaf icon text-gray-500"></i>Y de <strong><u>origen natural</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-expand-arrows-alt icon text-orange-600"></i>Sin embargo, el <strong><u>afán protector</u></strong> de las zonas palustres ha puesto de manifiesto la <strong><u>necesidad de actuar sobre la totalidad de los ecosistemas acuáticos</u></strong> epicontinentales y costeros.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-plus-circle icon text-green-500"></i>Lo que ha determinado la <strong><u>inclusión en el ámbito de las zonas húmedas</u></strong> de:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-water icon text-gray-400"></i><strong><u>Ecosistemas acuáticos profundos o fluyentes</u></strong> (<u>lagos</u>, <u>lagunas</u>, <u>charcas</u>, <u>embalses</u> y <u>ensanchamientos de ríos</u>) en medios continentales.</p></li>
+                                            <li><p><i class="fas fa-water icon text-gray-400"></i>Así como los <strong><u>grandes estuarios y bahías</u></strong>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-check-double icon text-teal-600"></i>Así pues, se consideran <span class="definition-pill"><strong>zonas húmedas</strong></span> aquellas donde se produce el <strong><u>almacenamiento de agua</u></strong> de <u>mayor o menor extensión</u>, pero <u>poco profunda</u>, ya sean:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-infinity icon text-gray-500"></i><u>Permanentes o temporales</u>.</p></li>
+                                <li><p><i class="fas fa-wave-square icon text-gray-500"></i><u>Remansadas o corrientes</u>.</p></li>
+                                <li><p><i class="fas fa-tree icon text-gray-500"></i><u>Naturales o artificiales</u>.</p></li>
+                                <li><p><i class="fas fa-vial icon text-gray-500"></i><u>Dulces, salobres o salinas</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-gavel icon text-amber-800"></i>Nuestro <strong><u>ordenamiento distingue dos grandes clases</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-water icon text-blue-500"></i><span class="definition-pill"><strong>Marismas</strong></span>:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-info-circle icon text-gray-400"></i><u>Terreno llano y bajo</u> que se <u>inunda periódicamente</u> por efecto de las <u>mareas</u> o la <u>filtración del agua del mar</u>.</p></li>
+                                            <li><p><i class="fas fa-landmark icon text-gray-400"></i>Formando parte de la <u>zona marítimo-terrestre</u>.</p></li>
+                                            <li><p><i class="fas fa-book icon text-gray-400"></i>Estando reguladas por la <span class="law-pill"><strong>ley de Costas</strong></span>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-mountain icon text-green-500"></i>Y el <strong><u>resto de terrenos pantanosos o encharcadizos</u></strong>:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-tools icon text-gray-400"></i>Incluso los <strong><u>creados artificialmente</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-book icon text-gray-400"></i>Regulados por la <span class="law-pill"><strong>legislación de Aguas</strong></span>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li><p><i class="fas fa-shield-alt icon text-purple-500"></i>Además, cuando en estas zonas existan <strong><u>valores ecológicos merecedores de una protección especial</u></strong>, la <u>normativa aplicable</u> a las mismas será la prevista en la <u>disposición legal específica</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-history icon text-orange-700"></i>El <strong><u>interés en el pasado por la desaparición física</u></strong> de terrenos pantanosos ha sido <strong><u>sustituido por un movimiento a favor de su conservación</u></strong>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-arrow-down icon text-red-500"></i>El enfoque anterior tuvo:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-euro-sign icon text-gray-400"></i><strong><u>Resultados económicos decepcionantes</u></strong> en numerosas ocasiones.</p></li>
+                                            <li><p><i class="fas fa-exclamation-triangle icon text-gray-400"></i>Y <strong><u>efectos perjudiciales</u></strong> como un <u>incremento de la erosión</u> y <u>afectaciones al nivel freático</u> o al <u>caudal de las aguas subterráneas</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-arrow-up icon text-green-500"></i>El movimiento actual está en pro de:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-leaf icon text-gray-400"></i>La <strong><u>restauración</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-recycle icon text-gray-400"></i>Y <strong><u>rehabilitación</u></strong> de las perdidas zonas húmedas.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-leaf icon text-green-800"></i>Actualmente es evidente la <strong><u>importancia ecológica de las zonas húmedas</u></strong> con las siguientes <strong><u>ventajas</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-house-flood-water icon text-gray-500"></i><strong><u>Atenúan las crecidas extremas</u></strong>, <u>retardando y reteniendo agua</u> de alimentación.</p></li>
+                                <li><p><i class="fas fa-filter icon text-gray-500"></i><strong><u>Retienen sedimentos</u></strong>.</p></li>
+                                <li><p><i class="fas fa-wind icon text-gray-500"></i><strong><u>Dificultan la erosión</u></strong> con su vegetación.</p></li>
+                                <li><p><i class="fas fa-recycle icon text-gray-500"></i><strong><u>Capacidad de absorción</u></strong> de <u>elementos nutritivos de las plantas</u> (<u>nitrógeno y fósforo</u>) y de los <u>contaminantes</u>.</p></li>
+                                <li><p><i class="fas fa-dna icon text-gray-500"></i><strong><u>Mantienen una alta diversidad genética</u></strong> con <u>especies endémicas y amenazadas</u>.</p></li>
+                                <li><p><i class="fas fa-baby-carriage icon text-gray-500"></i><strong><u>Lugares de reproducción y cría</u></strong> insustituibles para muchas especies.</p></li>
+                                <li><p><i class="fas fa-tint icon text-gray-500"></i><strong><u>Recarga de acuíferos</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-dove icon text-cyan-600"></i>Además, la <span class="plan-pill"><strong>Red Natura 2000</strong></span> <strong><u>protege los humedales</u></strong> por su <u>importancia para las aves</u>.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 2: Inventario español de zonas húmedas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-database"></i></div>
+                <h2>2. Inventario español de zonas húmedas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-gavel icon text-amber-800"></i>El <span class="law-pill"><strong>RDPH</strong></span> establece que los <span class="actor-pill">organismos de cuenca</span> realizarán un <strong><u>inventario de las zonas húmedas</u></strong>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-blue-600"></i>Que <strong><u>debe incluir</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-check-circle icon text-green-500"></i>Las <strong><u>zonas húmedas existentes</u></strong> y aquellas que puedan <u>recuperar o adquirir esa condición</u>.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-info-circle icon text-purple-500"></i><strong><u>Información</u></strong> sobre su:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-map-marked-alt icon text-gray-400"></i><u>Delimitación</u>.</p></li>
+                                            <li><p><i class="fas fa-tasks icon text-gray-400"></i><u>Características actuales</u>, incluyendo <u>comunidades biológicas</u> que habitan.</p></li>
+                                            <li><p><i class="fas fa-heartbeat icon text-gray-400"></i><u>Estado de conservación</u> y <u>amenazas de deterioro</u>.</p></li>
+                                            <li><p><i class="fas fa-hand-holding-water icon text-gray-400"></i><u>Aprovechamientos actuales o posibles</u>.</p></li>
+                                            <li><p><i class="fas fa-shield-alt icon text-gray-400"></i><u>Medidas para su conservación y protección</u>.</p></li>
+                                            <li><p><i class="fas fa-leaf icon text-gray-400"></i>Y <u>posibles aprovechamientos</u> que puedan realizarse considerando la <u>utilización sostenible de los recursos naturales</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-book-open icon text-cyan-700"></i>El <span class="law-pill"><strong>Real Decreto 435/2004</strong></span> regula el <span class="doc-pill"><strong>Inventario nacional de zonas húmedas</strong></span>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-info icon text-gray-500"></i>Derivado en su día de la <span class="law-pill">Ley 4/1989</span> de conservación de los espacios naturales y de la flora y fauna silvestres (ley derogada por la actual <span class="law-pill">Ley 42/2007 del Patrimonio Natural y de la Biodiversidad</span>).</p></li>
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i>Que prevé la <strong><u>elaboración y mantenimiento actualizado</u></strong> del Inventario por parte del <span class="actor-pill">MITECO</span> a partir de la <u>información suministrada por las <span class="actor-pill">CCAA</span></u>.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-bullseye icon text-red-500"></i>Con el <strong><u>fin</u></strong> de:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-chart-line icon text-gray-400"></i><strong><u>Conocer su evolución</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-exclamation-circle icon text-gray-400"></i>Y, en su caso, <strong><u>indicar las medidas de protección</u></strong> que deben recoger los <span class="plan-pill">planes hidrológicos de cuenca</span>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 3: La delimitación de zonas húmedas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-vector-square"></i></div>
+                <h2>3. La delimitación de zonas húmedas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Con el fin de <strong><u>facilitar la defensa, gestión y mejora</u></strong> de las zonas húmedas, el <span class="law-pill"><strong>TRLA</strong></span> prevé su <strong><u>delimitación</u></strong>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-stream icon text-purple-600"></i>Para <span class="definition-pill"><strong>marismas</strong></span>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-gavel icon text-gray-500"></i>La delimitación se hará por las <strong><u>normas sobre deslinde</u></strong> de la <span class="law-pill">ley de Costas</span> y de su <span class="law-pill">Reglamento</span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-mountain icon text-green-600"></i>Para <strong><u>terrenos pantanosos</u></strong>, la delimitación se hará:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-landmark icon text-gray-500"></i>Si son de <span class="definition-pill"><strong>DPH</strong></span> por lo que establece el <span class="law-pill"><strong>RDPH</strong></span>.</p></li>
+                                <li><p><i class="fas fa-user-lock icon text-gray-500"></i>Si <strong><u>no son de DPH</u></strong> (son privados) por lo que establece la <span class="law-pill"><strong>Ley 39/2015 del Procedimiento Administrativo Común de las Administraciones Públicas</strong></span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-plus-circle icon text-orange-600"></i>Se puede fijar además un <strong><u>perímetro de protección</u></strong>.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 4: Mecanismos de protección y conservación de las zonas húmedas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-gavel"></i></div>
+                <h2>4. Mecanismos de protección y conservación de las zonas húmedas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>El <span class="law-pill"><strong>TRLA</strong></span> y el <span class="law-pill"><strong>RDPH</strong></span> establecen <strong><u>2 grados de protección</u></strong> de las zonas húmedas:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-book-open icon text-purple-500"></i><span class="definition-pill"><strong>Régimen general</strong></span>:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-tasks icon text-gray-400"></i>Toda actividad que afecte a las zonas húmedas queda <strong><u>sujeta a autorización o concesión administrativa</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-user-lock icon text-gray-400"></i>Cuando la zona húmeda es de <strong><u>propiedad privada</u></strong> será necesaria la obtención de una <strong><u>autorización</u></strong>.</p></li>
+                                            <li>
+                                                <div class="collapsible-trigger">
+                                                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                    <p><i class="fas fa-landmark icon text-gray-400"></i>Si es de <strong><u>dominio público</u></strong>:</p>
+                                                </div>
+                                                <div class="collapsible-content hidden">
+                                                    <ul class="even-deeper-nested-list">
+                                                        <li><p><i class="fas fa-check-circle icon text-green-300"></i><strong><u>Autorización</u></strong> para <u>uso común, general o especial</u>.</p></li>
+                                                        <li><p><i class="fas fa-stamp icon text-blue-300"></i>Y <strong><u>concesión</u></strong> para el <u>uso privativo o el anormal</u> (no conforme al destino de la zona húmeda).</p></li>
+                                                        <li><p><i class="fas fa-leaf icon text-yellow-300"></i>Que solo se otorgará si supone una <strong><u>utilización sostenible</u></strong> del humedal que <u>no interfiera con la renovación natural del recurso</u>, salvo <u>casos excepcionales de interés público</u> en los que se <u>reduzca el daño</u> y se contemplen <u>actuaciones restauradoras</u>.</p></li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="collapsible-trigger">
+                                                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                    <p><i class="fas fa-user-tie icon text-gray-400"></i>La <strong><u>competencia para otorgar</u></strong> la autorización o concesión corresponderá:</p>
+                                                </div>
+                                                <div class="collapsible-content hidden">
+                                                    <ul class="even-deeper-nested-list">
+                                                        <li><p><i class="fas fa-water icon text-cyan-300"></i>A la <span class="actor-pill"><strong>administración estatal de costas</strong></span> en el caso de las <u>marismas</u>, sin perjuicio de que la competencia en esta materia corresponda a las <span class="actor-pill">CCAA</span> que las hayan asumido en sus estatutos.</p></li>
+                                                        <li><p><i class="fas fa-mountain icon text-green-300"></i>A la <span class="actor-pill"><strong>administración hidráulica</strong></span> en el caso de <u>terrenos pantanosos</u>.</p></li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-star icon text-yellow-500"></i><span class="definition-pill"><strong>Regímenes especiales</strong></span>:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-leaf icon text-gray-400"></i>Cuando la zona presente <strong><u>valores ecológicos merecedores de protección especial</u></strong> están regulados por el <span class="law-pill"><strong>Ordenamiento medioambiental</strong></span>.</p></li>
+                                            <li>
+                                                <div class="collapsible-trigger">
+                                                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                    <p><i class="fas fa-book icon text-gray-400"></i>La <span class="law-pill"><strong>Ley 42/2007 del Patrimonio Natural y de la Biodiversidad</strong></span> establece las siguientes <strong><u>clases de espacios naturales protegidos</u></strong>:</p>
+                                                </div>
+                                                <div class="collapsible-content hidden">
+                                                    <ul class="even-deeper-nested-list">
+                                                        <li><p><i class="fas fa-tree icon text-green-300"></i><span class="definition-pill"><strong>Parques</strong></span>, son <u>áreas naturales</u> que poseen unos <u>valores ecológicos, estéticos, educativos y científicos</u> cuya conservación merece una <u>atención preferente</u>. Los <span class="definition-pill"><strong>Parques Nacionales</strong></span> se rigen por su <u>legislación específica</u> y sobre ellos ejercen funciones la <span class="actor-pill">AGE</span> y las <span class="actor-pill">CCAA</span> correspondientes, siendo éstas las que ejercen la <u>gestión exclusiva</u>, hay <span class="pill-blue">16</span> en España (<u>Islas Atlánticas de Galicia, Picos de Europa, Ordesa y Monte Perdido, Aigüestortes, Sierra de Guadarrama, Monfragüe, Cabañeros, Tablas de Daimiel, Doñana, Sierra Nevada, Archipiélago de Cabrera, Teide, Timanfaya, Caldera de Taburiente, Garajonay y Sierra de las Nieves</u>).</p></li>
+                                                        <li><p><i class="fas fa-shield-alt icon text-blue-300"></i><span class="definition-pill"><strong>Reservas Naturales</strong></span>, son <u>espacios naturales</u> cuya creación tiene como finalidad la <u>protección de ecosistemas, comunidades o elementos biológicos</u> por su <u>rareza, fragilidad, importancia o singularidad</u>.</p></li>
+                                                        <li><p><i class="fas fa-water icon text-cyan-300"></i><span class="definition-pill"><strong>Áreas Marinas Protegidas</strong></span>, son <u>espacios naturales</u> designados para la <u>protección de ecosistemas, comunidades o elementos biológicos o geológicos del medio marino</u>, incluidas las <u>áreas intermareal y submareal</u>, por su <u>rareza, fragilidad, importancia o singularidad</u>.</p></li>
+                                                        <li><p><i class="fas fa-gem icon text-purple-300"></i><span class="definition-pill"><strong>Monumentos naturales</strong></span>, son <u>espacios o elementos de la naturaleza</u> constituidos básicamente por <u>formaciones de notoria singularidad, rareza o belleza</u>.</p></li>
+                                                        <li><p><i class="fas fa-image icon text-orange-300"></i><span class="definition-pill"><strong>Paisajes protegidos</strong></span>, son <u>partes del territorio</u> que, por sus <u>valores naturales, estéticos y culturales</u>, y de acuerdo con el <span class="doc-pill">Convenio del paisaje del Consejo de Europa</span>, merecen una <u>protección especial</u>.</p></li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-plus-circle icon text-green-700"></i>Además de lo anterior, los <strong><u>humedales pueden ser protegidos por otros medios jurídicos</u></strong>, especialmente mediante <span class="plan-pill"><strong>planes territoriales y de ordenación urbana</strong></span>.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 5: Rehabilitación o restauración -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-sync-alt"></i></div>
+                <h2>5. Rehabilitación o restauración</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>Dentro de las zonas que puedan <strong><u>recuperar o adquirir la condición de zonas húmedas</u></strong> se pueden considerar:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>Los <strong><u>bordes o colas de embalses</u></strong>.</p></li>
+                                <li><p><i class="fas fa-tint-slash icon text-gray-500"></i>O aquellas que hayan sido <strong><u>desecadas por causas naturales o artificiales</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-purple-600"></i>En <strong><u>alguno de estos supuestos</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-times-circle icon text-red-500"></i>Cuando <strong><u>no existan aprovechamientos</u></strong> en la actualidad sobre la antigua zona húmeda.</p></li>
+                                <li><p><i class="fas fa-arrow-down icon text-orange-500"></i>Cuando, aun existiendo, sean de <strong><u>escasa importancia</u></strong>.</p></li>
+                                <li><p><i class="fas fa-chart-line icon text-yellow-600"></i>Cuando los <strong><u>rendimientos de los aprovechamientos agrarios</u></strong> previstos para justificar la desecación <strong><u>no se alcancen</u></strong> con sensible desmerecimiento.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-gavel icon text-amber-800"></i>El <strong><u>acuerdo llevará consigo</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-landmark icon text-gray-500"></i>La <strong><u>declaración de utilidad pública</u></strong> a efectos de <u>expropiación forzosa de bienes y derechos</u>.</p></li>
+                                <li><p><i class="fas fa-map-pin icon text-gray-500"></i>Y de <strong><u>ocupación temporal de los bienes</u></strong> que sean necesarios para los <u>trabajos de rehabilitación</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 6: Directiva de Hábitats y de Aves -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-book-open"></i></div>
+                <h2>6. Directiva de Hábitats y de Aves</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tree icon text-green-700"></i>Directiva 92/43 (Directiva Hábitats)</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Relativa a la <strong><u>conservación de los hábitats naturales</u></strong> y de la <u>fauna y flora silvestres</u>.</p></li>
+                        <li><p><i class="fas fa-gavel icon text-amber-800"></i>Establece por primera vez el <span class="principle-pill"><strong>principio de conservación de los hábitats naturales</strong></span> como tales y <u>no solo como el medio en el que viven las especies</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tasks icon text-purple-600"></i>Contempla los <span class="definition-pill"><strong>Lugares de Importancia Comunitaria (LIC)</strong></span> y las <span class="definition-pill"><strong>Zonas Especiales de Conservación (ZEC)</strong></span>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-check-circle icon text-green-500"></i>Integrados por lugares que alberguen <strong><u>tipos de hábitats</u></strong> del <span class="doc-pill">anexo I</span> y <strong><u>taxones</u></strong> (<u>grupos de organismos emparentados</u>) del <span class="doc-pill">anexo II</span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-stream icon text-orange-600"></i>La <strong><u>designación de las ZEC</u></strong> pasa por las siguientes <strong><u>fases</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-list-ol icon text-gray-500"></i><strong><u>Creación de la lista nacional</u></strong>, propuesta por cada <span class="actor-pill">Estado miembro</span> de una serie de <u>lugares de interés</u> tomando como base los <u>criterios del anexo III</u> de la directiva.</p></li>
+                                    <li><p><i class="fas fa-search-location icon text-gray-500"></i><strong><u>Selección de los Lugares de Importancia Comunitaria</u></strong>, la <span class="actor-pill">Comisión Europea</span> efectúa la selección en <u>colaboración con los Estados miembros</u> y <u>asesorada por el Centro Temático de la Naturaleza</u> de la <span class="actor-pill">Agencia Europea de Medio Ambiente</span> de aquellos lugares que por sus <u>valores específicos</u> deben formar parte de la <span class="plan-pill">red Natura 2000</span>.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-stamp icon text-gray-500"></i><strong><u>Designación de ZEC</u></strong> de los lugares incluidos en la lista de <span class="definition-pill">Lugares de Importancia Comunitaria</span> por parte de los <span class="actor-pill">Estados miembros</span>.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-flag icon text-red-400"></i>En <strong><u>España</u></strong> esta declaración la hacen las <span class="actor-pill"><strong>CCAA</strong></span>.</p></li>
+                                                <li><p><i class="fas fa-clock icon text-blue-400"></i>Y debe hacerse <strong><u>lo antes posible</u></strong> y como máximo en un <strong><u>plazo de <span class="pill-blue">6 años</span></u></strong>.</p></li>
+                                                <li><p><i class="fas fa-sort-amount-up icon text-purple-400"></i>Fijando las <strong><u>prioridades</u></strong> en función de la <u>importancia de los lugares</u> y de las <u>amenazas de deterioro</u> que pesen sobre ellos.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-dove icon text-cyan-700"></i>Directiva 2009/147 (Directiva Aves)</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>De <strong><u>conservación de las aves silvestres</u></strong>.</p></li>
+                        <li><p><i class="fas fa-map-pin icon text-red-600"></i>Contempla unas <span class="definition-pill"><strong>Zonas de Especial Protección para las Aves (ZEPA)</strong></span>.</p></li>
+                        <li><p><i class="fas fa-tasks icon text-purple-600"></i>La <strong><u>designación de un territorio como ZEPA</u></strong> se realiza tras la <strong><u>evaluación de la importancia del lugar</u></strong> para la <u>conservación de los hábitats de las aves</u>, incluidas en el <span class="doc-pill">anexo I de la Directiva Aves</span>.</p></li>
+                        <li><p><i class="fas fa-list-ol icon text-orange-600"></i>Y consta <strong><u>únicamente de una etapa</u></strong>.</p></li>
+                        <li><p><i class="fas fa-flag icon text-green-600"></i>Igualmente, en el caso español, son las <span class="actor-pill"><strong>CCAA</strong></span> las que <strong><u>declaran las ZEPAs</u></strong>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-network-wired icon text-indigo-700"></i>Red Ecológica Europea Natura 2000</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Es una <strong><u>red ecológica coherente</u></strong> compuesta por:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-map-marker-alt icon text-gray-500"></i>Los <span class="definition-pill"><strong>LICs</strong></span>, hasta su transformación en <span class="definition-pill">ZECs</span>.</p></li>
+                                    <li><p><i class="fas fa-map-marker-alt icon text-gray-500"></i>Dichas <span class="definition-pill"><strong>ZECs</strong></span>.</p></li>
+                                    <li><p><i class="fas fa-map-marker-alt icon text-gray-500"></i>Y las <span class="definition-pill"><strong>ZEPAs</strong></span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-shield-alt icon text-green-700"></i>Los <span class="definition-pill">LICs</span>, las <span class="definition-pill">ZECs</span> y las <span class="definition-pill">ZEPAs</span> tendrán la consideración de <strong><u>espacios protegidos</u></strong>, con la denominación de <span class="definition-pill"><strong>espacio protegido Red Natura 2000</strong></span>.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Script para la funcionalidad desplegable -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Selecciona todos los elementos que servirán como disparadores
+            const triggers = document.querySelectorAll('.collapsible-trigger');
+
+            // Itera sobre cada disparador para añadirle un detector de clics
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', function (event) {
+                    // Evita que el clic en un desplegable anidado afecte a su contenedor padre
+                    event.stopPropagation();
+                    
+                    // Encuentra el elemento de contenido que sigue inmediatamente al disparador
+                    const content = this.nextElementSibling;
+                    
+                    // Alterna la clase 'open' en el disparador (para rotar el icono)
+                    this.classList.toggle('open');
+                    
+                    // Verifica que el siguiente elemento sea un contenido desplegable y alterna la clase 'hidden'
+                    if (content && content.classList.contains('collapsible-content')) {
+                        content.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
