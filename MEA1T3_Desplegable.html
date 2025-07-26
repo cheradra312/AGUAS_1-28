@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Avenidas y Sequías</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-house-flood-water"></i> MEA1T3. Avenidas y sequías <i class="fas fa-sun"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Avenidas e inundaciones -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-water"></i></div>
+                <h2>1. Avenidas e inundaciones</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-cloud-showers-heavy icon text-blue-600"></i>Aunque la <strong><u>pluviometría en España no es abundante</u></strong>, en ocasiones se presentan <strong><u>precipitaciones</u></strong> que en <u>pocas horas superan el promedio anual</u>.</p></li>
+                    <li><p><i class="fas fa-exclamation-triangle icon text-red-600"></i>Se trata de un <span class="definition-pill"><strong>problema hidrológico</strong></span> con <u>efectos territoriales y socieconómicos</u>.</p></li>
+                    <li><p><i class="fas fa-balance-scale icon text-orange-600"></i>Para <strong><u>proteger de las avenidas</u></strong> hay que llegar a un <strong><u>equilibrio</u></strong> entre el <u>coste de las actuaciones</u> y el <u>valor de los bienes a proteger</u>.</p></li>
+                    <li><p><i class="fas fa-shield-alt icon text-green-700"></i>Las <span class="definition-pill"><strong>medidas de protección</strong></span> consisten en <strong><u>modificar las condiciones de la zona inundable</u></strong> para hacerla <u>menos susceptible a los daños</u> de la inundación, y <u>sin evitar los riesgos</u> de inundación <strong><u>mitigan sus efectos</u></strong>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-chart-line icon text-purple-600"></i>Los <strong><u>daños producidos por las crecidas</u></strong> dependen de:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>Los <strong><u>niveles alcanzados</u></strong> por la inundación.</p></li>
+                                <li><p><i class="fas fa-calendar-alt icon text-gray-500"></i><strong><u>Época</u></strong> del año.</p></li>
+                                <li><p><i class="fas fa-wind icon text-gray-500"></i><strong><u>Velocidad</u></strong> del agua.</p></li>
+                                <li><p><i class="fas fa-hourglass-half icon text-gray-500"></i><strong><u>Duración</u></strong>.</p></li>
+                                <li><p><i class="fas fa-mountain icon text-gray-500"></i><strong><u>Carga de sólidos</u></strong> arrastrada.</p></li>
+                                <li><p><i class="fas fa-bullhorn icon text-gray-500"></i>Y <strong><u>tiempo</u></strong> desde que se da la alarma.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-blue-700"></i>Las <strong><u>actuaciones de defensa contra avenidas</u></strong> pueden proteger las zonas inundables de <strong><u>2 formas</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-hard-hat icon text-orange-500"></i>Con <span class="definition-pill"><strong>medidas estructurales</strong></span> mediante <u>obras de infraestructuras</u>, <strong><u>reduciendo la inundación</u></strong> con:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-archway icon text-gray-400"></i><u>Embalses de laminación</u>.</p></li>
+                                            <li><p><i class="fas fa-grip-lines-vertical icon text-gray-400"></i><u>Diques longitudinales</u>.</p></li>
+                                            <li><p><i class="fas fa-ruler-combined icon text-gray-400"></i><u>Encauzamientos</u> con mayor capacidad.</p></li>
+                                            <li><p><i class="fas fa-exchange-alt icon text-gray-400"></i>O <u>trasvases</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-leaf icon text-green-500"></i>Y con <span class="definition-pill"><strong>medidas no estructurales</strong></span>, <strong><u>reduciendo posibles daños</u></strong> mediante:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-map-marker-alt icon text-gray-400"></i><u>Cambios de ubicación</u> de ciertos usos del suelo.</p></li>
+                                            <li><p><i class="fas fa-broadcast-tower icon text-gray-400"></i><u>Sistemas de previsión y alerta</u>.</p></li>
+                                            <li><p><i class="fas fa-tree icon text-gray-400"></i>O <u>labores de corrección hidrológico-forestal</u> para reducir la <u>erosión</u> y la <u>escorrentía</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-info-circle icon text-cyan-600"></i>Las <strong><u>primeras</u></strong> son medidas que se utilizan para <span class="definition-pill"><strong>crecidas ordinarias</strong></span> en <u>zonas urbanas</u>.</p></li>
+                    <li><p><i class="fas fa-info-circle icon text-red-600"></i>Y las <strong><u>segundas</u></strong> lo son para <span class="definition-pill"><strong>crecidas extraordinarias</strong></span>.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 2: Directiva 2007/60 y RD 903/2010 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-book-open"></i></div>
+                <h2>2. La Directiva 2007/60 de evaluación y gestión de riesgos de inundación y RD 903/2010 de evaluación y gestión de riesgos de inundación. Planes de gestión de riesgo de inundación</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-bullseye icon text-red-600"></i>El <strong><u>objetivo</u></strong> de la <span class="doc-pill"><strong>Directiva 2007/60</strong></span> es <strong><u>establecer un marco</u></strong> para la <u>evaluación y gestión de los riesgos de inundación</u>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-arrow-down icon text-green-500"></i>Destinado a <strong><u>reducir las consecuencias negativas</u></strong> de las inundaciones para:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-heartbeat icon text-gray-400"></i>La <u>salud humana</u>.</p></li>
+                                            <li><p><i class="fas fa-leaf icon text-gray-400"></i>El <u>medio ambiente</u>.</p></li>
+                                            <li><p><i class="fas fa-landmark icon text-gray-400"></i>El <u>patrimonio cultural</u>.</p></li>
+                                            <li><p><i class="fas fa-chart-line icon text-gray-400"></i>Y la <u>actividad económica</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-tasks icon text-purple-600"></i>En las <strong><u>políticas de usos del agua y del suelo</u></strong> los <span class="actor-pill">Estados miembros</span> deben <strong><u>considerar los riesgos de inundación</u></strong>.</p></li>
+                    <li><p><i class="fas fa-water icon text-blue-600"></i>Las <strong><u>inundaciones</u></strong> pueden ser de carácter <u>fluvial</u> o <u>provocadas por el mar</u> en las zonas costeras.</p></li>
+                    <li><p><i class="fas fa-search-dollar icon text-orange-600"></i>Y sus <strong><u>daños varían según las regiones</u></strong>, por lo que los <strong><u>riesgos de inundación deben evaluarse</u></strong> para cada <u>demarcación hidrográfica</u> o <u>unidad de gestión</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-gavel icon text-amber-800"></i>La <span class="doc-pill"><strong>Directiva 2007/60</strong></span> ha sido <strong><u>traspuesta</u></strong> mediante el <span class="law-pill"><strong>RD 903/2010</strong></span> y tiene un <strong><u>doble objetivo</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-balance-scale icon text-gray-500"></i><strong><u>Evaluar los riesgos</u></strong> asociados a las inundaciones.</p></li>
+                                <li><p><i class="fas fa-users-cog icon text-gray-500"></i>Y <strong><u>lograr una actuación coordinada</u></strong> de todas las <u>administraciones públicas y la sociedad</u> para <u>reducir sus consecuencias negativas</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-clipboard-list icon text-cyan-700"></i>Establece las siguientes <strong><u>obligaciones concretas</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-search icon text-gray-500"></i><strong><u>Evaluación preliminar del riesgo de inundación</u></strong> (donde se identifican las <u>áreas con riesgo potencial significativo</u> de inundación).</p></li>
+                                <li><p><i class="fas fa-map-marked-alt icon text-gray-500"></i><strong><u>Mapas de peligrosidad y riesgo</u></strong>.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-file-alt icon text-gray-500"></i>Y <span class="plan-pill"><strong>planes de gestión de riesgo de inundación (PGRI)</strong></span> que deben incluir:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-file-invoice icon text-gray-400"></i>Las <strong><u>conclusiones</u></strong> de la evaluación preliminar de los riesgos de inundación.</p></li>
+                                            <li><p><i class="fas fa-map icon text-gray-400"></i>Los <strong><u>mapas de peligrosidad y de riesgos</u></strong> de inundación.</p></li>
+                                            <li><p><i class="fas fa-bullseye icon text-gray-400"></i><strong><u>Objetivos</u></strong> de la gestión de riesgos de inundación.</p></li>
+                                            <li><p><i class="fas fa-book-reader icon text-gray-400"></i>Un <strong><u>resumen del contenido</u></strong> de los <span class="plan-pill">planes de protección civil</span> existentes.</p></li>
+                                            <li><p><i class="fas fa-broadcast-tower icon text-gray-400"></i><strong><u>Descripción de los sistemas</u></strong> para la obtención de <u>información hidrológica en tiempo real</u> durante avenidas y <u>sistemas de predicción y ayuda a la decisión</u> disponibles.</p></li>
+                                            <li><p><i class="fas fa-tasks icon text-gray-400"></i>Un <strong><u>resumen de los programas de medidas</u></strong> que cada administración ha aprobado con <u>indicación de prioridades</u> entre ellos.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-check-double icon text-green-800"></i><strong><u>Actualmente se encuentran aprobados</u></strong> los <span class="plan-pill"><strong>PGRI de 2º ciclo 2022-2027</strong></span> de:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-water icon text-blue-500"></i>Las <span class="pill-blue"><strong>12</strong></span> <strong><u>demarcaciones hidrográficas intercomunitarias</u></strong> de competencia estatal.</p></li>
+                                <li><p><i class="fas fa-map icon text-purple-500"></i>Y los de las <span class="pill-blue"><strong>13</strong></span> <strong><u>demarcaciones hidrográficas intracomunitarias</u></strong> de competencia autonómica.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-stamp icon text-indigo-600"></i><strong><u>Todos los planes</u></strong> han sido <strong><u>aprobados por el <span class="actor-pill">Gobierno de España</span></u></strong> mediante <span class="law-pill">real decreto</span>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-island icon text-orange-500"></i><strong><u>Excepto</u></strong> los correspondientes a las <strong><u>siete demarcaciones canarias</u></strong> que han sido aprobados por <span class="law-pill">decreto del Gobierno de Canarias</span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Card 3: Sequías -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-sun"></i></div>
+                <h2>3. Sequías</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>En <strong><u>España</u></strong> las <span class="definition-pill"><strong>sequías hidrológicas</strong></span> son producidas por la <strong><u>persistencia de valores bajos de precipitación</u></strong> durante <u>varios años consecutivos</u>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-check-circle icon text-green-500"></i>Puesto que si solo se presentan en un año se <strong><u>superan gracias a la elevada capacidad de embalse</u></strong> existente en nuestro país.</p></li>
+                                <li><p><i class="fas fa-search-minus icon text-red-500"></i><strong><u>No hay una caracterización suficientemente precisa</u></strong> de las principales <u>sequías históricas</u> acaecidas, a pesar de los problemas de sequía que sufre España.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-leaf icon text-purple-600"></i>Las <strong><u>sequías afectan</u></strong> a los <u>ecosistemas acuáticos</u> y al <u>paisaje</u> convirtiéndose en un <strong><u>problema ambiental</u></strong> y no solo de recursos.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-sync-alt icon text-orange-600"></i>Y son un <strong><u>fenómeno normal y recurrente</u></strong> en el clima de España.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-tasks icon text-cyan-500"></i>Por tanto, las <strong><u>actuaciones a desarrollar</u></strong> en estas situaciones deben estar basadas en la <strong><u>planificación</u></strong>, mediante una <span class="definition-pill">“gestión del riesgo”</span>, y no en medidas de emergencia como <span class="definition-pill">“respuesta a la crisis”</span>.</p></li>
+                                <li><p><i class="fas fa-fire-extinguisher icon text-indigo-500"></i>La <strong><u>sequía producida</u></strong> en la mayor parte de España entre <span class="pill-blue"><strong>1991</strong></span> y <span class="pill-blue"><strong>1995</strong></span>, con <u>consecuencias socioeconómicas muy negativas</u>, actuó como <strong><u>detonante de este cambio de mentalidad</u></strong> a la hora de gestionar las sequías.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-stream icon text-blue-700"></i>Se pueden <strong><u>distinguir los siguientes tipos</u></strong> de sequías:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-cloud-sun-rain icon text-gray-500"></i><span class="definition-pill"><strong>Sequía meteorológica</strong></span>, <strong><u>reducción de la cantidad de precipitación</u></strong> durante un periodo específico por debajo de una cantidad concreta, es una <u>condición anormal y recurrente del clima</u> que ocurre en todas las regiones climáticas de la Tierra. Su definición solo comprende <u>datos de precipitación</u>.</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i><span class="definition-pill"><strong>Sequía hidrológica</strong></span>, tiene relación con la <strong><u>disponibilidad de agua</u></strong> y supone un <strong><u>anormal déficit de caudales superficiales</u></strong>. Según la regulación y la demanda puede producir <u>déficit en los diferentes usos</u>.</p></li>
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i><span class="definition-pill"><strong>Sequía operacional</strong></span>, tiene que ver con la <strong><u>gestión de los recursos hídricos</u></strong>, existen <u>modelos para estudiarlas</u>, así como <u>medidas de mitigación</u> y la <u>estimación de su eficacia</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 4: Planes especiales de alerta y eventual sequía -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-file-alt"></i></div>
+                <h2>4. Planes especiales de alerta y eventual sequía</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-gavel icon text-amber-800"></i>La <span class="law-pill"><strong>Ley 10/2001 del Plan Hidrológico Nacional</strong></span>, sentó las <strong><u>bases de la gestión planificada</u></strong> de las sequías.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-blue-600"></i>Se <strong><u>centra en aspectos</u></strong> como:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-chart-bar icon text-gray-500"></i>La definición de un <strong><u>sistema de indicadores de sequías</u></strong>, que ayude a la <u>toma de decisiones</u> de forma <u>objetiva, progresiva y planificada</u>.</p></li>
+                                <li><p><i class="fas fa-file-medical-alt icon text-gray-500"></i>La elaboración de <span class="plan-pill"><strong>Planes Especiales de Sequías</strong></span> en cada <u>ámbito de planificación hidrológica</u>.</p></li>
+                                <li><p><i class="fas fa-city icon text-gray-500"></i>Y la elaboración de <span class="plan-pill"><strong>Planes de Emergencia</strong></span> para sistemas de <u>abastecimiento de más de <span class="pill-blue">20.000</span> personas</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-purple-600"></i>Los <span class="plan-pill"><strong>planes especiales de actuación en situaciones de alerta y eventual sequía</strong></span> se <strong><u>redactan</u></strong> por parte de los <span class="actor-pill">organismos de cuenca</span> en las <u>cuencas intercomunitarias</u>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-clipboard-list icon text-orange-500"></i>Estos planes <strong><u>incluyen</u></strong>:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-tachometer-alt icon text-gray-400"></i>La <strong><u>definición de indicadores y umbrales</u></strong> de estado.</p></li>
+                                            <li><p><i class="fas fa-cogs icon text-gray-400"></i><strong><u>Programas de medidas</u></strong> a aplicar en relación con el uso del <span class="definition-pill">DPH</span>.</p></li>
+                                            <li><p><i class="fas fa-search icon text-gray-400"></i>Y <strong><u>sistema de gestión y seguimiento</u></strong> de la sequía.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-bullseye icon text-red-600"></i>Su <strong><u>objetivo general</u></strong> es <strong><u>minimizar los aspectos ambientales y socio-económicos</u></strong> de las eventuales situaciones de sequía.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-crosshairs icon text-green-500"></i>Que se persigue a base de <strong><u>objetivos específicos</u></strong>:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-hand-holding-water icon text-gray-400"></i><strong><u>Garantizar la disponibilidad de agua</u></strong> para asegurar la <u>salud y vida de la población</u>.</p></li>
+                                            <li><p><i class="fas fa-leaf icon text-gray-400"></i><strong><u>Evitar o minimizar la afección</u></strong> sobre el régimen de <u>caudales ecológicos</u>.</p></li>
+                                            <li><p><i class="fas fa-city icon text-gray-400"></i><strong><u>Minimizar efectos negativos</u></strong> sobre el <u>abastecimiento urbano</u> y sobre las <u>actividades económicas</u> según <u>prioridades</u> de legislación de aguas y de los planes hidrológicos de cuenca.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-stamp icon text-cyan-700"></i>En <span class="pill-blue"><strong>2018</strong></span> el <span class="actor-pill"><strong>MITECO</strong></span> ha <strong><u>aprobado por orden ministerial la revisión</u></strong> de los <span class="plan-pill">Planes Especiales de Sequía</span> correspondientes a:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-map-marked-alt icon text-gray-500"></i>Las demarcaciones hidrográficas del <u>Cantábrico Occidental, Guadalquivir, Ceuta, Melilla, Segura y Júcar</u>.</p></li>
+                                <li><p><i class="fas fa-map-marked-alt icon text-gray-500"></i>A la <u>parte española</u> de las demarcaciones hidrográficas del <u>Miño-Sil, Duero, Tajo, Guadiana y Ebro</u>.</p></li>
+                                <li><p><i class="fas fa-map-marked-alt icon text-gray-500"></i>Y al <u>ámbito de competencias del Estado</u> de la <u>parte española</u> de la demarcación hidrográfica del <u>Cantábrico Oriental</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-exchange-alt icon text-indigo-600"></i>Estos <strong><u>nuevos planes de gestión de sequía sustituyen</u></strong> a los anteriormente vigentes, que se aprobaron en el año <span class="pill-blue">2007</span>, aunque la filosofía establecida en los mismos ya llevaba años aplicándose.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-sync-alt icon text-blue-700"></i>La <strong><u>revisión</u></strong> de los <span class="plan-pill">Planes Especiales de Sequía</span>, se realizó de acuerdo con lo establecido en la <strong><u>aprobación de los <span class="plan-pill">Planes Hidrológicos de segundo ciclo</span></u></strong>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-check-double icon text-teal-500"></i>De forma que fueran <strong><u>coherentes con los criterios de estos planes</u></strong> (en cuanto a su <u>definición y establecimiento de recursos</u>, <u>caudales ecológicos</u>, <u>condicionantes del cambio climático</u>, <u>demandas</u>, etc.).</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tachometer-alt icon text-purple-700"></i>Con la entrada en vigor de los nuevos planes se pasa a utilizar un <strong><u>sistema doble de indicadores</u></strong>, que diferencian:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-cloud-sun-rain icon text-gray-500"></i>Las situaciones de <span class="definition-pill"><strong>sequía</strong></span> (entendida como un <u>fenómeno natural</u>).</p></li>
+                                <li><p><i class="fas fa-hand-holding-droplet icon text-gray-500"></i>De las situaciones de <span class="definition-pill"><strong>escasez</strong></span> (relacionadas con <u>problemas coyunturales en la atención de las demandas</u>).</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-thumbs-up icon text-green-800"></i>Estos <span class="plan-pill">Planes Especiales</span> han sido de una <strong><u>gran utilidad</u></strong> para <strong><u>evitar, o al menos mitigar de forma importante</u></strong>, los <u>efectos socioeconómicos negativos</u> de las sequías, incluso en secuencias meteorológicas muy similares a la producida en el periodo <span class="pill-blue">1991-1995</span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-gavel icon text-amber-800"></i>El <span class="law-pill"><strong>TRLA</strong></span> establece que, en <strong><u>circunstancias de sequías extraordinarias</u></strong>, de <u>sobreexplotación grave de acuíferos</u>, o en <u>similares estados de necesidad, urgencia o concurrencia de situaciones anómalas o excepcionales</u>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-user-tie icon text-gray-500"></i>El <span class="actor-pill"><strong>Gobierno</strong></span>, mediante <span class="law-pill">Decreto</span> acordado en <span class="actor-pill">Consejo de Ministros</span>, oído el <span class="actor-pill">organismo de cuenca</span>, podrá <strong><u>adoptar, para la superación de dichas situaciones, las medidas que sean precisas</u></strong> en relación con la <u>utilización del dominio público hidráulico</u>, aun cuando hubiese sido objeto de concesión.</p></li>
+                                <li><p><i class="fas fa-stamp icon text-red-500"></i>La <strong><u>aprobación de dichas medidas</u></strong> llevará implícita la <strong><u>declaración de utilidad pública</u></strong> de las <u>obras, sondeos y estudios</u> necesarios para desarrollarlos, a efectos de la <u>ocupación temporal</u> y <u>expropiación forzosa de bienes y derechos</u>, así como la de <u>urgente necesidad de la ocupación</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 5: Estudios relativos a inundaciones y sequías -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-search"></i></div>
+                <h2>5. Estudios relativos a inundaciones y sequías. Prevención y control</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-water icon text-blue-600"></i>En la <strong><u>previsión y cálculo de máximas crecidas</u></strong>, su <strong><u>finalidad</u></strong> es determinar la <span class="definition-pill"><strong>avenida de diseño</strong></span> para <u>trabajos de planificación</u> o de <u>dimensionamiento de infraestructuras</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-stream icon text-purple-600"></i>Una <strong><u>clasificación de los métodos</u></strong> de estimación de avenidas es la que los divide en:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-calculator icon text-orange-500"></i><span class="definition-pill"><strong>Métodos determinísticos</strong></span>, calculan de forma <u>unívoca los caudales</u> a partir de <u>datos pluviométricos</u>, como el método de la <span class="definition-pill">avenida máxima probable</span>.</p></li>
+                                <li><p><i class="fas fa-chart-line icon text-green-500"></i><span class="definition-pill"><strong>Métodos probabilísticos</strong></span>, en base a <u>datos disponibles de lluvias o caudales</u> se ajustan diversas <u>leyes de extremos</u> para determinar por <u>extrapolación estadística</u> los <u>hidrogramas de avenida</u> y los <u>caudales punta</u> para diferentes periodos de retorno, son <strong><u>más adecuados para España</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-sun icon text-yellow-600"></i>La <strong><u>caracterización de las sequías</u></strong> persigue:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-balance-scale icon text-gray-500"></i><strong><u>Valorar el riesgo</u></strong> de que se produzcan.</p></li>
+                                <li><p><i class="fas fa-chart-area icon text-gray-500"></i><strong><u>Evaluar su impacto</u></strong>.</p></li>
+                                <li><p><i class="fas fa-shield-alt icon text-gray-500"></i><strong><u>Desarrollar medidas</u></strong> contra la sequía.</p></li>
+                                <li><p><i class="fas fa-search-plus icon text-gray-500"></i>Y <strong><u>determinar su impacto</u></strong>, definiendo el <u>fenómeno</u> (directo o indirecto) que origina la sequía, <u>intervalo de tiempo</u>, <u>área afectada</u> y <u>relación espacial-temporal de recursos y demandas</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-brain icon text-indigo-600"></i>Se <strong><u>estudian por medio de la teoría de probabilidades</u></strong> aplicada a <u>procesos estocásticos</u>, se utiliza la <u>teoría de rachas</u> o <u>leyes de sucesos raros</u> (<span class="formula-pill">ley de Poisson</span>).</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 6: Sistema automático de información hidrológica -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-satellite-dish"></i></div>
+                <h2>6. Sistema automático de información hidrológica</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>El <span class="definition-pill"><strong>sistema automático de información hidrológica (SAIH)</strong></span>, nació en <span class="pill-blue"><strong>1983</strong></span> y en <span class="pill-blue"><strong>1985</strong></span> comenzó a implantarse en la <u>cuenca del Júcar</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-bullseye icon text-red-600"></i><strong><u>Responde a la necesidad</u></strong> de <strong><u>racionalizar y agilizar el proceso de toma de decisiones</u></strong> en <strong><u>3 aspectos fundamentales</u></strong> de la gestión hidráulica de las cuencas:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong><u>Gestión global</u></strong> de los <u>recursos hidráulicos</u>.</p></li>
+                                <li><p><i class="fas fa-house-flood-water icon text-gray-500"></i><strong><u>Previsión y actuación</u></strong> en <u>avenidas</u>.</p></li>
+                                <li><p><i class="fas fa-tint icon text-gray-500"></i>Y <strong><u>vigilancia de los niveles de contaminación</u></strong> de las aguas de <u>ríos y canales</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-network-wired icon text-purple-600"></i>Tiene una <strong><u>red de telemedida y telecontrol</u></strong> que <u>registra datos pluviométricos, hidrológicos y de situación de los embalses</u> en un gran número de puntos y los <u>transmite en tiempo real</u> a los <span class="actor-pill">organismos de cuenca</span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-sitemap icon text-orange-600"></i>Se <strong><u>estructura en 3 niveles</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-map-pin icon text-gray-500"></i><strong><u>Puntos de control</u></strong>.</p></li>
+                                <li><p><i class="fas fa-compress-arrows-alt icon text-gray-500"></i><strong><u>Puntos de concentración</u></strong>.</p></li>
+                                <li><p><i class="fas fa-server icon text-gray-500"></i>Y <strong><u>centros de proceso de cuenca</u></strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-cyan-600"></i>Y tiene <strong><u>3 formas de funcionamiento</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-check-circle icon text-green-500"></i><span class="definition-pill"><strong>Situación normal</strong></span> (datos cada <span class="pill-blue">15 minutos</span>).</p></li>
+                                <li><p><i class="fas fa-exclamation-triangle icon text-yellow-500"></i><span class="definition-pill"><strong>Situación de crisis</strong></span> (cada <span class="pill-blue">5 minutos</span>).</p></li>
+                                <li><p><i class="fas fa-desktop icon text-blue-500"></i>Y <span class="definition-pill"><strong>terminal virtual</strong></span> (en <u>tiempo real</u>).</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <!-- Script para la funcionalidad desplegable -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Selecciona todos los elementos que servirán como disparadores
+            const triggers = document.querySelectorAll('.collapsible-trigger');
+
+            // Itera sobre cada disparador para añadirle un detector de clics
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', function (event) {
+                    // Evita que el clic en un desplegable anidado afecte a su contenedor padre
+                    event.stopPropagation();
+                    
+                    // Encuentra el elemento de contenido que sigue inmediatamente al disparador
+                    const content = this.nextElementSibling;
+                    
+                    // Alterna la clase 'open' en el disparador (para rotar el icono)
+                    this.classList.toggle('open');
+                    
+                    // Verifica que el siguiente elemento sea un contenido desplegable y alterna la clase 'hidden'
+                    if (content && content.classList.contains('collapsible-content')) {
+                        content.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
