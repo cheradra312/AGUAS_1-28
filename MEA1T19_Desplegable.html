@@ -99,16 +99,16 @@
             color: #3b82f6;
         }
         .deeper-nested-list > li::before {
-             content: '▪️';
-             position: absolute;
-             left: -1.5rem;
-             top: 0.25rem;
+            content: '▪️';
+            position: absolute;
+            left: -1.5rem;
+            top: 0.25rem;
         }
         .even-deeper-nested-list > li::before {
-             content: '▫️';
-             position: absolute;
-             left: -1.5rem;
-             top: 0.25rem;
+            content: '▫️';
+            position: absolute;
+            left: -1.5rem;
+            top: 0.25rem;
         }
         /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
         .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
@@ -148,6 +148,8 @@
         }
         .collapsible-content {
             padding-left: 1.75rem;
+            /* Se añade un poco de padding superior para separar del trigger */
+            padding-top: 0.5rem;
         }
         .collapsible-trigger.open .collapsible-icon {
             transform: rotate(90deg);
@@ -447,7 +449,6 @@
                 <span>Ver detalles</span>
             </div>
             <div class="collapsible-content hidden">
-                
                 <div class="collapsible-trigger section-title">
                     <i class="fas fa-chevron-right collapsible-icon"></i>
                     <h3><i class="fas fa-hand-holding-water icon text-blue-600"></i>Dotaciones</h3>
@@ -592,51 +593,57 @@
                 <span>Ver detalles</span>
             </div>
             <div class="collapsible-content hidden">
-                <ul>
-                    <li>
-                        <div class="collapsible-trigger">
-                            <i class="fas fa-chevron-right collapsible-icon"></i>
-                            <p><i class="fas fa-file-alt icon text-blue-600"></i>El <span class="plan-pill"><strong>Plan Nacional de Regadíos 2000-2006</strong></span>, con <u>horizonte 2008</u>, tiene los siguientes <strong><u>objetivos</u></strong>:</p>
-                        </div>
-                        <div class="collapsible-content hidden">
-                            <ul class="nested-list">
-                                <li><p><i class="fas fa-hand-holding-water icon text-cyan-600"></i><strong>Ahorro de agua</strong>, mediante el <u>uso de tecnologías adecuadas</u>, ahora representa el <span class="pill-blue">80%</span> de la demanda total.</p></li>
-                                <li>
-                                    <div class="collapsible-trigger">
-                                        <i class="fas fa-chevron-right collapsible-icon"></i>
-                                        <p><i class="fas fa-recycle icon text-green-600"></i><strong>Mejora ambiental de las zonas de regadío</strong>:</p>
-                                    </div>
-                                    <div class="collapsible-content hidden">
-                                        <ul class="deeper-nested-list">
-                                            <li><p><i class="fas fa-filter icon"></i>Evitando <u>filtraciones y escorrentías</u> que pueden ser fuentes de <u>contaminación</u> de las aguas subterráneas y superficiales.</p></li>
-                                            <li><p><i class="fas fa-arrow-down icon"></i>Evitando la <u>sobreexplotación de acuíferos</u>.</p></li>
-                                            <li><p><i class="fas fa-seedling icon"></i>Manteniendo <u>fertilidad de suelos</u> de regadío.</p></li>
-                                            <li><p><i class="fas fa-shield-alt icon"></i>Actuando contra la <u>desertificación</u>.</p></li>
-                                            <li><p><i class="fas fa-dna icon"></i>Preservando la <u>biodiversidad</u> de los ecosistemas de regadío.</p></li>
-                                            <li><p><i class="fas fa-gavel icon"></i>Cumpliendo con la <u>normativa ambiental española y europea</u>.</p></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="collapsible-trigger">
-                                        <i class="fas fa-chevron-right collapsible-icon"></i>
-                                        <p><i class="fas fa-users icon text-purple-600"></i><strong>Mejoras sociales</strong>:</p>
-                                    </div>
-                                    <div class="collapsible-content hidden">
-                                        <ul class="deeper-nested-list">
-                                            <li><p><i class="fas fa-chart-line icon"></i>Mejora del <u>nivel de vida</u> y <u>fijación de la población rural</u> en áreas deprimidas.</p></li>
-                                            <li><p><i class="fas fa-graduation-cap icon"></i><strong>Formación</strong> de agricultores.</p></li>
-                                            <li><p><i class="fas fa-cogs icon"></i>Mejora del trabajo mediante la <u>automatización</u> y la <u>telegestión</u>.</p></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li><p><i class="fas fa-arrow-up icon text-orange-600"></i><strong>Mejora de la productividad agraria</strong>.</p></li>
-                                <li><p><i class="fas fa-handshake icon text-indigo-600"></i><strong>Coordinación entre administraciones</strong>.</p></li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li><p><i class="fas fa-star icon text-yellow-500"></i>Destacar el papel del <span class="actor-pill"><strong>centro nacional de tecnología de riegos (CENTER)</strong></span> que presta <strong><u>apoyo al Plan Nacional de Regadíos</u></strong>.</p></li>
-                </ul>
+                <div class="collapsible-trigger section-title">
+                     <i class="fas fa-chevron-right collapsible-icon"></i>
+                     <h3><i class="fas fa-file-alt icon text-blue-600"></i>Plan Nacional de Regadíos 2000-2006</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                     <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-bullseye icon"></i>El plan, con <u>horizonte 2008</u>, tiene los siguientes <strong><u>objetivos</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-hand-holding-water icon text-cyan-600"></i><strong>Ahorro de agua</strong>, mediante el <u>uso de tecnologías adecuadas</u>, ahora representa el <span class="pill-blue">80%</span> de la demanda total.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-recycle icon text-green-600"></i><strong>Mejora ambiental de las zonas de regadío</strong>:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-filter icon"></i>Evitando <u>filtraciones y escorrentías</u> que pueden ser fuentes de <u>contaminación</u> de las aguas subterráneas y superficiales.</p></li>
+                                                <li><p><i class="fas fa-arrow-down icon"></i>Evitando la <u>sobreexplotación de acuíferos</u>.</p></li>
+                                                <li><p><i class="fas fa-seedling icon"></i>Manteniendo <u>fertilidad de suelos</u> de regadío.</p></li>
+                                                <li><p><i class="fas fa-shield-alt icon"></i>Actuando contra la <u>desertificación</u>.</p></li>
+                                                <li><p><i class="fas fa-dna icon"></i>Preservando la <u>biodiversidad</u> de los ecosistemas de regadío.</p></li>
+                                                <li><p><i class="fas fa-gavel icon"></i>Cumpliendo con la <u>normativa ambiental española y europea</u>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-users icon text-purple-600"></i><strong>Mejoras sociales</strong>:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-chart-line icon"></i>Mejora del <u>nivel de vida</u> y <u>fijación de la población rural</u> en áreas deprimidas.</p></li>
+                                                <li><p><i class="fas fa-graduation-cap icon"></i><strong>Formación</strong> de agricultores.</p></li>
+                                                <li><p><i class="fas fa-cogs icon"></i>Mejora del trabajo mediante la <u>automatización</u> y la <u>telegestión</u>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><p><i class="fas fa-arrow-up icon text-orange-600"></i><strong>Mejora de la productividad agraria</strong>.</p></li>
+                                    <li><p><i class="fas fa-handshake icon text-indigo-600"></i><strong>Coordinación entre administraciones</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-star icon text-yellow-500"></i>Destacar el papel del <span class="actor-pill"><strong>centro nacional de tecnología de riegos (CENTER)</strong></span> que presta <strong><u>apoyo al Plan Nacional de Regadíos</u></strong>.</p></li>
+                    </ul>
+                </div>
 
                 <div class="collapsible-trigger section-title">
                     <i class="fas fa-chevron-right collapsible-icon"></i>
