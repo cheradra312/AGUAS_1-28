@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Biodiversidad y conservación de ecosistemas fluviales</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Estilos generales del cuerpo del documento */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-leaf"></i> MEA1T26. Biodiversidad y conservación de ecosistemas fluviales <i class="fas fa-water"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Biodiversidad, conservación y restauración -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-dna"></i></div>
+                <h2>1. Biodiversidad, conservación y restauración de ecosistemas fluviales y acuáticos. Indicadores</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-info-circle icon text-blue-600"></i>Biodiversidad</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-book-open icon text-purple-600"></i>Según el <span class="doc-pill"><strong>Convenio de las Naciones Unidas sobre la Diversidad Biológica</strong></span>, la <span class="definition-pill"><strong>biodiversidad</strong></span> es la <strong><u>variabilidad de organismos vivos</u></strong> de todas las clases.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-sitemap icon text-cyan-600"></i>Incluida la <strong><u>diversidad</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-dna icon text-gray-500"></i>Dentro de las <strong>especies</strong>.</p></li>
+                                    <li><p><i class="fas fa-stream icon text-gray-500"></i>Entre las <strong>especies</strong>.</p></li>
+                                    <li><p><i class="fas fa-mountain icon text-gray-500"></i>Y de los <strong>ecosistemas</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-gem icon text-orange-600"></i>Además de su <strong><u>valor intrínseco</u></strong>, la biodiversidad está <strong><u>estrechamente ligada</u></strong> a la <u>salud y el bienestar de las personas</u>.</p></li>
+                        <li><p><i class="fas fa-chart-line icon text-green-600"></i>Y constituye una de las <strong><u>bases del desarrollo social y económico</u></strong>, siendo un <strong><u>elemento clave</u></strong> para el <u>desarrollo sostenible</u>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-map-marked-alt icon text-green-700"></i>Ecosistemas en España</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i><span class="actor-pill"><strong>España</strong></span> cuenta con una <strong><u>gran diversidad de ecosistemas</u></strong> asociados a <u>ríos y humedales</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-star icon text-yellow-500"></i>Que tienen <strong><u>importantes valores ambientales</u></strong> y proporcionan <strong><u>múltiples servicios</u></strong>, puesto que son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-shield-alt icon text-gray-500"></i><strong>Refugios y corredores</strong> para la biodiversidad.</p></li>
+                                    <li><p><i class="fas fa-recycle icon text-gray-500"></i><strong>Depuran</strong> el agua.</p></li>
+                                    <li><p><i class="fas fa-cloud-sun icon text-gray-500"></i><strong>Regulan</strong> el clima y los ciclos hidrológicos.</p></li>
+                                    <li><p><i class="fas fa-palette icon text-gray-500"></i>Y atesoran <strong>valores estéticos, culturales y paisajísticos</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-exclamation-triangle icon text-red-700"></i>Amenazas a la Diversidad Biológica en Ríos</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-list-ul icon text-blue-600"></i>Las <strong><u>principales amenazas</u></strong> son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-smog icon text-gray-500"></i>El <strong>deterioro ambiental</strong> de las cuencas.</p></li>
+                                    <li><p><i class="fas fa-tint-slash icon text-gray-500"></i>La <strong>sobreexplotación</strong> del agua.</p></li>
+                                    <li><p><i class="fas fa-house-damage icon text-gray-500"></i>La <strong>ocupación</strong> de las llanuras de inundación.</p></li>
+                                    <li><p><i class="fas fa-mountain icon text-gray-500"></i>La <strong>extracción de áridos</strong>.</p></li>
+                                    <li><p><i class="fas fa-biohazard icon text-gray-500"></i>La <strong>contaminación por vertidos</strong>.</p></li>
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i>Los <strong>dragados y encauzamientos</strong>.</p></li>
+                                    <li><p><i class="fas fa-pastafarianism icon text-gray-500"></i>Las <strong>especies exóticas invasoras</strong>.</p></li>
+                                    <li><p><i class="fas fa-hard-hat icon text-gray-500"></i>Las <strong>infraestructuras</strong> ubicadas en los cauces.</p></li>
+                                    <li><p><i class="fas fa-dam icon text-gray-500"></i>Las <strong>obras hidráulicas de regulación</strong>.</p></li>
+                                    <li><p><i class="fas fa-cogs icon text-gray-500"></i>El <strong>inadecuado mantenimiento</strong> de la dinámica fluvial.</p></li>
+                                    <li><p><i class="fas fa-arrow-down icon text-gray-500"></i>Y un <strong>régimen de caudales insuficiente</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-wave-square icon text-orange-600"></i>Estos factores provocan <strong><u>importantes alteraciones</u></strong> sobre los ecosistemas acuáticos por:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-sync-alt icon text-gray-500"></i><strong>Cambios</strong> en los <u>regímenes naturales</u>.</p></li>
+                                    <li><p><i class="fas fa-draw-polygon icon text-gray-500"></i>En la <strong>morfología del cauce</strong>.</p></li>
+                                    <li><p><i class="fas fa-mountain icon text-gray-500"></i>En la <strong>dinámica sedimentaria</strong>.</p></li>
+                                    <li><p><i class="fas fa-flask icon text-gray-500"></i>En los <strong>parámetros físico-químicos</strong> del agua.</p></li>
+                                    <li><p><i class="fas fa-leaf icon text-gray-500"></i>O por la <strong>degradación de su vegetación de ribera</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tree icon text-green-800"></i>Papel de los Bosques de Ribera</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Los <strong><u>bosques de ribera</u></strong> tienen un <strong><u>papel fundamental</u></strong> en la <strong><u>regulación hidrológica</u></strong>, ya que:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-house-flood-water icon text-gray-500"></i><strong>Frenan</strong> la violencia de las crecidas.</p></li>
+                                    <li><p><i class="fas fa-compress-arrows-alt icon text-gray-500"></i><strong>Estabilizan</strong> los márgenes del río.</p></li>
+                                    <li><p><i class="fas fa-wind icon text-gray-500"></i><strong>Evitan la erosión</strong> y el arrastre de materiales.</p></li>
+                                    <li><p><i class="fas fa-layer-group icon text-gray-500"></i><strong>Favorecen la sedimentación</strong> del río y con ello la creación de suelos fértiles.</p></li>
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i>Y <strong>contribuyen a evitar o paliar inundaciones</strong> porque permite que los suelos mantengan su permeabilidad y capacidad de desagüe.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-filter icon text-green-600"></i>Además, esta vegetación actúa como <strong><u>filtro verde</u></strong> para las <u>sustancias contaminantes</u>, como los <u>fertilizantes</u>, que pueden ser arrastradas hasta los cauces, <strong><u>reduciendo así de forma considerable el riesgo de contaminación</u></strong> de las aguas.</p></li>
+                        <li><p><i class="fas fa-heartbeat icon text-purple-600"></i>De igual forma, un bosque de ribera con una <strong><u>buena estructura y composición vegetal</u></strong> es <strong><u>vital para la conservación y restauración</u></strong> del propio ecosistema acuícola.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-shield-alt icon text-cyan-600"></i>Ya que la <strong><u>protección que la cubierta vegetal proporciona al río</u></strong> supone una <strong><u>regulación de la temperatura del agua</u></strong> y de la <strong><u>cantidad de luz</u></strong> que llega a la superficie.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-cogs icon text-gray-500"></i>Factores que <strong><u>influyen directamente en el desarrollo</u></strong> de los diferentes <u>organismos acuáticos</u> y en el <u>correcto funcionamiento del ecosistema</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-life-ring icon text-orange-600"></i>Asimismo, la vegetación <strong><u>crea refugios</u></strong> para los organismos tanto del medio <u>acuático</u> como del <u>terrestre</u>, y <strong><u>fomenta la diversidad de microhábitats</u></strong>, <strong><u>incrementando así la productividad y la capacidad de carga</u></strong> del ecosistema.</p></li>
+                        <li><p><i class="fas fa-route icon text-indigo-600"></i>La vegetación riparia proporciona a su vez <strong><u>corredores ecológicos muy valiosos</u></strong> para la fauna terrestre.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tasks icon text-yellow-700"></i>Planificación, Conservación e Indicadores</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-drafting-compass icon text-blue-600"></i>Una <strong><u>adecuada planificación del espacio fluvial</u></strong> adaptando los usos a las características de los regímenes fluviales permite una <strong><u>mejor conservación y restauración</u></strong> de los ecosistemas fluviales y su biodiversidad asociada.</p></li>
+                        <li><p><i class="fas fa-tools icon text-purple-600"></i>La <strong><u>delimitación y protección de dominio público hidráulico</u></strong> es un <strong><u>instrumento fundamental</u></strong> para conseguir este objetivo.</p></li>
+                        <li><p><i class="fas fa-chart-bar icon text-cyan-600"></i>En cuanto a los <strong><u>indicadores</u></strong>, se distingue la <span class="definition-pill"><strong>riqueza</strong></span> (<u>nº de especies y hábitats</u>) de la <span class="definition-pill"><strong>abundancia relativa</strong></span> (<u>de cada uno respecto a los demás</u>).</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-calculator icon text-orange-600"></i>El <span class="formula-pill"><strong>índice de Simpson</strong></span> es uno de los índices de diversidad más utilizados, que permite <strong><u>estudiar la diversidad a 3 escalas diferentes</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-microscope icon text-gray-500"></i><strong>Nivel alfa</strong> (<u>riqueza</u> de una comunidad local).</p></li>
+                                    <li><p><i class="fas fa-cubes icon text-gray-500"></i><strong>Nivel beta</strong> (<u>diversidad</u> de hábitats).</p></li>
+                                    <li><p><i class="fas fa-globe-americas icon text-gray-500"></i><strong>Nivel gamma</strong> (<u>riqueza</u> de una región o continente).</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Card 2: Caudales ecológicos -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-water"></i></div>
+                <h2>2. Caudales ecológicos</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-book-open icon text-blue-600"></i>El <span class="law-pill"><strong>Reglamento de la Planificación Hidrológica</strong></span> define el <span class="definition-pill"><strong>caudal ecológico</strong></span> como aquel que <strong><u>contribuye a alcanzar el buen estado o buen potencial ecológico</u></strong> en los <u>ríos</u> o en las <u>aguas de transición</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-check-circle icon text-green-600"></i>Y <strong><u>mantiene, como mínimo</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-fish icon text-gray-500"></i>La <strong>vida piscícola</strong> que de manera natural habitaría o pudiera habitar en el río.</p></li>
+                                <li><p><i class="fas fa-tree icon text-gray-500"></i>Así como su <strong>vegetación de ribera</strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-ban icon text-red-600"></i>Los caudales ecológicos <strong><u>no son una demanda de uso</u></strong>, sino una <strong><u>restricción a otros usos</u></strong>.</p></li>
+                    <li><p><i class="fas fa-file-alt icon text-purple-600"></i>Y se <strong><u>fijarán en los planes hidrológicos de cuenca</u></strong> según <u>estudios específicos</u> for cada tramo de río.</p></li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-ruler-combined icon text-cyan-700"></i>Instrucción de Planificación Hidrológica</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>La <span class="doc-pill"><strong>Instrucción de Planificación Hidrológica</strong></span> indica que el <strong><u>régimen de caudales ecológicos se establecerá</u></strong> de modo que permita <strong><u>mantener de forma sostenible la funcionalidad y estructura</u></strong> de los <u>ecosistemas acuáticos</u> y de los <u>ecosistemas terrestres asociados</u>.</p></li>
+                        <li><p><i class="fas fa-bullseye icon text-green-600"></i>Contribuyendo a <strong><u>alcanzar el buen estado o potencial ecológico</u></strong> en ríos o aguas de transición.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-shield-alt icon text-orange-600"></i>Además, establece la necesidad de que los caudales ecológicos que afecten a la <span class="actor-pill"><strong>Red Natura 2000</strong></span> y a la <span class="doc-pill"><strong>Lista de Humedales de Importancia Internacional del Convenio de Ramsar</strong></span> sean los <strong><u>apropiados para mantener o restablecer un estado de conservación favorable</u></strong> de los <u>hábitats o especies</u>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-leaf icon text-gray-500"></i>Respondiendo a sus <strong>exigencias ecológicas</strong>.</p></li>
+                                    <li><p><i class="fas fa-cogs icon text-gray-500"></i>Y manteniendo a <strong>largo plazo las funciones ecológicas</strong> de las que dependen.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tasks icon text-indigo-700"></i>Determinación y Desafíos</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-check icon text-blue-600"></i>Un caudal puede ser considerado <strong><u>ecológico</u></strong> siempre que <strong><u>mantenga el ecosistema fluvial en las mismas condiciones que las naturales</u></strong>.</p></li>
+                        <li><p><i class="fas fa-arrows-alt-v icon text-purple-600"></i>Se mueve entre unos <strong><u>valores máximos y mínimos</u></strong> que interesa conocer para <u>planificar los desembalses</u> o para <u>saber el volumen de agua</u> que se puede destinar a los diferentes usos.</p></li>
+                        <li><p><i class="fas fa-question-circle icon text-red-600"></i>En la práctica <strong><u>no es sencillo determinar las condiciones naturales</u></strong> de un río, ya que <u>no existen ríos que no se hayan visto afectados</u> por la actividad humana.</p></li>
+                        <li><p><i class="fas fa-map-pin icon text-green-600"></i>Pero al menos existen <strong><u>tramos de río que se encuentran bien conservados</u></strong> y que pueden servir como <strong><u>referencia</u></strong>.</p></li>
+                        <li><p><i class="fas fa-history icon text-orange-600"></i>Por otra parte, para determinar los <strong><u>caudales máximos que se pueden detraer</u></strong> del río es muy útil <strong><u>analizar los datos históricos sobre los estiajes</u></strong> que han ocurrido de forma natural.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Eutrofización de las masas de agua -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-leaf"></i></div>
+                <h2>3. Eutrofización de las masas de agua</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-exclamation-triangle icon text-red-600"></i>Causas</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-smog icon text-blue-600"></i>La <strong><u>contaminación difusa</u></strong> procedente de la <strong><u>agricultura</u></strong> por la creciente aplicación de <u>fertilizantes</u> y <u>plaguicidas</u> puede provocar graves problemas de eutrofización.</p></li>
+                        <li><p><i class="fas fa-tint-slash icon text-purple-600"></i>Afecta a <strong><u>embalses y aguas subterráneas</u></strong>, en los últimos años <strong><u>más de la mitad ha aumentado su grado de eutrofización</u></strong>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-info-circle icon text-cyan-700"></i>Definición y Tipos</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-book-open icon text-blue-600"></i>La <span class="definition-pill"><strong>eutrofización</strong></span> es un <strong><u>proceso de fertilización</u></strong> de las aguas naturales con <strong><u>sustancias nutritivas</u></strong>, especialmente <u>nitrógeno</u> y <u>fósforo</u>.</p></li>
+                        <li><p><i class="fas fa-arrow-right icon text-purple-600"></i>Que origina un <strong><u>aumento de la población de algas</u></strong> y un <strong><u>empeoramiento de las condiciones físico-químicas</u></strong> del agua.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-stream icon text-orange-600"></i>Se distinguen <strong><u>dos tipos</u></strong> de eutrofización:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-leaf icon text-gray-500"></i><span class="definition-pill"><strong>Eutrofización natural</strong></span>, proceso <strong><u>irreversible</u></strong> asociado al <u>envejecimiento del lago o embalse</u> que se desarrolla <strong><u>muy lentamente</u></strong>, p.e. por <u>descomposición de la vegetación</u> o los <u>organismos muertos</u>.</p></li>
+                                    <li><p><i class="fas fa-user-cog icon text-gray-500"></i><span class="definition-pill"><strong>Eutrofización antrópica</strong></span>, por <strong><u>acción del hombre</u></strong> y <strong><u>más rápida</u></strong>, que se pueden <strong><u>invertir al cesar la causa</u></strong> que la origina que es siempre la <u>aportación de sustancias nutritivas</u> procedentes de <u>vertidos de aguas residuales urbanas e industriales</u>, <u>escorrentías sobre diversos terrenos</u>, <u>vertidos de granjas</u>, etc.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tasks icon text-indigo-700"></i>Parámetros de Calidad</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Para determinar el <strong><u>grado de eutrofización</u></strong> del agua se utilizan los siguientes <strong><u>parámetros de calidad</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-eye icon text-gray-500"></i>La <strong><u>penetración de la luz</u></strong>, o la <strong><u>turbidez</u></strong>, a través del <span class="doc-pill"><strong>disco de Secchi</strong></span>, que consiste en <u>medir la profundidad</u> hasta la que se divisa, desde la superficie del agua, un <u>disco normalizado que se hace descender</u> en la masa de agua.</p></li>
+                                    <li><p><i class="fas fa-flask icon text-gray-500"></i>La <strong>concentración de fósforo</strong>.</p></li>
+                                    <li><p><i class="fas fa-atom icon text-gray-500"></i>La <strong>concentración de nitrógeno</strong>.</p></li>
+                                    <li><p><i class="fas fa-leaf icon text-gray-500"></i>La <strong>concentración de clorofila</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-sitemap icon text-green-700"></i>Clasificación de los embalses</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Se pueden <strong><u>clasificar según su grado de eutrofización</u></strong> en:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-arrow-up icon text-red-500"></i><span class="definition-pill"><strong>Embalses eutróficos</strong></span>, <strong><u>gran concentración de nutrientes</u></strong> y <strong><u>elevada productividad primaria</u></strong>, en general <u>poco profundos</u>, <u>turbios en verano</u> por el fitoplancton, con <u>poco oxígeno disuelto en el fondo</u> con tendencia a la <u>anoxia</u> durante la estratificación.</p></li>
+                                    <li><p><i class="fas fa-equals icon text-yellow-500"></i><span class="definition-pill"><strong>Embalses mesotróficos</strong></span>, <strong><u>entre los eutróficos y los oligotróficos</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-arrow-down icon text-green-500"></i><span class="definition-pill"><strong>Embalses oligotróficos</strong></span>, <strong><u>contenido bajo en nutrientes</u></strong>, <strong><u>poco productivos</u></strong>, <strong><u>transparentes</u></strong>, <strong><u>profundos</u></strong> y con una <strong><u>elevada concentración de oxígeno disuelto</u></strong> en el <u>hipolimnion</u>, que es la capa de agua profunda.</p></li>
+                                    <li><p><i class="fas fa-plus-circle icon text-purple-500"></i>De acuerdo con los criterios de la <span class="actor-pill"><strong>OCDE</strong></span> se pueden considerar <strong><u>dos nuevas categorías</u></strong>: <strong><u>hipereutrófico</u></strong> y <strong><u>ultraoligotrófico</u></strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-map-marked-alt icon text-orange-600"></i>En <span class="actor-pill"><strong>España</strong></span> presentan <strong><u>peor estado</u></strong> los del <span class="actor-pill">Tajo</span>, <span class="actor-pill">cuencas internas de Cataluña</span>, <span class="actor-pill">Galicia-Costa</span> y <span class="actor-pill">Duero</span>.</p></li>
+                        <li><p><i class="fas fa-chart-pie icon text-red-700"></i><strong><u>Casi la mitad de los embalses españoles</u></strong> presentan un <strong><u>avanzado estado de eutrofización</u></strong>.</p></li>
+                        <li><p><i class="fas fa-map-pin icon text-cyan-600"></i>En general los embalses <strong><u>más eutróficos</u></strong> están en los <strong><u>tramos bajos de los ríos</u></strong>, tras su paso por <u>grandes áreas urbanas</u> o zonas con <u>agricultura importante</u>, y los <strong><u>oligotróficos</u></strong> están en la <strong><u>cabecera de los ríos</u></strong>, en <u>zonas despobladas</u>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-biohazard icon text-red-800"></i>Efectos</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>El <strong><u>enriquecimiento en nutrientes</u></strong> provoca en la <strong><u>superficie</u></strong> del embalse un <strong><u>incremento del fitoplancton</u></strong> que produce <u>gran cantidad de oxígeno</u> y de <u>materia orgánica</u> por efecto de la <u>fotosíntesis</u>.</p></li>
+                        <li><p><i class="fas fa-arrow-down icon text-purple-600"></i>Mientras que en el <strong><u>fondo</u></strong> se produce, durante el periodo de estratificación en verano, un <strong><u>agotamiento del oxígeno disuelto</u></strong> por la <u>respiración de los organismos</u> y la <u>mineralización de la materia orgánica</u> de las capas superiores que se va al fondo.</p></li>
+                        <li><p><i class="fas fa-wave-square icon text-orange-600"></i>El proceso de eutrofización supone un <strong><u>aumento de la biomasa con pérdida de la biodiversidad</u></strong>, <strong><u>disminuye también la transparencia</u></strong> del agua y su <u>color azulado natural</u>, se <strong><u>modifican las características organolépticas</u></strong> del agua (<u>color, olor, sabor</u>), <strong><u>empeorando la calidad</u></strong> para muchos usos.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-exclamation-triangle icon text-red-700"></i>Conforme avanza el proceso de eutrofización, al principio estos síntomas simplemente se hacen más acusados; posteriormente, sin embargo, aparecen <strong><u>alteraciones y procesos catastróficos</u></strong>, acarreando:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-leaf icon text-gray-500"></i>Una <strong>vegetación planctónica exuberante</strong> (<strong><u>"blooms" de algas</u></strong>).</p></li>
+                                    <li><p><i class="fas fa-bacteria icon text-gray-500"></i>Una <strong>invasión masiva de Cianofíceas</strong>.</p></li>
+                                    <li><p><i class="fas fa-wind icon text-gray-500"></i>El <strong>agotamiento total de las reservas de oxígeno</strong> en el hipolimnion durante los meses de verano.</p></li>
+                                    <li><p><i class="fas fa-layer-group icon text-gray-500"></i>Y la <strong>acumulación de cantidades considerables de nutrientes</strong>, con aparición de <u>ácido sulfhídrico</u> e <u>iones de amonio, hierro, y manganeso</u>.</p></li>
+                                    <li><p><i class="fas fa-recycle icon text-gray-500"></i><strong>Concentración y sedimentación</strong> de sustancias orgánicas no mineralizadas, <strong>formación de gas metano</strong>, etc.</p></li>
+                                    <li><p><i class="fas fa-skull-crossbones icon text-gray-500"></i>Y como resultado de estas alteraciones ambientales, <strong>desaparición de la fauna</strong> que habita las regiones más profundas y de las <strong>especies más nobles de peces</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-shield-alt icon text-green-800"></i>Medidas contra la eutrofización</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-arrow-down icon text-blue-600"></i><strong>Disminuir nitratos y fosfatos</strong> en los vertidos (<u>tratarlos previamente</u>).</p></li>
+                        <li><p><i class="fas fa-ban icon text-purple-600"></i><strong>Limitación del empleo de fertilizantes</strong> en agricultura (con <u>impuestos penalizantes</u>, <u>subvenciones a otros métodos</u>, <u>prohibición en ciertas épocas del año</u>).</p></li>
+                        <li><p><i class="fas fa-seedling icon text-green-600"></i>Procurar tener las <strong><u>tierras de cultivo cubiertas con vegetación</u></strong> durante el invierno para <strong><u>reducir la erosión</u></strong>.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- Card 4: Infraestructuras verdes y soluciones basadas en la naturaleza -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-leaf"></i></div>
+                <h2>4. Infraestructuras verdes y soluciones basadas en la naturaleza en el medio hídrico</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>La <span class="actor-pill"><strong>Comisión Europea</strong></span> define las <span class="definition-pill"><strong>Soluciones Basadas en la Naturaleza (SbN)</strong></span> como aquellas:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-lightbulb icon text-gray-500"></i><strong>Inspiradas en la naturaleza</strong>.</p></li>
+                                <li><p><i class="fas fa-hand-holding-heart icon text-gray-500"></i>Que proporcionan <strong>beneficios ambientales, sociales y económicos</strong>.</p></li>
+                                <li><p><i class="fas fa-shield-alt icon text-gray-500"></i>Y ayudan a <strong>aumentar la resiliencia</strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tint icon text-purple-600"></i>Las <strong><u>SbN para la gestión del agua</u></strong> permiten <strong><u>mejorar el uso de los recursos hídricos</u></strong>, tanto en aspectos de:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-vial icon text-gray-500"></i><strong>Calidad</strong>.</p></li>
+                                <li><p><i class="fas fa-ruler-combined icon text-gray-500"></i>Como de <strong>cantidad</strong> (especialmente relacionadas con problemas de <u>sequías</u> e <u>inundaciones</u>).</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tasks icon text-green-700"></i>Tipos de Medidas SbN</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-list-ul icon text-blue-600"></i>Se trata de <strong><u>medidas</u></strong> tales como:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-map-marked-alt icon text-gray-500"></i><strong>Protección estratégica de terrenos</strong> (incluyendo <u>compra de tierras</u>).</p></li>
+                                    <li><p><i class="fas fa-seedling icon text-gray-500"></i><strong>Revegetación</strong> (incluyendo <u>reforestación</u> y <u>conversión forestal</u>).</p></li>
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i><strong>Restauración de riberas</strong> (incluyendo <u>corredores de ribera</u>).</p></li>
+                                    <li><p><i class="fas fa-bug icon text-gray-500"></i><strong>Eliminación de especies invasoras</strong>.</p></li>
+                                    <li><p><i class="fas fa-layer-group icon text-gray-500"></i><strong>Recarga natural de acuíferos</strong>.</p></li>
+                                    <li><p><i class="fas fa-link icon text-gray-500"></i><strong>Reconexión de ríos y llanuras de inundación</strong>.</p></li>
+                                    <li><p><i class="fas fa-route icon text-gray-500"></i><strong>Desviación de inundaciones</strong>.</p></li>
+                                    <li><p><i class="fas fa-feather-alt icon text-gray-500"></i><strong>Restauración-recuperación de humedales</strong>.</p></li>
+                                    <li><p><i class="fas fa-tree icon text-gray-500"></i><strong>Construcción de humedales artificiales</strong>.</p></li>
+                                    <li><p><i class="fas fa-tree-city icon text-gray-500"></i><strong>Espacios verdes</strong> (para aumentar <u>bio-retención</u> e <u>infiltración</u>).</p></li>
+                                    <li><p><i class="fas fa-road icon text-gray-500"></i><strong>Pavimentos permeables</strong>.</p></li>
+                                    <li><p><i class="fas fa-tractor icon text-gray-500"></i><strong>Prácticas agrícolas sostenibles</strong> (<u>cambios y rotación de cultivos</u>, <u>uso reducido de fertilizantes</u>, <u>cambios en los métodos de control de plagas</u>).</p></li>
+                                    <li><p><i class="fas fa-tree icon text-gray-500"></i><strong>Prácticas adecuadas de gestión forestal</strong> (incluyendo <u>reducción de combustibles de origen forestal</u>).</p></li>
+                                    <li><p><i class="fas fa-hippo icon text-gray-500"></i>Y <strong>prácticas de ganadería y pastoreo</strong> apropiadas.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
