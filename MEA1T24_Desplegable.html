@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Presas II</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-hard-hat"></i> MEA1T24. Presas II <i class="fas fa-dam"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Presas II -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-building"></i></div>
+                <h2>1. Presas II: Presas de hormigón y de materiales sueltos: tipologías, elementos funcionales y materiales</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-cube icon text-gray-700"></i>Presas de hormigón</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Las <strong><u>presas de hormigón</u></strong> pueden ser:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-weight-hanging icon text-gray-500"></i>Presas de <strong>gravedad</strong>.</p></li>
+                                    <li><p><i class="fas fa-vector-square icon text-gray-500"></i><strong>Bóvedas</strong>.</p></li>
+                                    <li><p><i class="fas fa-circle-notch icon text-gray-500"></i><strong>Arco-gravedad</strong>.</p></li>
+                                    <li><p><i class="fas fa-clone icon text-gray-500"></i>Y con <strong>bóvedas múltiples</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-ruler-combined icon text-purple-600"></i>La <strong><u>sección transversal de una presa de gravedad</u></strong> consiste fundamentalmente en un <strong><u>triángulo rematado por un trapecio menor</u></strong> que sirve de <strong><u>coronación</u></strong>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-shield-alt icon text-gray-500"></i>Proporcionando un <strong>resguardo</strong> sobre el nivel máximo del embalse frente a <u>eventuales sobreelevaciones imprevistas</u>, <u>vertidos</u> o <u>salpicaduras de olas</u>.</p></li>
+                                    <li><p><i class="fas fa-road icon text-gray-500"></i>Y para el <strong>paso de peatones y vehículos</strong>.</p></li>
+                                    <li><p><i class="fas fa-map-marker-alt icon text-gray-500"></i>El <strong>vértice superior del triángulo</strong> suele coincidir con el <u>nivel para la avenida de proyecto (NAP)</u>.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-mountain icon text-gray-500"></i>Los <strong>taludes de la presa</strong> suelen ser:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-arrow-up icon"></i>El de <strong>aguas arriba</strong>, próximo a la vertical con talud <span class="formula-pill">5H:100V</span>.</p></li>
+                                                <li><p><i class="fas fa-arrow-down icon"></i>Y el de <strong>aguas abajo</strong> <span class="formula-pill">7H:10V</span> u <span class="formula-pill">8H:10V</span>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i>Cuando la <strong><u>presa es vertedero</u></strong>, en la parte correspondiente a éste la <strong><u>sección se modifica sustancialmente</u></strong> para permitir el paso del agua.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-dungeon icon text-cyan-600"></i>Además, en el cuerpo de la presa se disponen una serie de <strong><u>galerías visitables</u></strong> con una <strong><u>doble función</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-search icon text-gray-500"></i>Servir de base para la <strong>inspección y eventual inyección</strong>.</p></li>
+                                    <li><p><i class="fas fa-tint icon text-gray-500"></i>Y ser extremo de los <strong>drenes que controlan las filtraciones</strong> y tienen por objeto <u>reducir la subpresión</u> en la cimentación de la presa.</p></li>
+                                    <li><p><i class="fas fa-ruler-vertical icon text-gray-500"></i>Estas galerías se ponen normalmente a unos <span class="pill-blue"><strong>20 m</strong></span> de distancia vertical.</p></li>
+                                    <li><p><i class="fas fa-ruler-horizontal icon text-gray-500"></i>Los drenes suelen tener un diámetro de <span class="pill-blue"><strong>0,10 m</strong></span> separados del orden de <span class="pill-blue"><strong>2-3 m</strong></span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-check-double icon text-green-600"></i>Las <strong><u>tres premisas principales</u></strong> que determinan la caracterización de los <strong><u>hormigones en masa</u></strong> utilizados en la construcción de presas son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-shield-alt icon text-gray-500"></i><strong>Durabilidad</strong>.</p></li>
+                                    <li><p><i class="fas fa-lock icon text-gray-500"></i><strong>Impermeabilidad</strong>.</p></li>
+                                    <li><p><i class="fas fa-euro-sign icon text-gray-500"></i>Y <strong>economía</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-dumbbell icon text-orange-600"></i>La <strong><u>resistencia es otro factor a considerar</u></strong>, si bien, el cumplimiento de los anteriores, lleva en general asociado <strong><u>resistencias mínimas superiores a las requeridas</u></strong> en hormigones de presas.</p></li>
+                        <li><p><i class="fas fa-thermometer-full icon text-red-600"></i>En las presas de hormigón se ejecutan <strong><u>grandes volúmenes</u></strong> de este material que convierten sus núcleos en <strong><u>recintos casi adiabáticos</u></strong> (no intercambian calor con su entorno).</p></li>
+                        <li><p><i class="fas fa-compress-arrows-alt icon text-red-600"></i>Y el <strong><u>cimiento rígido</u></strong> sobre el que se asienta la presa constituye una <strong><u>restricción importante</u></strong> que <u>impide su libre deformación</u>.</p></li>
+                        <li><p><i class="fas fa-exclamation-triangle icon text-red-600"></i>De forma que las <strong><u>variaciones térmicas inducen tensiones</u></strong> que, en el caso de exceder a la resistencia a tracción del hormigón, van a provocar la indeseable <strong><u>fisuración del material</u></strong>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-arrow-down icon text-yellow-700"></i>El <strong><u>incremento de temperatura</u></strong> que experimenta el hormigón una vez puesto en obra depende, fundamentalmente, del <strong><u>tipo y cantidad de conglomerante</u></strong>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-bullseye icon text-gray-500"></i>Siendo uno de los objetivos la <strong><u>reducción de dicha temperatura</u></strong>, resultan <strong><u>imprescindibles ciertos cambios</u></strong> respecto al conglomerante que se utilizaría en un hormigón convencional.</p></li>
+                                    <li><p><i class="fas fa-plus-circle icon text-gray-500"></i>Esto se consigue con la <strong><u>incorporación de puzolanas y cenizas</u></strong> a través del cemento.</p></li>
+                                    <li><p><i class="fas fa-cogs icon text-gray-500"></i>Lo que además proporciona una <strong><u>mayor trabajabilidad</u></strong> a la mezcla fresca, que se traduce en una <strong><u>reducción del agua de amasado</u></strong> con <u>aumento de la resistencia y durabilidad</u> en el hormigón.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-road icon text-indigo-600"></i>El <span class="definition-pill"><strong>hormigón compactado con rodillo (HCR, o RCC en inglés)</strong></span> es un hormigón con una <strong><u>reducida cantidad de agua de amasado</u></strong>, compatible con el <strong><u>tránsito de maquinaria de movimiento de tierras</u></strong> de gran tonelaje por su superficie en estado fresco.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-exchange-alt icon text-gray-500"></i>Respecto al conglomerante utilizado, hay una <strong><u>mayor sustitución de clinker por adiciones de material puzolánico</u></strong> (<u>cenizas volantes</u> y <u>escoria siderúrgica</u> principalmente) en los hormigones compactados.</p></li>
+                                    <li><p><i class="fas fa-info-circle icon text-gray-500"></i>Como orientación, en el <strong><u>hormigón convencional</u></strong> la sustitución es de un <span class="pill-blue"><strong>30-40%</strong></span>, mientras que en los <strong><u>HCR del <span class="pill-blue">35</span> al <span class="pill-blue">70%</span></u></strong> son cenizas volantes.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-mountain icon text-orange-800"></i>Presas de materiales sueltos</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>En esta denominación se incluyen todas las que se construyen con <strong><u>elementos naturales muy variados</u></strong> (<u>tierras</u>, <u>gravas</u>, <u>arenas</u>, <u>escollera</u>, etc.).</p></li>
+                        <li><p><i class="fas fa-link icon text-purple-600"></i>Con <strong><u>nula o limitada cohesión</u></strong> y, en todo caso, <strong><u>muy inferior a la conseguida artificialmente</u></strong> al añadir un aglomerante a esos materiales.</p></li>
+                        <li><p><i class="fas fa-leaf icon text-green-600"></i>Los materiales de estas presas se emplean <strong><u>casi tal y como se encuentran en la naturaleza</u></strong>, sin más elaboración artificial que una <u>elemental clasificación</u> y un <u>apisonado</u>.</p></li>
+                        <li><p><i class="fas fa-check-circle icon text-cyan-600"></i>Esta <strong><u>simplicidad de empleo</u></strong>, junto con la actual <strong><u>disponibilidad de potentes medios de transporte y compactación</u></strong>, hacen que resulten en principio <strong><u>más económicas</u></strong> que las de hormigón.</p></li>
+                        <li><p><i class="fas fa-map-pin icon text-indigo-600"></i>Como además son <strong><u>más adaptables a todo tipo de terrenos</u></strong>, incluidos los de <u>baja consistencia</u>, no es de extrañar que <strong><u>más del <span class="pill-blue">80%</span> de las presas en el mundo</u></strong> sean de materiales sueltos.</p></li>
+                        <li><p><i class="fas fa-question-circle icon text-orange-600"></i>Aunque parece un tanto simplista englobar en una misma denominación genérica a presas con materiales tan diferentes como escollera o arcilla, no es así, pues el hecho de su <strong><u>nula o baja cohesión les da un planteamiento común</u></strong>.</p></li>
+                        <li><p><i class="fas fa-cubes icon text-gray-700"></i>Por otra parte, estas presas casi siempre constan de <strong><u>varios materiales distintos</u></strong>, cada uno con una misión, por lo que sus <strong><u>problemas mecánicos e hidráulicos son comunes</u></strong>, aunque varíe la importancia relativa de unos materiales respecto a otros.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-ban icon text-red-600"></i>Estas presas tienen una <strong><u>limitación en su cometido hidráulico</u></strong>: el <strong><u>vertido del agua sobre ellas llevaría al arrastre y erosión</u></strong> de los materiales, indefensos por su falta de cohesión.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-arrow-right icon text-gray-500"></i>Por ello, los <strong><u>caudales excedentes se vierten por un órgano aparte</u></strong> (<u>aliviaderos</u>).</p></li>
+                                    <li><p><i class="fas fa-exclamation icon text-gray-500"></i>Y sólo <strong><u>muy excepcionalmente</u></strong>, por ahora, se acepta el <strong><u>vertido sobre la misma presa</u></strong>, con <u>limitaciones</u> y con <u>obras protectoras adecuadas</u>, aunque es un asunto en <u>fase de ensayo y en plena evolución</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-sitemap icon text-blue-800"></i>La <strong><u>clasificación tipológica</u></strong> puede hacerse según <strong><u>dos conceptos principales</u></strong>: el <strong><u>material constituyente</u></strong> y el <strong><u>elemento impermeabilizador</u></strong>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-star icon text-yellow-500"></i>A pesar de que éste es <strong><u>minoritario en volumen</u></strong>, es el <strong><u>más significativo</u></strong> desde el punto de vista <u>estructural y funcional</u>.</p></li>
+                                    <li><p><i class="fas fa-cogs icon text-gray-500"></i>Pues <strong><u>rige el comportamiento de la presa frente al agua</u></strong>, mientras que el resto sólo actúa como <u>masa pesante</u>.</p></li>
+                                    <li><p><i class="fas fa-not-equal icon text-gray-500"></i>Son en realidad <strong><u>más diferentes dos presas de escollera</u></strong>, una con <u>pantalla de hormigón</u> y otra con <u>núcleo arcilloso</u>, que una de <u>tierra</u> y otra de <u>escollera</u>, ambas con <u>núcleo arcilloso</u>.</p></li>
+                                    <li><p><i class="fas fa-info-circle icon text-gray-500"></i>A pesar de ello, es frecuente <strong><u>definir la presa por el material predominante</u></strong> (más del <span class="pill-blue">50%</span> del total): de <strong><u>escollera</u></strong> (bloques y gravas) o <strong><u>tierra</u></strong> (gravas, arenas o elementos más finos).</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-shield-alt icon text-green-700"></i>En las de hormigón, la <strong><u>impermeabilidad</u></strong> (mejor dicho, una muy baja permeabilidad) está <strong><u>asegurada</u></strong> con una aceptable ejecución, gracias al cemento.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-tint-slash icon text-gray-500"></i>Pero la mayor parte de los <strong><u>materiales naturales son permeables</u></strong> y precisan otro <strong><u>elemento impermeabilizador complementario</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-leaf icon text-gray-500"></i>En la mayoría de las presas éste es también <strong><u>natural</u></strong> (<u>arcilla</u>, <u>limo</u>).</p></li>
+                                    <li><p><i class="fas fa-tools icon text-gray-500"></i>Pero cuando no se encuentra en el entorno de la presa o no con el volumen necesario, hay que recurrir a un <strong><u>material artificial</u></strong>: <u>hormigón</u>, <u>betún</u>, <u>plástico</u> o <u>acero</u> (los dos últimos muy excepcionalmente por el momento).</p></li>
+                                    <li><p><i class="fas fa-exclamation icon text-gray-500"></i>Su uso es una <strong><u>contradicción aparente</u></strong> a la filosofía básica de estas presas (empleo de materiales naturales), pero <strong><u>forzado por la falta del material adecuado</u></strong> en el entorno, que es otro principio básico.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-map-pin icon text-purple-600"></i>La <strong><u>situación del material impermeable</u></strong> en la presa da otra <strong><u>variedad tipológica</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-compress-arrows-alt icon text-gray-500"></i>En su <strong><u>interior y en la parte central</u></strong> (<u>núcleo de tierras</u> o <u>diafragma de hormigón</u>).</p></li>
+                                    <li><p><i class="fas fa-arrow-left icon text-gray-500"></i><strong><u>Cercano al paramento mojado</u></strong> (<u>núcleo inclinado</u>).</p></li>
+                                    <li><p><i class="fas fa-external-link-alt icon text-gray-500"></i>O <strong><u>exterior</u></strong>, apoyado en ese paramento (<u>pantalla bituminosa o de hormigón</u>).</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-equals icon text-cyan-600"></i>En algunos casos el terreno adyacente suministra materiales de <strong><u>suficiente impermeabilidad</u></strong> para poder hacer <strong><u>toda la presa con ellos</u></strong>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-lock icon text-gray-500"></i>La presa será <strong><u>impermeable por sí misma</u></strong> y, como las de hormigón, no tendrá diferenciados los elementos impermeables de los pesantes y resistentes.</p></li>
+                                    <li><p><i class="fas fa-info-circle icon text-gray-500"></i>Estas presas se llaman <strong><u>homogéneas</u></strong>, son <u>minoría</u> y, salvo excepciones, de <u>altura moderada</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-water icon text-blue-500"></i>Por último, hay que citar un tipo especial: las <span class="definition-pill"><strong>presas vertientes</strong></span>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-exclamation-circle icon text-gray-500"></i>Que por el momento son <strong><u>excepcionales</u></strong> y para <strong><u>caudales limitados</u></strong> en las presas de servicio continuado.</p></li>
+                                    <li><p><i class="fas fa-check-circle icon text-gray-500"></i>Pero <strong><u>habitual en las presas provisionales</u></strong> como las ataguías.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Construcción de presas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-hard-hat"></i></div>
+                <h2>2. Construcción de presas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>Genéricamente cabe distinguir las siguientes <strong><u>actividades principales</u></strong> en la construcción de una presa:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-road icon text-gray-500"></i><span class="definition-pill"><strong>Obras previas</strong></span>: <u>accesos generales</u>, <u>poblados</u>, <u>líneas de suministro eléctrico</u>, etc.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-check-circle icon"></i>Consisten en <strong><u>dejar preparada la infraestructura</u></strong> para realizar el resto de la obra.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-water icon text-gray-500"></i><span class="definition-pill"><strong>Desvío del río</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-bullseye icon"></i>Con el objeto de <strong><u>dejar en seco el cauce</u></strong> para poder realizar la <u>cimentación</u>, primero, y luego el <u>resto de la obra</u> en las debidas condiciones.</p></li>
+                                            <li><p><i class="fas fa-industry icon"></i>Las obras de desvío pueden ser de <strong><u>gran envergadura</u></strong> en grandes ríos.</p></li>
+                                            <li><p><i class="fas fa-calendar-alt icon"></i>Al estar condicionadas por la <u>variación estacional de los caudales</u>, pueden <strong><u>influir en el plazo</u></strong> de la obra total, e incluso a veces en su tipo.</p></li>
+                                            <li><p><i class="fas fa-stream icon"></i>En general constan de una <strong><u>ataguía</u></strong>, el <strong><u>desvío del agua</u></strong> propiamente dicho y la <strong><u>contraataguía</u></strong>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-mountain icon text-gray-500"></i><span class="definition-pill"><strong>Excavaciones y cimientos</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-exclamation-circle icon"></i>Las excavaciones son una <strong><u>parte muy importante</u></strong>, no solo por su <u>volumen</u>, sino porque hasta que no están terminadas <strong><u>no se conoce del todo el estado real del cimiento</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-search-location icon"></i>Ya que los <strong><u>sondeos informan de forma puntual</u></strong>, y entre esas prospecciones puede haber <u>discontinuidades importantes</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-cogs icon text-gray-500"></i><span class="definition-pill"><strong>Montaje de las instalaciones</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-sync-alt icon"></i>Es una <strong><u>operación simultánea</u></strong> con otras, en general con las <u>excavaciones</u>.</p></li>
+                                            <li><p><i class="fas fa-info-circle icon"></i>Aunque algunas menores son necesarias antes y se hacen con las <u>obras previas</u> o con el <u>desvío del río</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-dam icon text-gray-500"></i><span class="definition-pill"><strong>Realización del cuerpo de la presa y de sus obras complementarias</strong></span> (<u>desagües</u>, <u>aliviadero</u>, <u>central eléctrica</u>, etc.).</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-tasks icon"></i>Plantea el problema fundamental de <strong><u>organizar la construcción con óptimo rendimiento</u></strong> en un <u>plazo adecuado</u>.</p></li>
+                                            <li><p><i class="fas fa-question-circle icon"></i>Los <strong><u>problemas a resolver varían</u></strong> con el <u>tipo de presa</u> y según los <u>materiales constitutivos</u> (hormigón o materiales sueltos).</p></li>
+                                            <li><p><i class="fas fa-tools icon"></i>Empleándose <u>cazos</u>, <u>cintas</u>, <u>blondines</u> (o andariveles), <u>grúas</u>, <u>dumpers</u>, <u>traíllas</u>, <u>compactadores</u>, etc.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-times-circle icon text-gray-500"></i><span class="definition-pill"><strong>Cierre del desvío del río</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-arrow-up icon"></i>Alcanzada una cierta altura en la presa hay que proceder a <strong><u>anular el desvío del río</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-undo icon"></i>Para <strong><u>reintegrarlo a su cauce</u></strong> y comenzar su <strong><u>embalse parcial</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-forward icon"></i><strong><u>Adelantando si es posible su explotación</u></strong>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-brush icon text-gray-500"></i><span class="definition-pill"><strong>Remates</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-wrench icon"></i><strong>Desmontaje</strong> de instalaciones.</p></li>
+                                            <li><p><i class="fas fa-road icon"></i><strong>Coronación</strong> de la presa.</p></li>
+                                            <li><p><i class="fas fa-lightbulb icon"></i><strong>Iluminación</strong>.</p></li>
+                                            <li><p><i class="fas fa-leaf icon"></i><strong>Acondicionamiento</strong> del paisaje.</p></li>
+                                            <li><p><i class="fas fa-route icon"></i><strong>Caminos</strong>.</p></li>
+                                            <li><p><i class="fas fa-building icon"></i><strong>Adaptación</strong> de edificios a su nuevo uso.</p></li>
+                                            <li><p><i class="fas fa-trash-alt icon"></i><strong>Demolición</strong> de obras inútiles antiestéticas, etc.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- Card 4: Órganos de desagüe de la presa -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-water"></i></div>
+                <h2>3. Órganos de desagüe de la presa</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-faucet icon text-blue-600"></i>Tomas</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Son los <strong><u>órganos de desagüe voluntarios</u></strong> para <strong><u>controlar la utilización</u></strong> del agua embalsada.</p></li>
+                        <li><p><i class="fas fa-sitemap icon text-purple-600"></i>Puede haber <strong><u>una para cada uso</u></strong> del agua (<u>abastecimiento</u>, <u>riego</u>, <u>hidroeléctrico</u>) o <strong><u>comunes para varios</u></strong>, que luego se bifurcan en otro lugar.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tachometer-alt icon text-cyan-600"></i>Los <strong><u>caudales derivados</u></strong> por las tomas son los <strong><u>normales</u></strong>, próximos al <u>medio anual</u> o un <u>múltiplo moderado</u> de él:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-city icon text-gray-500"></i><strong>Toma de abastecimiento</strong>: caudal <u>cercano al medio</u> porque requiere <u>continuidad</u>.</p></li>
+                                    <li><p><i class="fas fa-tractor icon text-gray-500"></i><strong>Toma de riego</strong>: caudal <u>doble o triple del medio</u> porque se concentra en <u>pocos meses</u>.</p></li>
+                                    <li><p><i class="fas fa-bolt icon text-gray-500"></i><strong>Toma hidroeléctrica</strong>: con caudal <u>triple a séxtuple del medio</u> en <span class="pill-blue">8</span> a <span class="pill-blue">4</span> horas de punta diaria.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-swimmer icon text-red-700"></i>Aliviaderos</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Son los <strong><u>órganos para evacuar caudales sobrantes</u></strong> de las avenidas.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-stream icon text-purple-600"></i>Pueden ser:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i><strong>Aliviaderos de superficie</strong> o aliviaderos.</p></li>
+                                    <li><p><i class="fas fa-level-down-alt icon text-gray-500"></i><strong>Aliviaderos o desagües intermedios</strong>, de <strong>medio fondo</strong> o <strong>profundos</strong>.</p></li>
+                                    <li><p><i class="fas fa-arrow-down icon text-gray-500"></i>Y <strong>desagües de fondo</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tasks icon text-cyan-600"></i><strong><u>Usos</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-cloud-showers-heavy icon text-gray-500"></i>Los <strong><u>primeros</u></strong> suelen ser los aliviaderos para <strong><u>evacuación de avenidas</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-directions icon text-gray-500"></i>Aunque se acusa una <strong><u>tendencia cada vez mayor a usar</u></strong> para ello los <strong><u>profundos o incluso los de fondo</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-cogs icon text-gray-500"></i>Aunque éstos suelen ser más usados para <strong><u>controlar el nivel del embalse</u></strong>, <strong><u>vaciarlo</u></strong> total o parcialmente, incluso por debajo de las tomas de explotación, <strong><u>descargar sedimentos</u></strong> acumulados en el fondo, etc.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tachometer-alt icon text-orange-600"></i><strong><u>Caudales máximos</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-arrow-down icon text-gray-500"></i>Los de los <strong><u>desagües profundos</u></strong> (de fondo e intermedios) suelen ser del orden de <span class="pill-blue"><strong>5 a 15 veces</strong></span> el caudal medio (mínimo <span class="pill-blue">3</span> veces según la Instrucción de grandes presas de <span class="pill-blue">1967</span>).</p></li>
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i>Mientras que en los de <strong><u>superficie</u></strong> son <strong><u>muy grandes</u></strong> (<span class="pill-blue">25 a 50 veces</span> el medio, o más).</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-cubes icon text-indigo-600"></i>Los <strong><u>elementos parciales</u></strong> de los aliviaderos son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-sign-in-alt icon text-gray-500"></i><strong>Embocadura o toma de agua</strong> (con las <u>dimensiones adecuadas</u> para derivar el caudal de proyecto, puede ser con <u>vertedero de labio fijo</u> o con <u>compuertas</u>).</p></li>
+                                    <li><p><i class="fas fa-route icon text-gray-500"></i><strong>Conducción o rápida</strong> (cumple la función de <u>transporte</u> desde la embocadura a la obra de restitución al río, puede ser en <u>lámina libre</u> o en <u>presión</u>).</p></li>
+                                    <li><p><i class="fas fa-undo icon text-gray-500"></i><strong>Obra de restitución</strong> (cuya misión es <u>devolver al río el caudal</u> derivado de tal manera que <u>no produzca erosiones perjudiciales</u> al cauce, a la obra de restitución o a la presa, pueden ser con <u>trampolín lanzador</u> o con <u>cuenco amortiguador</u>).</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
