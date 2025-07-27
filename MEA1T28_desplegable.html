@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Estaciones de bombeo</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Estilos generales del cuerpo del documento */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-upload"></i> MEA1T28. Estaciones de bombeo <i class="fas fa-cogs"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Estaciones de bombeo -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-info-circle"></i></div>
+                <h2>1. Estaciones de bombeo. Conceptos básicos</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-building icon text-blue-600"></i>Las <span class="definition-pill"><strong>estaciones de bombeo</strong></span> son <strong><u>lugares donde se instalan máquinas hidromecánicas (bombas)</u></strong> capaces de <strong><u>aumentar la carga hidráulica</u></strong> en una conducción.</p></li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-book-open icon text-purple-700"></i>Conceptos básicos</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Los <strong><u>conceptos básicos</u></strong> utilizados en el diseño y explotación de las bombas son los siguientes:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-tachometer-alt icon text-gray-500"></i><span class="definition-pill"><strong>Capacidad</strong></span>, <strong><u>volumen bombeado</u></strong> por unidad de tiempo, es decir el <u>caudal</u>.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-ruler-vertical icon text-gray-500"></i><span class="definition-pill"><strong>Altura</strong></span>, <strong><u>distancia en vertical</u></strong> a la que puede elevar el agua, se mide en <u>m columna de agua</u>. Se distinguen:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-arrow-down icon"></i><strong>Altura geométrica de la aspiración</strong> (<u>diferencia</u> entre el <u>nivel del líquido en la aspiración</u> y el <u>eje del rodete</u> de la bomba).</p></li>
+                                                <li><p><i class="fas fa-arrow-up icon"></i><strong>Geométrica de elevación</strong> (<u>diferencia de cotas</u> entre el <u>nivel del líquido en la descarga</u> y el <u>eje del rodete</u> de la bomba).</p></li>
+                                                <li><p><i class="fas fa-arrows-alt-v icon"></i><strong>Geométrica total</strong> (<u>diferencia de cotas</u> entre el líquido en la <u>descarga</u> y en la <u>aspiración</u>).</p></li>
+                                                <li><p><i class="fas fa-wind icon"></i><strong>Altura de velocidad</strong> (<span class="formula-pill">v²/2g</span>).</p></li>
+                                                <li><p><i class="fas fa-chart-line icon"></i><strong>Pérdidas de carga por rozamiento y singulares</strong> (<u>altura de carga que debe suministrarse</u> para vencer la <u>fricción del agua</u> a través de las tuberías y en piezas especiales y válvulas).</p></li>
+                                                <li><p><i class="fas fa-calculator icon"></i><strong>Altura manométrica total</strong> (aquella que debe <u>salvar la bomba</u> teniendo en cuenta todas las anteriores y que se puede calcular con la <u>ecuación de Bernoulli</u>).</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><p><i class="fas fa-percentage icon text-gray-500"></i><span class="definition-pill"><strong>Rendimiento</strong></span>, <strong><u>cociente</u></strong> entre la <u>potencia útil</u> y la <u>potencia absorbida</u>, suele estar entre el <span class="pill-blue"><strong>60</strong></span> y el <span class="pill-blue"><strong>85%</strong></span>.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-chart-line icon text-gray-500"></i><span class="definition-pill"><strong>Curvas características</strong></span>, <strong><u>relacionan caudal bombeado y altura</u></strong> a la que se bombea, tanto en lo que se refiere a la <u>bomba</u> como a la <u>conducción de la impulsión</u>.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-crosshairs icon"></i>La <strong><u>intersección</u></strong> entre ambas se denomina <strong><u>punto de funcionamiento</u></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-exclamation-triangle icon text-red-600"></i><span class="definition-pill"><strong>Cavitación</strong></span>, fenómeno caracterizado por la <strong><u>formación de burbujas de vapor</u></strong>, cuando la <u>presión del fluido es inferior a su presión de vapor</u>.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-bomb icon"></i>Que al <strong><u>destruirse por condensación violenta</u></strong> en zonas de mayor presión producen una <strong><u>marcha inestable</u></strong> de la bomba con <u>caída del caudal y de los rendimientos</u>, acompañado de <u>ruido y vibraciones</u>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-shield-alt icon text-green-600"></i><span class="definition-pill"><strong>NPSH (Net Positive Suction Head)</strong></span> o <strong><u>Altura neta positiva de aspiración</u></strong>.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-info-circle icon"></i>Es la <strong><u>diferencia</u></strong> entre la <u>presión del líquido en el eje del impulsor</u> de la bomba y la <u>presión de vapor del líquido</u> a la temperatura de bombeo.</p></li>
+                                                <li><p><i class="fas fa-bullseye icon"></i>Por lo que representa el <strong><u>margen disponible a la entrada de la bomba</u></strong> para <strong><u>evitar fenómenos de cavitación</u></strong>, siendo una de las características más importantes de una bomba.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+     
+        <!-- Card 2: Tipos de bombas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-cogs"></i></div>
+                <h2>2. Tipos de bombas: características, selección, transitorios</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-info-circle icon text-blue-600"></i>Características</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-sitemap icon text-purple-600"></i>Las <strong><u>bombas se clasifican</u></strong> en:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-sync-alt icon text-cyan-600"></i><span class="definition-pill"><strong>Bombas de energía cinética o bombas centrífugas</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-stream icon"></i>Pueden ser de <strong>flujo radial, mixto o axial</strong>.</p></li>
+                                                <li><p><i class="fas fa-tint icon"></i>Las <strong>2 primeras</strong> se utilizan para <u>aguas residuales y limpias</u>.</p></li>
+                                                <li><p><i class="fas fa-leaf icon"></i>La <strong>tercera</strong> para <u>efluentes tratados y pluviales</u>.</p></li>
+                                                <li>
+                                                    <div class="collapsible-trigger">
+                                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                        <p><i class="fas fa-cogs icon"></i>Tienen <strong>2 elementos principales</strong>:</p>
+                                                    </div>
+                                                    <div class="collapsible-content hidden">
+                                                        <ul class="even-deeper-nested-list">
+                                                            <li><p><i class="fas fa-fan icon"></i><strong>Impulsor de álabes</strong> llamado <u>rodete</u>.</p></li>
+                                                            <li><p><i class="fas fa-archive icon"></i>Y la <strong>carcasa</strong> que recibe el líquido salido del impulsor y lo expulsa por la tubería de descarga transformando la <u>energía cinética en presión</u>.</p></li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                                <li><p><i class="fas fa-star icon"></i>Son las <strong><u>más usadas</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-power-off icon"></i>En las bombas centrífugas es recomendable que se realice la <strong><u>puesta en marcha con la válvula de la tubería de impulsión cerrada</u></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-screwdriver icon text-orange-600"></i><span class="definition-pill"><strong>Bombas de desplazamiento positivo o de tornillo</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-tools icon"></i>Basado en el principio del <strong><u>tornillo de Arquímedes</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-check-circle icon"></i>Son <strong><u>más adecuadas para aguas residuales</u></strong> porque <u>toleran mejor la presencia de sólidos</u>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-check-double icon text-green-700"></i>Selección</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Para realizarla se deben <strong><u>tener en cuenta</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-tachometer-alt icon text-gray-500"></i>Los <strong>caudales de proyecto</strong> y su intervalo.</p></li>
+                                    <li><p><i class="fas fa-map-marker-alt icon text-gray-500"></i>La <strong>ubicación de la estación de bombeo</strong> (características de las aguas a bombear).</p></li>
+                                    <li><p><i class="fas fa-ruler-vertical icon text-gray-500"></i>La <strong>altura manométrica</strong>.</p></li>
+                                    <li><p><i class="fas fa-dungeon icon text-gray-500"></i>El <strong>diseño de la tubería</strong> de impulsión.</p></li>
+                                    <li><p><i class="fas fa-chart-line icon text-gray-500"></i>Las <strong>curvas características</strong> que relacionan caudal bombeado y altura de la bomba y de la impulsión, etc.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-wave-square icon text-red-700"></i>Transitorios</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Un <span class="definition-pill"><strong>transitorio hidráulico</strong></span> es un <strong><u>régimen de circulación del agua variable en el tiempo</u></strong> que se puede agrupar en <strong><u>dos grandes bloques</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-arrows-alt-v icon text-gray-500"></i><strong>Oscilaciones en masa</strong>.</p></li>
+                                    <li><p><i class="fas fa-hammer icon text-gray-500"></i>Y <strong>golpe de ariete</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-arrow-right icon text-purple-600"></i>Tienen su <strong><u>origen</u></strong> en los <strong><u>arranques de las bombas</u></strong>, en los <strong><u>fallos de suministro de energía eléctrica</u></strong> o en las <strong><u>paradas</u></strong>.</p></li>
+                        <li><p><i class="fas fa-exclamation-triangle icon text-orange-600"></i>Y pueden dar lugar a <strong><u>cambios importantes de la presión</u></strong> por <u>variaciones rápidas de la velocidad</u>.</p></li>
+                        <li><p><i class="fas fa-compress icon text-indigo-600"></i>La <strong><u>máxima sobrepresión</u></strong> experimentada en un transitorio originado por el <u>cierre instantáneo de una válvula</u> <strong><u>depende</u></strong> del <u>módulo de elasticidad del material</u> y de las <u>dimensiones (espesor y diámetro)</u> de la conducción.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Protección y tipos de estaciones -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-shield-alt"></i></div>
+                <h2>3. Protección y tipos de estaciones</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-hammer icon text-red-600"></i>Protección</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>La <strong><u>protección de las bombas y las tuberías de impulsión</u></strong> frente al <strong><u>golpe de ariete</u></strong>, normalmente empleados son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-door-closed icon text-gray-500"></i><strong>Válvulas de retención</strong> en la descarga de las bombas dotadas de <u>contrapeso y manivela</u> para ayudar a la maniobra de cierre, válida para alturas del orden de <span class="pill-blue">15 a 20 m</span>.</p></li>
+                                    <li><p><i class="fas fa-door-closed icon text-gray-500"></i><strong>Válvulas de retención de resorte</strong> situada en la descarga de las bombas.</p></li>
+                                    <li><p><i class="fas fa-door-closed icon text-gray-500"></i><strong>Válvulas de retención</strong> de cualquiera de los dos tipos anteriores junto con la <strong>válvula reguladora de alta presión</strong>.</p></li>
+                                    <li><p><i class="fas fa-wind icon text-gray-500"></i><strong>Válvulas de purga y admisión de aire (ventosas)</strong> situadas en la <u>estación de bombeo</u> y en los <u>puntos altos</u> de la tubería de impulsión para <u>limitar el desarrollo de presiones inferiores a la atmosférica</u>.</p></li>
+                                    <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong>Válvulas de control positivo</strong> en la descarga, <u>enclavadas</u> de manera que se <u>abran a una presión determinada</u> durante el arranque y se <u>cierren a velocidad predeterminada</u> después del corte de energía.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-compress-alt icon text-gray-500"></i><strong>Válvulas de alivio, by-pass de la aspiración</strong>, para <u>grandes estaciones de bombeo</u> donde las válvulas de retención no son suficiente.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-info-circle icon"></i>Las válvulas pueden ser de <strong>cono</strong>, de <strong>macho</strong> o de <strong>mariposa</strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><p><i class="fas fa-sync-alt icon text-gray-500"></i><strong>Volantes de inercia</strong> acoplados a las bombas, que permiten que el <strong><u>movimiento continúe por inercia</u></strong> cuando cesa el par motor que lo propulsa <u>evitando que la parada sea brusca</u>.</p></li>
+                                    <li><p><i class="fas fa-broadcast-tower icon text-gray-500"></i><strong>Chimeneas de equilibrio</strong>, que son unas <u>torres piezométricas abiertas a la atmósfera</u> cuya misión es <strong><u>atenuar las oscilaciones de presión</u></strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-sitemap icon text-purple-700"></i>Tipos de estaciones de bombeo</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-robot icon text-blue-600"></i>Las estaciones modernas están <strong><u>completamente automatizadas</u></strong>, con <u>poco personal</u>, incluso las grandes, para tareas de <u>inspección y mantenimiento</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-cyan-600"></i>Se pueden <strong><u>clasificar según diferentes criterios</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-tint icon text-gray-500"></i><strong>Por las aguas bombeadas</strong>: <u>residuales domésticas</u>, <u>pluviales</u>, <u>residuales de redes de alcantarillado unitario</u>, <u>residuales industriales</u>, <u>fangos</u> producidos en estaciones depuradoras de aguas residuales, <u>efluentes tratados</u>, o <u>redes de agua en plantas de tratamiento</u>.</p></li>
+                                    <li><p><i class="fas fa-bolt icon text-gray-500"></i><strong>Por la fuente de energía</strong>: <u>eléctricas</u> o <u>diésel</u>.</p></li>
+                                    <li><p><i class="fas fa-tools icon text-gray-500"></i><strong>Por el método de bombeo</strong>: <u>centrífugas</u> o de <u>desplazamiento positivo</u>.</p></li>
+                                    <li><p><i class="fas fa-building icon text-gray-500"></i><strong>Por el emplazamiento de las bombas</strong>: de <u>cámara seca</u> o de <u>cámara húmeda</u>.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-layer-group icon text-gray-500"></i><strong>Por la posición relativa de las bombas</strong>:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-stream icon"></i><strong>En serie</strong> que permiten <u>aumentar la altura</u> de bombeo.</p></li>
+                                                <li><p><i class="fas fa-arrows-alt-h icon"></i>O <strong>en paralelo</strong> que permiten <u>aumentar el caudal</u> bombeado.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-arrow-down icon text-gray-500"></i><strong>Por la succión</strong>:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-plus-circle icon"></i><strong>Positivas</strong>, cuando el <u>nivel del fluido a bombear está por encima</u> de la bomba.</p></li>
+                                                <li><p><i class="fas fa-minus-circle icon"></i>O <strong>negativas</strong> cuando está <u>por debajo</u>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Estaciones de sobrepresión -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-compress"></i></div>
+                <h2>4. Estaciones de sobrepresión</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-bullseye icon text-blue-600"></i>Tienen como <strong><u>finalidad inducir en el sistema de distribución una determinada presión</u></strong>.</p></li>
+                    <li><p><i class="fas fa-tasks icon text-purple-600"></i>Para <strong><u>atender una demanda de caudales</u></strong> para los que la <u>presión general es insuficiente</u>, especialmente a <u>ciertas horas del día</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-cubes icon text-cyan-600"></i>Suelen <strong><u>agrupar todos los componentes en 2 módulos</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-upload icon text-gray-500"></i><strong>Módulo de bombeo</strong>.</p></li>
+                                <li><p><i class="fas fa-warehouse icon text-gray-500"></i><strong>Módulo de acumulación</strong> (donde se ubican los <u>depósitos de presión</u>).</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 5: Elementos constructivos -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-hard-hat"></i></div>
+                <h2>5. Elementos constructivos</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>Los <strong><u>elementos más importantes</u></strong> de las estaciones de bombeo son:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-water icon text-gray-500"></i><span class="definition-pill"><strong>Cámara de aspiración</strong></span>, <strong><u>almacena el agua</u></strong> antes del bombeo.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-tools icon"></i>Y tiene elementos para <strong><u>impedir que entren tamaños inadmisibles</u></strong> en las bombas, tales como <u>rejas</u> o <u>dilaceradores</u> para triturar elementos superiores a un cierto tamaño.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li><p><i class="fas fa-archive icon text-gray-500"></i><span class="definition-pill"><strong>Cámara seca</strong></span>, <strong><u>adyacente a la de aspiración</u></strong> y que alberga las <u>bombas</u>, el conjunto de <u>tuberías de aspiración e impulsión</u> y su <u>valvulería</u>.</p></li>
+                                <li><p><i class="fas fa-dungeon icon text-gray-500"></i><strong>Tuberías de aspiración e impulsión</strong>.</p></li>
+                                <li><p><i class="fas fa-desktop icon text-gray-500"></i><strong>Instrumentación de las estaciones de bombeo</strong>, <u>controles automáticos</u>, <u>manuales</u>, <u>alarmas</u>, etc.</p></li>
+                                <li><p><i class="fas fa-crane icon text-gray-500"></i>Para las labores de <strong><u>cambio de equipos</u></strong> se dispone de <strong><u>puentes grúa o vigas carril</u></strong>, con <u>dimensiones de entrada y salida suficientes</u>.</p></li>
+                                <li><p><i class="fas fa-plug icon text-gray-500"></i><strong>Línea de alimentación eléctrica</strong> o <strong>depósito de almacenamiento de combustible</strong>, según la fuente de energía.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+       <!-- Card 6: Ingeniería de impulsiones -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-route"></i></div>
+                <h2>6. Ingeniería de impulsiones: trazado, tipos y cálculo</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i><span class="definition-pill"><strong>Tubería de impulsión</strong></span>, va <strong><u>desde la bomba</u></strong>, donde el agua tiene <u>presión máxima</u>, <strong><u>hasta el punto de descarga</u></strong> a la <u>presión atmosférica</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-cogs icon text-purple-600"></i>Es <strong><u>parte del sistema de bombeo</u></strong> y su <strong><u>diseño está influido</u></strong> por:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-upload icon text-gray-500"></i>El <strong>número, tamaño y tipo de bombas</strong> existentes en la estación de bombeo.</p></li>
+                                <li><p><i class="fas fa-shield-alt icon text-gray-500"></i>La <strong>capacidad para resistir presiones</strong> internas, incluso las <u>temporales debidas al golpe de ariete</u>, y externas.</p></li>
+                                <li><p><i class="fas fa-tint icon text-gray-500"></i>Las <strong>características del agua a transportar</strong>, su <u>caudal</u>, las <u>pérdidas de carga</u>, etc.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-hard-hat icon text-orange-600"></i>Suelen estar <strong><u>enterradas al menos <span class="pill-blue">1 m</span></u></strong> desde su generatriz superior lo que las <strong><u>protege de las heladas</u></strong>.</p></li>
+                    <li><p><i class="fas fa-anchor icon text-cyan-600"></i>Deben estar <strong><u>ancladas en cambios de dirección</u></strong> y <strong><u>conexiones con ramales</u></strong>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-exclamation-triangle icon text-red-600"></i>Y debe prestarse <strong><u>especial atención a la disposición del extremo de descarga</u></strong> de la tubería de impulsión para <strong><u>minimizar la turbulencia</u></strong> y, en aguas residuales, la <strong><u>liberación de sulfuro de hidrógeno</u></strong>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-biohazard icon text-gray-500"></i>Que además de <u>mal olor</u> puede <u>oxidarse a ácido sulfúrico</u> y <u>atacar el hormigón</u> de la obra de fábrica de descarga.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-plus-circle icon text-indigo-600"></i><strong><u>Otros elementos a tener en cuenta</u></strong> en el diseño son los <u>pozos de registro</u>, las <u>ventosas</u> y los <u>desagües</u>.</p></li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-drafting-compass icon text-green-700"></i>Trazado, Tipos y Cálculo</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-road icon text-blue-600"></i>El <strong><u>trazado ideal</u></strong> es <strong><u>horizontal ligeramente ascendente</u></strong> hasta cerca del extremo final donde se <strong><u>elevaría rápidamente hasta el punto de descarga</u></strong>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-bullseye icon text-gray-500"></i>Con el <strong>objetivo</strong> de <u>evitar la disposición de ventosas</u> y <u>minimizar las pérdidas de carga</u>.</p></li>
+                                    <li><p><i class="fas fa-times-circle icon text-gray-500"></i>Aunque esto <strong>no suele ser posible</strong> y el perfil debe <u>adaptarse al terreno</u> incluyendo puntos altos y bajos.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-stream icon text-purple-600"></i>En cuanto a los <strong><u>tipos</u></strong>, pueden ser tuberías de:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-plug icon text-gray-500"></i><strong>Plástico</strong> (PVC y polietileno).</p></li>
+                                    <li><p><i class="fas fa-shield-alt icon text-gray-500"></i>De <strong>acero</strong>.</p></li>
+                                    <li><p><i class="fas fa-cogs icon text-gray-500"></i>De <strong>fundición</strong>.</p></li>
+                                    <li><p><i class="fas fa-cube icon text-gray-500"></i>De <strong>hormigón</strong>.</p></li>
+                                    <li><p><i class="fas fa-recycle icon text-gray-500"></i>O de <strong>gres</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-calculator icon text-orange-600"></i>El <strong><u>cálculo</u></strong> debe tener en cuenta el <u>caudal bombeado</u>, el <u>trazado</u> y el <u>material de la tubería</u>, analizando:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i>El <strong>funcionamiento hidráulico</strong> con la correcta determinación de las <u>pérdidas de carga</u>.</p></li>
+                                    <li><p><i class="fas fa-tools icon text-gray-500"></i>Y el <strong>comportamiento mecánico</strong> diseñando la conducción con <u>adecuadas características resistentes</u> y con los <u>anclajes necesarios</u> materializados con <u>macizos de hormigón</u> en los cambios significativos de geometría en planta y alzado.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
