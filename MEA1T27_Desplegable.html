@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Canales y conducciones en carga</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Estilos generales del cuerpo del documento */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-water"></i> MEA1T27. Canales y conducciones en carga <i class="fas fa-route"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Canales y conducciones en carga -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-stream"></i></div>
+                <h2>1. Canales y conducciones en carga</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-water icon text-blue-600"></i>Canales</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-road icon text-purple-600"></i><span class="definition-pill"><strong>Canales</strong></span>, <strong><u>obras lineales</u></strong> para <strong><u>conducir el agua</u></strong>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-cogs icon text-cyan-600"></i>Características:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-arrows-alt-h icon text-gray-500"></i>Con <strong>gran flexibilidad</strong> en <u>planta</u>.</p></li>
+                                    <li><p><i class="fas fa-arrows-alt-v icon text-gray-500"></i>Y <strong>rigidez total</strong> en <u>alzado</u>.</p></li>
+                                    <li><p><i class="fas fa-sort-amount-down icon text-gray-500"></i>Con <strong>muy poca pendiente descendente</strong> que se mide en <u>diezmilésimas</u>.</p></li>
+                                    <li><p><i class="fas fa-wave-square icon text-gray-500"></i>Y con el <strong>agua circulando en lámina libre</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-compress-arrows-alt icon text-orange-700"></i>Conducciones en carga</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i><span class="definition-pill"><strong>Conducciones en carga</strong></span>, el <strong><u>agua circula con energía en forma de presión</u></strong> por:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-truck icon text-gray-500"></i><strong>Necesidades de transporte</strong> (hay que salvar <u>desniveles ascendentes</u>).</p></li>
+                                    <li><p><i class="fas fa-tractor icon text-gray-500"></i>O de <strong>uso</strong> (<u>riego por aspersión</u> p.e.).</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-exclamation-triangle icon text-red-600"></i>Son <strong><u>más delicadas</u></strong> porque:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-compress icon text-gray-500"></i>La <strong>presión</strong> supone un <strong><u>estado tensional más importante</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-tint-slash icon text-gray-500"></i>Y <strong><u>mayores posibilidades de fugas</u></strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-check-circle icon text-green-600"></i>Pero <strong><u>facilitan su trazado</u></strong> haciéndolo <strong><u>completamente flexible</u></strong>.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Revestimientos, juntas y obras singulares -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-layer-group"></i></div>
+                <h2>2. Revestimientos, juntas y obras singulares</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-water icon text-blue-600"></i>Revestimientos en canales</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>El <strong><u>material de revestimiento</u></strong> debe ser <u>liso</u>, <u>impermeable</u> y <u>resistente a la erosión</u> del agua.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-cube icon text-gray-700"></i>El <span class="definition-pill"><strong>hormigón</strong></span> <strong><u>cumple perfectamente</u></strong> esas condiciones y es el <strong><u>más usado</u></strong>.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-check-circle icon"></i>Se <strong>conserva bien</strong> con <u>funcionamiento continuo</u> (o casi) para velocidades de <span class="pill-blue">3-4 m/s</span>.</p></li>
+                                                <li><p><i class="fas fa-swimmer icon"></i>Y también en <strong>aliviaderos de presas</strong> donde la velocidad puede llegar hasta <span class="pill-blue">20 m/s</span>, pero <u>esporádicamente</u>, lo que <u>impide su deterioro</u> y si llega a producirse se puede <u>reparar</u>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-shield-alt icon text-gray-500"></i>El <span class="definition-pill"><strong>acero</strong></span> cumple <strong><u>muy bien todas las condiciones</u></strong>, pero resulta <strong><u>muy caro</u></strong>.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-tachometer-alt icon"></i>Permite alcanzar velocidades en el agua de <span class="pill-blue">7-8 m/s</span>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-mountain icon text-orange-800"></i>La <span class="definition-pill"><strong>arcilla</strong></span>, es <strong><u>muy impermeable y lisa</u></strong>, pero <strong><u>muy poco resistente</u></strong> en taludes.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-ruler-combined icon"></i>Que deben ser más tendidos que <span class="formula-pill">3H:1V</span>.</p></li>
+                                                <li><p><i class="fas fa-wind icon"></i>Y a la <strong>erosión</strong> (<span class="formula-pill">v=0,5 m/s</span>).</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><p><i class="fas fa-road icon text-black"></i>El <span class="definition-pill"><strong>revestimiento bituminoso</strong></span> es <strong><u>flexible, impermeable y suficientemente resistente</u></strong> a la velocidad del agua.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-dungeon icon text-purple-700"></i>Revestimientos en tuberías (tipos de tuberías)</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Tipos de tuberías:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-plug icon text-gray-500"></i><span class="definition-pill"><strong>Tuberías de plástico (PVC y polietileno)</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-ruler-horizontal icon"></i>Paredes <strong><u>muy lisas</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-hand-paper icon"></i>Se <strong><u>trabajan muy bien</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-compress-arrows-alt icon"></i>Ideales para <strong><u>diámetros pequeños</u></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-ban icon text-red-500"></i><span class="definition-pill"><strong>Tuberías de fibrocemento</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-history icon"></i>Se usaban para <strong><u>abastecimiento y saneamiento</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-gavel icon"></i>Desde <span class="pill-blue">2005</span> una directiva de la <span class="actor-pill">UE</span> ha <strong><u>prohibido su uso</u></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-shield-alt icon text-gray-700"></i><span class="definition-pill"><strong>Tuberías de acero</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-compress icon"></i>Para <strong><u>grandes presiones</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-euro-sign icon"></i><strong><u>Caras</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-exclamation-triangle icon"></i>Y pueden sufrir <strong><u>oxidación</u></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-cogs icon text-gray-600"></i><span class="definition-pill"><strong>Tuberías de fundición</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-dumbbell icon"></i><strong><u>Resistentes</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-lock icon"></i><strong><u>Estancas</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-thumbs-up icon"></i><strong><u>Buenas características hidráulicas</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-shield-alt icon"></i>Y <strong><u>durabilidad</u></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-cube icon text-gray-800"></i><span class="definition-pill"><strong>Tuberías de hormigón</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-info-circle icon"></i>Se utiliza <strong><u>hormigón en masa</u></strong> con o sin <u>camisa de chapa</u> y <strong><u>hormigón armado</u></strong>.</p></li>
+                                                <li>
+                                                    <div class="collapsible-trigger">
+                                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                        <p><i class="fas fa-tools icon"></i>Con diversos <strong><u>sistemas de fabricación</u></strong>:</p>
+                                                    </div>
+                                                    <div class="collapsible-content hidden">
+                                                        <ul class="even-deeper-nested-list">
+                                                            <li><p><i class="fas fa-cogs icon"></i>Vibrocompresión.</p></li>
+                                                            <li><p><i class="fas fa-cogs icon"></i>Compresión radial.</p></li>
+                                                            <li><p><i class="fas fa-cogs icon"></i>Centrifugación.</p></li>
+                                                            <li><p><i class="fas fa-cogs icon"></i>Vertido en moldes verticales y vibración.</p></li>
+                                                            <li><p><i class="fas fa-cogs icon"></i>Y precompresión.</p></li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-recycle icon text-green-600"></i><span class="definition-pill"><strong>Tuberías de gres para saneamiento</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-check-circle icon"></i>Son <strong><u>lisas, impermeables y poco atacables por los ácidos</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-thumbs-up icon"></i>Por lo que resultan <strong><u>muy apropiadas para el sistema separativo</u></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-link icon text-cyan-700"></i>Juntas en canales</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>En los revestidos de hormigón se disponen <strong><u>juntas de contracción, dilatación o construcción</u></strong> para permitir la <u>retracción del fraguado</u>, las <u>dilataciones y las contracciones térmicas</u>, y permitir <u>asientos sin agrietamiento</u> del hormigón.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-stream icon text-purple-600"></i>Pueden ser:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-arrows-alt-h icon text-gray-500"></i><strong>Transversales</strong>, que se disponen <u>siempre</u>.</p></li>
+                                    <li><p><i class="fas fa-arrows-alt-v icon text-gray-500"></i>Y <strong>longitudinales</strong>, que pueden ser <u>aconsejables en los cajeros</u> de canales grandes para <u>absorber deformaciones</u> del terreno.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-fill-drip icon text-orange-600"></i>Se usan <strong><u>materiales de relleno</u></strong> en la parte inferior de la junta.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-life-ring icon text-gray-500"></i>Sirven de <strong><u>soporte compresible</u></strong> al material de sellado.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-lock icon text-green-600"></i>El <strong><u>material de sellado</u></strong> rellena la parte de la junta en contacto con el agua.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-ban icon text-gray-500"></i>Y <strong><u>evitan que en la junta penetren materiales extraños</u></strong> que coarten las libres deformaciones.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-box icon text-indigo-600"></i>Materiales:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-fill-drip icon text-gray-500"></i>Para los <strong><u>materiales de relleno</u></strong> se utilizan <u>caucho</u> o <u>materiales bituminosos</u>.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-lock icon text-gray-500"></i>Para los <strong><u>materiales de sellado</u></strong>, éstos deben tener:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-check icon"></i>Buena <strong>adherencia</strong> al hormigón.</p></li>
+                                                <li><p><i class="fas fa-check icon"></i>Suficientemente <strong>plásticos</strong>.</p></li>
+                                                <li><p><i class="fas fa-check icon"></i><strong>Impermeables</strong>.</p></li>
+                                                <li><p><i class="fas fa-check icon"></i>Y de <strong>envejecimiento lento</strong> (<u>asfaltos</u>, <u>cauchos</u>, <u>neopreno</u>).</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-link icon text-red-700"></i>Juntas en tuberías</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Para <strong><u>elegir la junta</u></strong> se tendrán en cuenta las <u>solicitaciones</u>, los <u>posibles movimientos</u>, la <u>agresividad de agentes</u> sobre ella y su <u>facilidad de montaje y desmontaje</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-stream icon text-purple-600"></i>Los <strong><u>tipos más usuales</u></strong> son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-cogs icon text-gray-500"></i>La junta a base de <strong>bridas</strong> interponiendo entre dos coronas una <u>arandela de plomo o goma con alambre</u> que se comprime con <u>tornillos pasantes</u>.</p></li>
+                                    <li><p><i class="fas fa-plug icon text-gray-500"></i>La junta de <strong>enchufe y campana</strong> con material de relleno de tipo <u>asfáltico en frío o en caliente</u> mirando hacia aguas arriba cuando sea posible.</p></li>
+                                    <li><p><i class="fas fa-bolt icon text-gray-500"></i>Las uniones <strong>soldadas a tope</strong> en tuberías de acero.</p></li>
+                                    <li><p><i class="fas fa-paste icon text-gray-500"></i>La unión mediante <strong>solape con adhesivos</strong> en tubos de plástico.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-arrows-alt icon text-orange-600"></i>Con carácter general se puede distinguir entre <strong><u>juntas flexibles y rígidas</u></strong>, si permiten o no movimientos.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-thumbs-up icon text-gray-500"></i>Si no es posible asegurar la indeformabilidad de la junta son <strong><u>preferibles las primeras</u></strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-star icon text-yellow-600"></i>Obras singulares (en regadíos)</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-sort-amount-down icon text-blue-600"></i>Destinadas a <strong><u>mantener en los canales la pendiente y velocidad adecuadas</u></strong>, permiten <strong><u>concentrar pérdidas importantes de nivel</u></strong> en los puntos en los que ya no es necesaria la cota: <strong><u>caídas</u></strong> (<span class="pill-blue">&lt;4 m</span>) y <strong><u>rápidas</u></strong> (<span class="pill-blue">&gt;4m</span>).</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-balance-scale-right icon text-purple-600"></i><strong><u>Facilitan medida y reparto del agua</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-tachometer-alt icon text-gray-500"></i><strong>Aforadores</strong> (<u>miden caudal</u> que pasa por el canal).</p></li>
+                                    <li><p><i class="fas fa-divide icon text-gray-500"></i><strong>Partidores</strong> (<u>dividen el caudal</u> según una relación determinada en 2 o más partes de manera <u>fija o móvil</u>).</p></li>
+                                    <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong>Módulos</strong> (para <u>mantener un caudal constante</u> en las derivaciones, aunque varíe el calado del canal).</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-plus-circle icon text-cyan-600"></i><strong><u>Otros tipos</u></strong> son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-sign-in-alt icon text-gray-500"></i><strong>Toma de acequias</strong> mediante <u>compuertas manuales</u>.</p></li>
+                                    <li><p><i class="fas fa-sign-out-alt icon text-gray-500"></i><strong>Almenaras</strong> (obras para <u>desaguar acequias</u>).</p></li>
+                                    <li><p><i class="fas fa-swimmer icon text-gray-500"></i><strong>Aliviaderos de seguridad</strong> (para <u>evitar que un caudal excesivo</u> acceda a ciertos elementos).</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Redes de distribución de agua potable -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-network-wired"></i></div>
+                <h2>3. Redes de distribución de agua potable</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>El <strong><u>suministro del agua</u></strong> desde los <u>depósitos</u> hasta los <u>puntos de consumo</u> en la ciudad se efectúa por medio de una <span class="definition-pill"><strong>red de distribución</strong></span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-bullseye icon text-purple-600"></i>Cuyo <strong><u>fin es garantizar</u></strong> que a todos los puntos llega:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-tachometer-alt icon text-gray-500"></i>El <strong>caudal preciso</strong>.</p></li>
+                                <li><p><i class="fas fa-vial icon text-gray-500"></i>Con la <strong>calidad adecuada</strong>.</p></li>
+                                <li><p><i class="fas fa-compress icon text-gray-500"></i>Y la <strong>presión requerida</strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-cyan-600"></i>Por tanto, debe <strong><u>asegurar</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-sync-alt icon text-gray-500"></i>Un <strong>servicio continuo</strong>.</p></li>
+                                <li><p><i class="fas fa-shield-alt icon text-gray-500"></i>Evitando cualquier posible <strong>contaminación</strong> con <u>conductos impermeables y resistentes</u> a las acciones interiores y exteriores.</p></li>
+                                <li><p><i class="fas fa-ruler-horizontal icon text-gray-500"></i>Y ser <strong>lisos</strong> para evitar <u>pérdidas de carga significativas</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-sitemap icon text-orange-700"></i>Sistemas de Redes</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Los <strong><u>sistemas de redes de distribución</u></strong> pueden ser:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-code-branch icon text-gray-500"></i><span class="definition-pill"><strong>Ramificados</strong></span> (sistema de tuberías que se van <u>dividiendo sucesivamente</u> como los nervios de una hoja).</p></li>
+                                    <li><p><i class="fas fa-project-diagram icon text-gray-500"></i><span class="definition-pill"><strong>Reticulares</strong></span> (se puede llegar a un mismo punto por <u>varios caminos</u>, ventaja para <u>aislamiento y reparación</u> de tramos averiados).</p></li>
+                                    <li><p><i class="fas fa-circle-notch icon text-gray-500"></i><span class="definition-pill"><strong>Circulares</strong></span> (<u>radial</u> con <u>arteria periférica de socorro</u> en caso de averías).</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tools icon text-indigo-700"></i>Accesorios Principales</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Los <strong><u>accesorios principales</u></strong> en las redes de distribución son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-door-closed icon text-gray-500"></i><span class="definition-pill"><strong>Válvulas</strong></span> (de <u>compuerta</u> o <u>mariposa</u>, para <u>aislar tramos</u> por mantenimiento y explotación).</p></li>
+                                    <li><p><i class="fas fa-wind icon text-gray-500"></i><span class="definition-pill"><strong>Ventosas</strong></span> (en <u>puntos altos</u> para <u>eliminar gases</u>).</p></li>
+                                    <li><p><i class="fas fa-arrow-down icon text-gray-500"></i><span class="definition-pill"><strong>Desagües</strong></span> (en <u>puntos bajos</u> del perfil general o de tramos que se pueden aislar, para su <u>vaciado</u>).</p></li>
+                                    <li><p><i class="fas fa-ruler-combined icon text-gray-500"></i><span class="definition-pill"><strong>Medidores de presión y caudal</strong></span> (para <u>explotar adecuadamente</u> con los datos precisos).</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-archive icon text-green-600"></i><strong><u>Todos ellos</u></strong> deben estar situadas en <strong><u>arquetas de registro</u></strong> que permitan realizar su <strong><u>mantenimiento</u></strong>.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Card 4: Redes de saneamiento -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-recycle"></i></div>
+                <h2>4. Redes de saneamiento</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i><strong><u>Reciben el agua residual</u></strong> a través de las <u>acometidas</u> y las <u>aportaciones de escorrentía superficial</u> mediante los <u>sumideros</u>.</p></li>
+                    <li><p><i class="fas fa-route icon text-purple-600"></i>Y la <strong><u>conducen por la red de colectores</u></strong> hasta las <u>depuradoras</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-home icon text-cyan-600"></i>Las <strong><u>acometidas</u></strong> están constituidas por:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-toilet-paper icon text-gray-500"></i>El <strong>sifón</strong>.</p></li>
+                                <li><p><i class="fas fa-arrow-down icon text-gray-500"></i>Las <strong>bajantes</strong>.</p></li>
+                                <li><p><i class="fas fa-wind icon text-gray-500"></i>Los <strong>sistemas de ventilación</strong>.</p></li>
+                                <li><p><i class="fas fa-archive icon text-gray-500"></i>Y la <strong>arqueta final de recogida</strong> para conexión a la red.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-sitemap icon text-orange-700"></i>Clasificación de Aguas y Sistemas</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tint icon text-blue-600"></i>Las <strong><u>aguas residuales</u></strong> se pueden clasificar en:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-cloud-rain icon text-gray-500"></i><span class="definition-pill"><strong>Aguas blancas</strong></span> que proceden de la <u>escorrentía</u>.</p></li>
+                                    <li><p><i class="fas fa-tint-slash icon text-gray-700"></i><span class="definition-pill"><strong>Aguas negras</strong></span> que proceden de los usos <u>domésticos</u>, <u>comerciales</u>, <u>industriales</u> y <u>agrícolas</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-network-wired icon text-purple-600"></i>Según tengan <strong><u>red única</u></strong> para ambos tipos de agua o <strong><u>redes separadas</u></strong> se denominan:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-link icon text-gray-500"></i><strong>Sistemas unitarios</strong>.</p></li>
+                                    <li><p><i class="fas fa-unlink icon text-gray-500"></i>O <strong>separativos</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-cogs icon text-indigo-600"></i>También se pueden clasificar en <strong><u>sistemas de evacuación</u></strong> por:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-angle-double-down icon text-gray-500"></i>Simple <strong>gravedad</strong>.</p></li>
+                                    <li><p><i class="fas fa-level-up-alt icon text-gray-500"></i><strong>Gravedad con elevaciones</strong>.</p></li>
+                                    <li><p><i class="fas fa-compress-arrows-alt icon text-gray-500"></i>Y <strong>circulación forzada</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5: Emisarios submarinos -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-water"></i></div>
+                <h2>5. Emisarios submarinos</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-bullseye icon text-blue-600"></i>El <strong><u>vertido de aguas residuales en el mar</u></strong> tiene como <strong><u>objetivo diluirlas</u></strong>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-check-circle icon text-green-600"></i>Hasta conseguir que la <strong><u>mezcla sea inocua</u></strong> para:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-heartbeat icon text-gray-500"></i>La <strong>salud humana</strong>.</p></li>
+                                <li><p><i class="fas fa-fish icon text-gray-500"></i>Y las <strong>formas de vida en el mar</strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-eye icon text-cyan-600"></i>A la vez que <strong><u>conservar el buen aspecto</u></strong> de las <u>aguas</u> y del <u>entorno marítimo-terrestre</u> del litoral.</p></li>
+                    <li><p><i class="fas fa-ruler-combined icon text-purple-600"></i>La <span class="definition-pill"><strong>dilución total</strong></span> se <strong><u>mide</u></strong> apreciando la <strong><u>diferencia del indicador elegido</u></strong> entre el <u>punto de vertido</u> y el <u>punto a proteger</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-cogs icon text-orange-600"></i>Y es <strong><u>consecuencia de 3 factores</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-layer-group icon text-gray-500"></i><span class="definition-pill"><strong>Dilución primaria</strong></span>, la alcanzada en la <strong><u>zona de emergencia</u></strong> de la mezcla de aguas residuales-mar.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-wind icon text-gray-500"></i><span class="definition-pill"><strong>Dilución secundaria</strong></span>, refleja la <strong><u>suplementaria</u></strong> debida a:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-wind icon"></i>La <strong><u>turbulencia superficial</u></strong> por la acción del <u>viento</u>.</p></li>
+                                            <li><p><i class="fas fa-expand-arrows-alt icon"></i>Y la <strong><u>extensión de la capa de emergencia</u></strong> del penacho junto con la <u>disminución de su espesor</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-clock icon text-gray-500"></i><span class="definition-pill"><strong>Dilución terciaria</strong></span>, que es <strong><u>función del tiempo</u></strong> que transcurre entre que la mezcla emerge y llega a la costa.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-biohazard icon"></i>Y está <strong><u>ligada a la hostilidad del medio marino</u></strong> respecto a la <u>vida bacteriana</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-bacterium icon text-red-700"></i>La <strong><u>concentración en <span class="formula-pill">escherichia coli</span></u></strong> marca la <strong><u>dilución total a alcanzar</u></strong>.</p></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Card 6: Depósitos -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-warehouse"></i></div>
+                <h2>6. Depósitos. Construcción, explotación y conservación</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i><span class="definition-pill"><strong>Depósito</strong></span>, <strong><u>estructura apta para contener un cierto volumen de agua</u></strong> con las <u>instalaciones complementarias</u> precisas para cumplir funciones de:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-sliders-h icon text-gray-500"></i><strong>Regulación de caudales</strong>.</p></li>
+                                <li><p><i class="fas fa-tachometer-alt icon text-gray-500"></i>De <strong>carga</strong> o ambas.</p></li>
+                                <li><p><i class="fas fa-shield-alt icon text-gray-500"></i>Y de <strong>seguridad</strong> en el servicio.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-purple-600"></i>Por tanto:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-balance-scale icon text-gray-500"></i><strong>Compensa en el tiempo</strong> aportaciones y consumos.</p></li>
+                                <li><p><i class="fas fa-check-circle icon text-gray-500"></i><strong>Garantiza la presión mínima</strong> en cada punto de la red.</p></li>
+                                <li><p><i class="fas fa-box-open icon text-gray-500"></i>Y <strong>contempla volúmenes de reserva</strong> ante emergencias como <u>averías en la aportación</u> o <u>incendios</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-hard-hat icon text-orange-700"></i>Construcción</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-map-pin icon text-blue-600"></i>Por su <strong><u>emplazamiento</u></strong> en relación con el terreno los depósitos pueden ser:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-arrow-down icon text-gray-500"></i><strong>Enterrados</strong>.</p></li>
+                                    <li><p><i class="fas fa-adjust icon text-gray-500"></i><strong>Semienterrados</strong>.</p></li>
+                                    <li><p><i class="fas fa-building icon text-gray-500"></i><strong>Superficiales</strong>.</p></li>
+                                    <li><p><i class="fas fa-arrow-up icon text-gray-500"></i>Y <strong>elevados</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-box icon text-purple-600"></i>Y por el <strong><u>material</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-cube icon text-gray-500"></i><strong>Fábrica de ladrillo</strong>.</p></li>
+                                    <li><p><i class="fas fa-cube icon text-gray-500"></i><strong>Hormigón en masa, armado, pretensado</strong>.</p></li>
+                                    <li><p><i class="fas fa-shield-alt icon text-gray-500"></i><strong>Acero</strong>.</p></li>
+                                    <li><p><i class="fas fa-plug icon text-gray-500"></i>O <strong>plástico</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-cogs icon text-cyan-700"></i>Explotación</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Se tendrá en cuenta en la <strong><u>explotación</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-vial icon text-gray-500"></i>La <strong><u>preservación de la calidad del agua</u></strong> porque de ahí va directamente al consumo.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-ban icon"></i>Evitando cualquier tipo de <strong>contaminación</strong>.</p></li>
+                                                <li>
+                                                    <div class="collapsible-trigger">
+                                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                        <p><i class="fas fa-ban icon"></i>Y cualquier <strong>cambio en la calidad</strong> del agua por:</p>
+                                                    </div>
+                                                    <div class="collapsible-content hidden">
+                                                        <ul class="even-deeper-nested-list">
+                                                            <li><p><i class="fas fa-thermometer-half"></i>Modificación de <strong>temperatura</strong>.</p></li>
+                                                            <li><p><i class="fas fa-bacteria"></i>Aparición y desarrollo de <strong>microorganismos</strong>.</p></li>
+                                                            <li><p><i class="fas fa-stop-circle"></i>O por establecimiento de <strong>zonas muertas</strong> sin circulación.</p></li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><p><i class="fas fa-check-double icon text-gray-500"></i><strong><u>Garantizar los sistemas de llenado y salida del agua</u></strong> y otros de funcionamiento normal del depósito.</p></li>
+                                    <li><p><i class="fas fa-shield-alt icon text-gray-500"></i>La <strong><u>protección contra acciones exteriores</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-desktop icon text-gray-500"></i>Y el <strong><u>control de los equipos de funcionamiento</u></strong> del depósito, mediante los <u>equipos adecuados, accesibles, protegidos y fácilmente manejables</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-tools icon text-indigo-700"></i>Conservación</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-microscope icon text-red-600"></i><strong><u>Desinfección adecuada</u></strong> después de su construcción o reparación con <strong><u>soluciones concentradas de cloro</u></strong>.</p></li>
+                        <li><p><i class="fas fa-broom icon text-green-600"></i>Cada <strong><u><span class="pill-blue">año</span> o <span class="pill-blue">dos</span></u></strong>, proceder a la <strong><u>limpieza de los vasos</u></strong> por las <u>incrustaciones en paredes y solera</u> con los <u>productos adecuados</u> para <u>desprenderlas de forma rápida</u>, <u>sin atacar a los materiales</u> que constituyen el depósito ni ser <u>tóxicos</u>.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
