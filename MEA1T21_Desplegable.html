@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Otros usos del agua</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-industry"></i> MEA1T21. Otros usos del agua <i class="fas fa-water"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: El agua en la industria -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-cogs"></i></div>
+                <h2>1. El agua en la industria</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>Hay industrias que <strong><u>consumen agua</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-beer icon text-gray-500"></i>Por <strong><u>incorporarla al producto</u></strong> (<u>cervecera</u> y <u>bebidas no alcohólicas</u>, p.e.).</p></li>
+                                <li><p><i class="fas fa-tools icon text-gray-500"></i>Y otras que la <strong><u>usan en el proceso de fabricación</u></strong>, pero <u>no aparece en el producto acabado</u>, que son la <u>mayoría</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-tasks icon text-purple-600"></i>El <strong><u>empleo del agua para la industria</u></strong> comprende la utilización específica en:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-box icon text-gray-500"></i><strong>Productos</strong>.</p></li>
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i>En <strong>procesos de fabricación, acondicionamiento y conservación</strong>.</p></li>
+                                <li><p><i class="fas fa-users icon text-gray-500"></i><strong>Alimentación e higiene</strong> del personal.</p></li>
+                                <li><p><i class="fas fa-wrench icon text-gray-500"></i><strong>Mantenimiento, seguridad</strong>, etc.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-hand-holding-water icon text-cyan-600"></i>El <strong><u>abastecimiento</u></strong> se realiza por:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-industry icon text-gray-500"></i><strong>Captaciones propias</strong> para la industria.</p></li>
+                                <li><p><i class="fas fa-network-wired icon text-gray-500"></i>Por la <strong>red municipal</strong>.</p></li>
+                                <li><p><i class="fas fa-plus icon text-gray-500"></i>O por <strong>ambas</strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-shield-alt icon text-green-600"></i>Exige <strong><u>altos niveles de garantía</u></strong>.</p></li>
+                    <li><p><i class="fas fa-vial icon text-orange-600"></i>La <strong><u>calidad exigida</u></strong> al agua <strong><u>depende de la participación</u></strong> de agua en el proceso según el <u>tipo de industria</u>.</p></li>
+                    <li><p><i class="fas fa-chart-line icon text-indigo-600"></i>La <strong><u>demanda de agua depende mucho</u></strong> del <u>tipo de industria</u> y de sus <u>características concretas</u>.</p></li>
+                    <li><p><i class="fas fa-undo icon text-red-600"></i>Los <strong><u>retornos también varían enormemente</u></strong> con el tipo de industria, algunos son <u>muy contaminantes</u> y de <u>difícil tratamiento</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-arrow-down icon text-yellow-700"></i><strong><u>No es previsible un aumento de la dotación</u></strong> para uso industrial por:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i>La <strong>evolución de los procesos productivos</strong>.</p></li>
+                                <li><p><i class="fas fa-recycle icon text-gray-500"></i>Y de las <strong>posibilidades de reutilización y reciclaje</strong> de aguas industriales.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 2: Evaluación de necesidades -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-search"></i></div>
+                <h2>2. Evaluación de necesidades</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-question-circle icon text-red-600"></i>Existe <strong><u>escaso conocimiento</u></strong> sobre la <strong><u>demanda real</u></strong> de cada una de las industrias debido a:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-map-signs icon text-gray-500"></i>Su <strong>gran dispersión</strong>.</p></li>
+                                <li><p><i class="fas fa-project-diagram icon text-gray-500"></i>A la <strong>complejidad del proceso</strong> industrial.</p></li>
+                                <li><p><i class="fas fa-chart-bar icon text-gray-500"></i>Y a la <strong>falta de controles estadísticos</strong>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-calculator icon text-blue-600"></i>Lo que ha llevado a <strong><u>establecer las dotaciones</u></strong> en función de:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-vector-square icon text-gray-500"></i>La <strong>superficie ocupada</strong> en el caso de <u>polígonos industriales</u>.</p></li>
+                                <li><p><i class="fas fa-users icon text-gray-500"></i>O del <strong>número de empleados</strong>.</p></li>
+                                <li><p><i class="fas fa-euro-sign icon text-gray-500"></i>O del <strong>valor añadido bruto</strong> para <u>industrias concretas</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-times-circle icon text-orange-600"></i>Y <strong><u>no referidas a unidad de producto</u></strong> que podrían ser más exactas.</p></li>
+                    <li><p><i class="fas fa-tasks icon text-purple-600"></i>La <strong><u>determinación de las demandas futuras</u></strong> resulta <strong><u>difícil</u></strong> por las <u>incertidumbres de evolución del desarrollo industrial</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-chart-line icon text-green-600"></i>Las <strong><u>necesidades de agua</u></strong> tanto en <u>dotación unitaria</u> como en <u>volumen total</u> han <strong><u>crecido especialmente en España</u></strong> en los <u>últimos <span class="pill-blue">20 años</span> previos al inicio de la crisis en <span class="pill-blue">2008</span></u>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-industry icon text-gray-500"></i>Coincidiendo con un <strong>intenso desarrollo industrial</strong>.</p></li>
+                                <li><p><i class="fas fa-arrow-up icon text-gray-500"></i>Y <strong>aumentado más que la población</strong> y su consumo.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-pause-circle icon text-cyan-600"></i>En los últimos años el <strong><u>consumo industrial de agua ha permanecido constante</u></strong> por:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-arrow-down icon text-gray-500"></i>La <strong>ralentización económica</strong>.</p></li>
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i>Y una <strong>mayor eficiencia</strong> de los procesos productivos.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-user-friends icon text-indigo-600"></i>Para determinar la demanda urbana se utiliza el concepto de <span class="definition-pill"><strong>habitante-equivalente</strong></span> para el abastecimiento urbano.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-divide icon text-gray-500"></i>Que es el <strong><u>cociente</u></strong> entre la <u>demanda industrial</u> y la <u>demanda per cápita</u>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 3: Refrigeración de centrales térmicas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-snowflake"></i></div>
+                <h2>3. Refrigeración de centrales térmicas de combustión fósil o nuclear</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-industry icon text-blue-600"></i>Toda <strong><u>gran central térmica</u></strong> necesita un <strong><u>importante caudal de agua fría</u></strong> para alimentar los <u>condensadores</u>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-stream icon text-purple-600"></i>Existen <strong><u>dos tipos</u></strong> de instalaciones de refrigeración:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-sync-alt icon text-cyan-600"></i><span class="definition-pill"><strong>Refrigeración directa o por circuito abierto</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-check-circle icon"></i>Sería posible adoptar este sistema cuando se dispone de <strong><u>agua en abundancia</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-tools icon"></i>Permite <strong><u>desentenderse de los problemas técnicos</u></strong> por <u>elevación de temperatura</u>.</p></li>
+                                            <li><p><i class="fas fa-thermometer-three-quarters icon"></i>Aunque tienen como condicionante que la <strong><u>temperatura en el cauce no se puede elevar más de <span class="pill-blue">3ºC</span></u></strong>.</p></li>
+                                            <li><p><i class="fas fa-history icon"></i>Cuando se empleaba este sistema de refrigeración (<strong><u>ahora en desuso</u></strong>) había unas <strong><u>demandas muy grandes</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-water icon"></i>Con valores que en el <u>Ebro</u> con la <u>central nuclear de Ascó</u> llegaban a superar los <span class="pill-blue"><strong>2.000 hm³/año</strong></span>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-sync icon text-orange-600"></i><span class="definition-pill"><strong>Refrigeración indirecta o por circuito cerrado</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-exclamation-triangle icon"></i>Cuando el <strong><u>volumen de agua disponible no es lo suficientemente grande</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-broadcast-tower icon"></i>Se utilizan <strong><u>torres de refrigeración</u></strong> que favorecen el <u>intercambio de energía con la atmósfera</u>.</p></li>
+                                            <li><p><i class="fas fa-expand-arrows-alt icon"></i>Por el sistema de <strong><u>aumentar extraordinariamente la superficie</u></strong> de <u>convección y evaporación</u>.</p></li>
+                                            <li><p><i class="fas fa-cloud-rain icon"></i>Se convierte el caudal de circulación en una <strong><u>fina lluvia</u></strong> al atravesar la torre y se crea una <strong><u>fuerte corriente de aire</u></strong> a su través.</p></li>
+                                            <li><p><i class="fas fa-percentage icon"></i>La cantidad de agua utilizada es <strong><u>inferior al <span class="pill-blue">1%</span></u></strong> de la del sistema de refrigeración directa.</p></li>
+                                            <li><p><i class="fas fa-wind icon"></i>Para cubrir <strong><u>pérdidas por evaporación</u></strong> en la torre de refrigeración.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+       
+        <!-- Card 4: Calor a disipar -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-temperature-high"></i></div>
+                <h2>4. Calor a disipar</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-industry icon text-blue-600"></i>La <strong><u>mayoría de los vertidos térmicos</u></strong> los originan las <strong><u>centrales térmicas con refrigeración directa</u></strong>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-exclamation-triangle icon text-red-600"></i><strong><u>Alteran las propiedades físicas</u></strong> del agua y <strong><u>afectan</u></strong> al:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-dna icon text-gray-500"></i><strong>Metabolismo</strong>.</p></li>
+                                <li><p><i class="fas fa-chart-line icon text-gray-500"></i><strong>Crecimiento</strong>.</p></li>
+                                <li><p><i class="fas fa-venus-mars icon text-gray-500"></i>Y <strong>reproducción</strong> de la población.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-exchange-alt icon text-purple-600"></i>Cambiando la <strong><u>dominancia a especies más termófilas</u></strong>.</p></li>
+                    <li><p><i class="fas fa-arrow-up icon text-orange-600"></i><strong><u>Aumenta el crecimiento y necesidades nutricionales</u></strong> de <u>macroinvertebrados</u> y <u>peces</u>, condicionando su <u>supervivencia</u>.</p></li>
+                    <li><p><i class="fas fa-gavel icon text-amber-700"></i>El <span class="law-pill"><strong>RDPH</strong></span> <strong><u>limita el incremento de temperatura</u></strong> a <span class="pill-blue"><strong>3ºC</strong></span> en <u>ríos</u>.</p></li>
+                    <li><p><i class="fas fa-gavel icon text-amber-700"></i>Mientras que en <u>lagos y embalses</u> el vertido no podrá superar los <span class="pill-blue"><strong>30ºC</strong></span>.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 5: Caudal de refrigeración y de dilución -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-water"></i></div>
+                <h2>5. Caudal de refrigeración y de dilución</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-sync-alt icon text-cyan-600"></i>En la <strong><u>refrigeración directa</u></strong>, por <span class="pill-blue"><strong>1GW</strong></span> de potencia (la que tienen las centrales termoeléctricas de tipo nuclear), se precisarían del orden de <span class="pill-blue"><strong>50 m³/s</strong></span> que elevan su temperatura <span class="pill-blue"><strong>10ºC</strong></span>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-info-circle icon text-gray-500"></i>Como el <strong><u>límite es <span class="pill-blue">3ºC</span></u></strong> sería necesario un <strong><u>caudal de dilución de <span class="pill-blue">167 m³/s</span></u></strong> para cumplir esa condición.</p></li>
+                                <li><p><i class="fas fa-check-circle icon text-gray-500"></i>Con esto, <strong><u>solo en los tramos bajos</u></strong> de los ríos <u>Miño</u>, <u>Tajo</u>, <u>Duero</u> y <u>Ebro</u> se podría pensar en aplicar esta técnica.</p></li>
+                                <li><p><i class="fas fa-ban icon text-red-500"></i>Pero dadas las <strong><u>altas temperaturas</u></strong> que ya presentan los ríos, en la práctica <strong><u>ya no es posible emplear la refrigeración directa</u></strong> en España.</p></li>
+                                <li><p><i class="fas fa-history icon text-gray-500"></i>De hecho, por ejemplo, la <strong><u>central nuclear de Ascó construyó en <span class="pill-blue">1995</span> su torre de refrigeración</u></strong> para adoptar el sistema de refrigeración indirecta.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-sync icon text-orange-600"></i>En la <strong><u>refrigeración indirecta o por circuito cerrado</u></strong>, para <span class="pill-blue"><strong>1 GW</strong></span> solo requiere del orden de <span class="pill-blue"><strong>1 m³/s</strong></span> para <strong><u>cubrir pérdidas de evaporación</u></strong> en la torre de refrigeración.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-tint-slash icon text-gray-500"></i><strong><u>Evitándose así la dilución</u></strong> de grandes caudales a altas temperaturas.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-shield-alt icon text-green-700"></i>Para <strong><u>evitar o reducir a límites aceptables la contaminación</u></strong> de los cauces públicos provocada por los vertidos industriales, hay <strong><u>dos procedimientos</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-recycle icon text-gray-500"></i>O bien <strong>depurar el efluente</strong>.</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>O <strong>diluirlo</strong> en un volumen suficiente para lograr un índice limitado de polución aguas abajo del vertido.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-gavel icon text-amber-800"></i>En <strong><u>ningún caso</u></strong> el cumplimiento de los <strong><u>valores límites de emisión</u></strong> de un vertido podrá alcanzarse mediante <strong><u>técnicas de dilución</u></strong> según establece el <span class="law-pill"><strong>RDPH</strong></span>.</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 6: Navegación fluvial -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-ship"></i></div>
+                <h2>6. Navegación fluvial</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-history icon text-red-600"></i>Hace algún tiempo que <strong><u>desaparecieron las antiguas actividades de transporte</u></strong> que se realizaban en algunos ríos españoles:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-tree icon text-gray-500"></i>Transporte de <strong>maderas</strong> en el <span class="actor-pill">Segre</span>, el <span class="actor-pill">Sorbe</span>, el <span class="actor-pill">alto Segura</span> o el <span class="actor-pill">Tajo</span>.</p></li>
+                                <li><p><i class="fas fa-industry icon text-gray-500"></i>O el transporte de <strong>carbón</strong> mediante barcazas en el <span class="actor-pill">Ebro</span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-times-circle icon text-orange-600"></i>La <strong><u>navegación en canales tampoco ha prosperado</u></strong> en nuestro país.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-water icon text-cyan-700"></i>Algunos <strong><u>canales que tuvieron la navegación como uno de sus fines primordiales</u></strong>, como el <span class="actor-pill">Canal Imperial</span> o el <span class="actor-pill">Canal de Castilla</span>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-horse-head icon text-gray-500"></i>Que se utilizó para el <strong><u>transporte de cereales</u></strong> en barcazas arrastradas por caballerías.</p></li>
+                                <li><p><i class="fas fa-sync-alt icon text-gray-500"></i>Han acabado por <strong><u>atender exclusivamente usos de riego y abastecimiento</u></strong> de poblaciones.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-anchor icon text-blue-800"></i>Actualmente, la <strong><u>navegación comercial se limita</u></strong> prácticamente al <strong><u>tramo bajo del Guadalquivir</u></strong>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-ship icon text-gray-500"></i>Que permite el <strong><u>tránsito de barcos</u></strong> de <u>pequeño y mediano tonelaje</u>.</p></li>
+                                <li><p><i class="fas fa-door-closed icon text-gray-500"></i>Contando con las <strong><u>esclusas</u></strong> situadas junto a la dársena del <span class="actor-pill">puerto de Sevilla</span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-swimmer icon text-green-600"></i>Por el contrario, en los últimos años se ha <strong><u>incrementado la navegación de carácter deportivo</u></strong>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>Tanto en <strong>embalses</strong>.</p></li>
+                                <li><p><i class="fas fa-water icon text-gray-500"></i>Como en los <strong>tramos de algunos ríos</strong> acondicionados para ello.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 7: Usos recreativos -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-umbrella-beach"></i></div>
+                <h2>7. Usos recreativos</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Bajo el concepto de <span class="definition-pill"><strong>uso recreativo del agua</strong></span> se engloban <strong><u>aprovechamientos del DPH muy variados</u></strong> con el objetivo común de <strong><u>satisfacer los requerimientos de ocio y esparcimiento</u></strong> de la sociedad.</p></li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-industry icon text-purple-700"></i>Usos Clasificados como Industriales</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tags icon text-blue-600"></i>Hay distintos usos que, aunque pueden parecer recreativos, son <strong><u>clasificados como otros usos industriales</u></strong> en el <span class="law-pill"><strong>RDPH</strong></span>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-building icon text-gray-500"></i>Los usos en <strong><u>industrias de ocio y turismo</u></strong> que incluyen los que <strong><u>implican derivar agua del medio natural</u></strong> y tienen como finalidad posibilitar esta actividad en:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-golf-ball icon"></i><strong>Instalaciones deportivas</strong> (<u>campos de golf</u>, <u>estaciones de esquí</u>, <u>parques acuáticos</u>, <u>complejos deportivos</u> y asimilables).</p></li>
+                                                <li><p><i class="fas fa-horse-head icon"></i><strong>Picaderos, guarderías caninas</strong> y asimilables.</p></li>
+                                                <li><p><i class="fas fa-gavel icon"></i>Así como las que tienen como finalidad el <strong>mantenimiento o rehabilitación de instalaciones industriales culturales</strong>: <u>fraguas</u>, <u>fuentes</u>, <u>aserraderos</u>, <u>lavaderos</u>, <u>máquinas</u> y otros de este tipo.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><p><i class="fas fa-info-circle icon text-gray-500"></i>El <strong><u>uso recreativo es difícil de separar del urbano</u></strong> porque en general se abastecen a través de la <strong><u>misma red</u></strong>, pero cuando existe separación se consideran dentro de la categoría de <strong><u>otros usos industriales</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-seedling icon text-gray-500"></i>Por su parte, el <strong><u>riego de los campos de golf</u></strong> suele considerarse, a menudo, incluido en la <strong><u>demanda de regadío</u></strong>.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-water icon text-cyan-600"></i>Los que <strong><u>usan el agua en embalses, ríos y parajes naturales</u></strong> de un modo <strong><u>no consuntivo</u></strong>, como:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-ship icon"></i>Vela, remo, piragüismo, baño o pesca.</p></li>
+                                                <li><p><i class="fas fa-layer-group icon"></i>Pueden requerir el <strong><u>mantenimiento de ciertos niveles de agua</u></strong> en los embalses y <strong><u>caudales en los ríos</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-wind icon"></i>Con un cierto “<strong><u>consumo</u></strong>” de agua por una <strong><u>mayor evaporación</u></strong> asociada a un mayor nivel de agua en los embalses.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-hiking icon text-green-600"></i>Los que se relacionan con el agua de un <strong><u>modo indirecto</u></strong> como:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-image icon"></i>Uso <strong>escénico</strong>, <strong>acampadas</strong>, <strong>senderismo</strong>, <strong>actividades turísticas</strong>.</p></li>
+                                                <li><p><i class="fas fa-tint icon"></i>Pueden representar <strong><u>ciertos consumos de agua</u></strong> en los puntos de abastecimiento de lugares de acampadas y excursiones.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-swimmer icon text-green-700"></i>Definición Formal de Usos Recreativos</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-check-circle icon text-blue-600"></i>Los <strong><u>usos recreativos incluyen</u></strong> los que <u>no están incluidos en los puntos anteriores</u> y tienen un carácter <strong><u>recreativo privado o colectivo</u></strong> sin que exista actividad industrial o comercial.</p></li>
+                        <li><p><i class="fas fa-water icon text-cyan-600"></i>Y, en concreto, las <strong><u>actividades de ocio que usan el agua en embalses, ríos y parajes naturales</u></strong> de un modo <strong><u>no consuntivo</u></strong>.</p></li>
+                        <li><p><i class="fas fa-ban icon text-red-600"></i>Queda <strong><u>excluida la navegación recreativa particular</u></strong>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-cogs icon text-gray-700"></i>Impacto en la Gestión y Evaluación</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-wave-square icon text-blue-600"></i>Los <strong><u>usos recreativos en ríos</u></strong> pueden <strong><u>condicionar la gestión</u></strong> de los sistemas de explotación de un modo <strong><u>parecido a los caudales ambientales</u></strong>, pues en ambos casos se procura mantener un <u>caudal mínimo en el cauce</u>.</p></li>
+                        <li><p><i class="fas fa-not-equal icon text-purple-600"></i>Se <strong><u>diferencian</u></strong>, sobre todo, en su <strong><u>finalidad</u></strong>: en un caso es la <u>conservación del medio ambiente</u> y en otro el <u>recreo de los ciudadanos</u>.</p></li>
+                        <li><p><i class="fas fa-leaf icon text-green-600"></i>Los dos conceptos <strong><u>se aproximan</u></strong> si la base del recreo son los <u>ríos y los parajes naturales ecológicamente intactos</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-orange-600"></i>No obstante, en la actualidad existen <strong><u>muy pocos casos</u></strong> en que la gestión de los sistemas de explotación esté <strong><u>condicionada por los usos recreativos</u></strong>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-life-ring icon text-gray-500"></i>Pero se puede citar como ejemplo el caso del río <span class="actor-pill">Noguera-Pallaresa</span>, donde los <strong><u>desembalses</u></strong> para la producción hidroeléctrica se efectúan de modo <strong><u>coordinado con la demanda de deportes acuáticos</u></strong> como el rafting.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-calculator icon text-red-600"></i>La <strong><u>correcta evaluación de la demanda</u></strong> asociada a los usos recreativos es <strong><u>complicada</u></strong>, debido a:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-dice icon text-gray-500"></i>La <strong>diversidad de actividades</strong> que comprende.</p></li>
+                                    <li><p><i class="fas fa-database icon text-gray-500"></i>Y la consiguiente <strong>dificultad para la obtención de datos</strong> sobre la participación de los ciudadanos en estas actividades.</p></li>
+                                    <li><p><i class="fas fa-users-slash icon text-gray-500"></i>Sin que exista, en general, una <strong>afiliación de los aficionados a asociaciones</strong> de carácter recreativo.</p></li>
+                                    <li><p><i class="fas fa-chart-bar icon text-gray-500"></i>Por tanto, en muchos casos las actividades relacionadas con el disfrute de la naturaleza y los deportes al aire libre <strong><u>no suelen reflejarse en las estadísticas oficiales</u></strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-question icon text-indigo-600"></i>Además, <strong><u>no existe una relación fácilmente cuantificable</u></strong> entre las <u>actividades realizadas</u> y la <u>cantidad de agua que requieren</u>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-eye icon text-cyan-800"></i>Situación Actual y Futuro</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-arrow-up icon text-blue-600"></i>Parece evidente que el <strong><u>creciente número de ciudadanos</u></strong> que quieren aprovechar los embalses y ríos para baño y recreo <strong><u>acabará demandando una mayor consideración</u></strong> de sus intereses.</p></li>
+                        <li><p><i class="fas fa-search-dollar icon text-purple-600"></i>Sin embargo, la <strong><u>repercusión cuantitativa</u></strong> de estas presiones sobre los recursos hídricos requiere ser <strong><u>evaluada de forma particular</u></strong> en cada caso concreto.</p></li>
+                        <li><p><i class="fas fa-info-circle icon text-orange-600"></i>Puede considerarse, por tanto, que el <strong><u>uso recreativo del agua en España</u></strong> tiene en la actualidad un carácter <strong><u>relativamente marginal</u></strong>.</p></li>
+                        <li><p><i class="fas fa-check-double icon text-green-600"></i>Y su <strong><u>demanda es atendida</u></strong> cuando las <u>necesidades de otros usos están satisfechas</u> y sin que se vean perjudicados por aquél.</p></li>
+                        <li><p><i class="fas fa-gavel icon text-amber-700"></i>La <strong><u>sociedad puede exigir en un futuro</u></strong> una <strong><u>mayor consideración</u></strong> de los usos recreativos del agua.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
