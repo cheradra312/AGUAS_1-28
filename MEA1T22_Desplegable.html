@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Las obras hidráulicas</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Fuentes y fondo base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-hard-hat"></i> MEA1T22. Las obras hidráulicas <i class="fas fa-gavel"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Las obras hidráulicas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-water"></i></div>
+                <h2>1. Las obras hidráulicas. Concepto y naturaleza jurídica de las O.H.</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-info-circle icon text-blue-600"></i>Concepto</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-gavel icon text-amber-700"></i>Las <strong><u>obras hidráulicas</u></strong> están reguladas en el <span class="law-pill"><strong>TRLA</strong></span>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-building icon text-purple-600"></i>Donde se define <span class="definition-pill"><strong>obra hidráulica</strong></span> como la <strong><u>construcción de bienes de naturaleza inmueble</u></strong> destinados a:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-hand-holding-water icon text-gray-500"></i>El <strong>aprovechamiento de aguas</strong>.</p></li>
+                                    <li><p><i class="fas fa-recycle icon text-gray-500"></i><strong>Saneamiento, depuración y reutilización</strong> de las aprovechadas.</p></li>
+                                    <li><p><i class="fas fa-wave-square icon text-gray-500"></i>La <strong>actuación sobre cauces</strong>, <strong>corrección del régimen de corriente</strong> y <strong>protección frente a avenidas</strong>.</p></li>
+                                    <li><p><i class="fas fa-shield-alt icon text-gray-500"></i>Así como todas aquellas actuaciones necesarias para la <strong>protección del DPH</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-balance-scale icon text-indigo-700"></i>Naturaleza jurídica</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-stream icon text-blue-600"></i>Pueden ser de:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-landmark icon text-gray-500"></i><span class="definition-pill"><strong>Titularidad pública</strong></span>, destinadas a garantizar la <u>protección, control y aprovechamiento del DPH</u> que sean competencia de la <span class="actor-pill">AGE</span>, las <span class="actor-pill">CCAA</span> y las <span class="actor-pill">entidades locales</span>.</p></li>
+                                    <li><p><i class="fas fa-user-lock icon text-gray-500"></i>O de <span class="definition-pill"><strong>titularidad privada</strong></span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-check-circle icon text-green-600"></i>Requieren la <strong><u>previa habilitación administrativa</u></strong> que legitima el aprovechamiento de agua mediante:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-file-signature icon text-gray-500"></i>La correspondiente <strong><u>concesión o autorización</u></strong> (para las obras hidráulicas de titularidad privada).</p></li>
+                                    <li><p><i class="fas fa-lock icon text-gray-500"></i>O <span class="definition-pill"><strong>reserva demanial</strong></span> (para las obras hidráulicas de titularidad pública).</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-info-circle icon text-cyan-700"></i>La <span class="definition-pill"><strong>reserva demanial</strong></span> es una <strong><u>reserva del dominio público</u></strong> que hace la propia <u>Administración para sí</u>, impidiendo su uso privativo por terceros.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-users-cog icon text-orange-700"></i>Competencias para la ejecución, gestión y explotación</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-gavel icon text-amber-700"></i>Se establece como sigue:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-landmark icon text-gray-500"></i>Son competencia de la <span class="actor-pill"><strong>AGE</strong></span> las <strong><u>obras hidráulicas de interés general</u></strong>.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-cogs icon"></i>La <strong>gestión</strong> de estas obras podrá realizarse <u>directamente por los órganos competentes del MITECO</u> o a través de las <u>Confederaciones Hidrográficas</u>.</p></li>
+                                                <li><p><i class="fas fa-handshake icon"></i>También podrán gestionar la construcción y explotación de estas obras las <span class="actor-pill">CCAA</span> y las <span class="actor-pill">entidades locales</span>, en virtud de <u>convenio específico</u> o <u>encomienda de gestión</u>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i>Son competencia de las <span class="actor-pill"><strong>Confederaciones Hidrográficas</strong></span> las <strong><u>obras hidráulicas realizadas con cargo a sus fondos propios</u></strong>, en el ámbito de las competencias de la <span class="actor-pill">AGE</span>.</p></li>
+                                    <li><p><i class="fas fa-map-marked-alt icon text-gray-500"></i>El <strong><u>resto de las obras hidráulicas públicas</u></strong> son de competencia de las <span class="actor-pill"><strong>CCAA</strong></span> y de las <span class="actor-pill"><strong>entidades locales</strong></span>, de acuerdo con lo que dispongan sus respectivos <u>Estatutos de Autonomía</u> y sus <u>leyes de desarrollo</u>, y la <u>legislación de régimen local</u>.</p></li>
+                                    <li><p><i class="fas fa-file-signature icon text-gray-500"></i>La <span class="actor-pill">AGE</span>, las <span class="actor-pill">Confederaciones Hidrográficas</span>, las <span class="actor-pill">CCAA</span> y las <span class="actor-pill">entidades locales</span> podrán <strong><u>celebrar convenios</u></strong> para la <strong><u>realización y financiación conjunta</u></strong> de obras hidráulicas de su competencia.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-users icon text-green-600"></i>La <strong><u>explotación y el mantenimiento</u></strong> de las obras hidráulicas se pueden <strong><u>encomendar a las Comunidades de usuarios</u></strong> que les afecten.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-file-alt icon text-gray-500"></i>Mediante <strong><u>convenios</u></strong> que fijen el <u>régimen económico financiero</u> de dicha encomienda de gestión por parte de la <span class="actor-pill">AGE</span> o las <span class="actor-pill">confederaciones hidrográficas</span>.</p></li>
+                                    <li><p><i class="fas fa-user-check icon text-gray-500"></i>También pueden ser <strong><u>beneficiarios directos</u></strong>, sin concurrencia, de <strong><u>concesiones de construcción</u></strong> de las obras hidráulicas que les afecten.</p></li>
+                                    <li><p><i class="fas fa-handshake icon text-gray-500"></i>Que estarán reguladas por <strong><u>convenio específico</u></strong> entre la <span class="actor-pill">AGE</span> y los <u>usuarios</u> fijando las <u>ayudas públicas</u> asociadas a cada operación.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Obras hidráulicas de interés general -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-star"></i></div>
+                <h2>2. Obras hidráulicas de interés general, declaración de obras hidráulicas de interés general, prerrogativas de las obras hidráulicas de interés general</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-info-circle icon text-blue-600"></i>Obras hidráulicas de interés general</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-gavel icon text-amber-700"></i>Según el <span class="law-pill"><strong>TRLA</strong></span> tendrán la consideración de <span class="definition-pill"><strong>obras hidráulicas de interés general</strong></span> y serán de competencia de la <span class="actor-pill"><strong>AGE</strong></span>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-map icon text-purple-600"></i><strong>a)</strong> En el ámbito de las <strong><u>cuencas intercomunitarias</u></strong>:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-cogs icon"></i>Las que sean necesarias para la <strong><u>regulación y conducción</u></strong> del recurso hídrico al objeto de <u>garantizar la disponibilidad y aprovechamiento</u> del agua en toda la cuenca.</p></li>
+                                                <li><p><i class="fas fa-shield-alt icon"></i>Las que sean necesarias para el <strong><u>control, defensa y protección del DPH</u></strong>, sin perjuicio de las competencias de las <span class="actor-pill">CCAA</span>, especialmente frente a <u>inundaciones</u>, <u>sequías</u> y otras <u>situaciones excepcionales</u>.</p></li>
+                                                <li><p><i class="fas fa-tree icon"></i>Las obras de <strong><u>corrección hidrológico-forestal</u></strong> que afecten a <u>más de una comunidad autónoma</u>.</p></li>
+                                                <li><p><i class="fas fa-tint icon"></i>Las obras de <strong><u>abastecimiento, potabilización y desalación</u></strong> que afecten a <u>más de una comunidad autónoma</u>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-landmark icon text-orange-600"></i><strong>b)</strong> Las que sean <strong><u>declaradas por ley</u></strong>.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li>
+                                                    <div class="collapsible-trigger">
+                                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                        <p><i class="fas fa-info-circle icon"></i>No obstante, podrán ser declaradas obras hidráulicas de interés general mediante <span class="law-pill"><strong>Real Decreto</strong></span> las siguientes:</p>
+                                                    </div>
+                                                    <div class="collapsible-content hidden">
+                                                        <ul class="even-deeper-nested-list">
+                                                            <li><p><i class="fas fa-map-pin icon"></i>Las contempladas en el apartado a) en las que <strong><u>no concurran las circunstancias</u></strong> en él previstas, a solicitud de la <span class="actor-pill">Comunidad Autónoma</span> en cuyo territorio se ubiquen, cuando por sus <u>dimensiones o coste económico</u> tengan una <u>relación estratégica</u> en la gestión integral de la cuenca hidrográfica.</p></li>
+                                                            <li><p><i class="fas fa-file-alt icon"></i>Las obras necesarias para la ejecución de <strong><u>planes nacionales, distintos de los hidrológicos</u></strong>, pero que guarden relación con ellos, siempre que el mismo plan atribuya la <u>responsabilidad de las obras a la Administración General del Estado</u>, a solicitud de la <span class="actor-pill">Comunidad Autónoma</span> en cuyo territorio se ubique.</p></li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-exchange-alt icon text-cyan-600"></i><strong>c)</strong> La declaración como obras hidráulicas de interés general de las <strong><u>infraestructuras necesarias para las transferencias de recursos hidráulicos</u></strong> entre ámbitos territoriales de distintos <span class="plan-pill">planes hidrológicos de cuenca</span>.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-file-signature icon"></i>Sólo podrá realizarse por la <strong><u>norma legal que apruebe o modifique</u></strong> el <span class="plan-pill"><strong>Plan Hidrológico Nacional</strong></span>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-bullhorn icon text-green-600"></i>La <strong><u>iniciativa de declaración</u></strong> de una obra hidráulica como de interés general, conforme al apartado b), le corresponde al <span class="actor-pill"><strong>MITECO</strong></span> de <u>oficio</u> o a <u>instancia de interesados</u>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-users icon text-gray-500"></i>Que pueden ser: <u>otros ministerios</u>, <span class="actor-pill">CCAA</span>, <span class="actor-pill">entidades locales</span> y <span class="actor-pill">comunidades de usuarios</span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-comments icon text-indigo-600"></i>Serán <strong><u>oídos en el correspondiente expediente</u></strong> las <span class="actor-pill">CCAA</span> y las <span class="actor-pill">entidades locales</span>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-check-double icon text-yellow-600"></i>Para <strong><u>declarar una obra hidráulica de interés general</u></strong>, debe:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-balance-scale icon text-gray-500"></i><strong>Ponderarse la adecuación</strong> del proyecto a las <u>exigencias medioambientales</u>.</p></li>
+                                    <li><p><i class="fas fa-euro-sign icon text-gray-500"></i><strong>Incluir una propuesta de financiación</strong> de la <u>construcción y explotación</u> de la obra.</p></li>
+                                    <li><p><i class="fas fa-file-invoice-dollar icon text-gray-500"></i>Así como un <strong>estudio sobre los cánones y tarifas</strong> a satisfacer por los beneficiarios, que será informado por el <span class="actor-pill">Ministerio de Hacienda</span>.</p></li>
+                                    <li><p><i class="fas fa-sync icon text-gray-500"></i>Y <strong>revisado cada <span class="pill-blue">6 años</span></strong> si no se hubiera llevado a cabo la obra.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-star-of-life icon text-red-700"></i>Prerrogativas de las obras hidráulicas de interés general</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Las <strong><u>obras hidráulicas de interés general</u></strong> y las <strong><u>obras y actuaciones hidráulicas de ámbito supramunicipal</u></strong>, incluidas en la planificación hidrológica, y que no agoten su funcionalidad en el término municipal en donde se ubiquen:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-ban icon text-gray-500"></i><strong><u>No estarán sujetas a licencia municipal</u></strong> ni a ningún acto de <u>control preventivo municipal</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-gavel icon text-amber-700"></i>Los <strong><u>órganos urbanísticos competentes no podrán suspender su ejecución</u></strong>, siempre que:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-file-alt icon text-gray-500"></i>Se haya cumplido el <strong>trámite de informe previo</strong>.</p></li>
+                                    <li><p><i class="fas fa-check icon text-gray-500"></i>Y las obras se <strong>ajusten al proyecto aprobado</strong> por el órgano competente.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-file-import icon text-purple-600"></i>El <strong><u>informe previo</u></strong> deberá pronunciarse <strong><u>exclusivamente sobre aspectos relacionados con el planeamiento urbanístico</u></strong>.</p></li>
+                        <li><p><i class="fas fa-thumbs-up icon text-green-600"></i>Y se <strong><u>entenderá favorable si no se emite y notifica</u></strong> en el plazo de <span class="pill-blue"><strong>1 mes</strong></span>.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Coordinación de competencias -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-handshake"></i></div>
+                <h2>3. Coordinación de competencias concurrentes, declaración de utilidad pública y necesidad de ocupación</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-users-cog icon text-blue-600"></i>Coordinación de competencias concurrentes</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Cuando existan entre las diversas administraciones, tienen los <strong><u>deberes de coordinación</u></strong> en:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-map-marked-alt icon text-gray-500"></i>La <strong>ordenación territorial</strong>.</p></li>
+                                    <li><p><i class="fas fa-tint icon text-gray-500"></i><strong>Disponibilidad, calidad y protección</strong> de las aguas.</p></li>
+                                    <li><p><i class="fas fa-lightbulb icon text-gray-500"></i>Así como en las <strong>iniciativas</strong> que promuevan.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-water icon text-purple-600"></i>Respecto a las <strong><u>cuencas intercomunitarias</u></strong>, los <span class="plan-pill"><strong>planes de ordenación territorial y urbanística</strong></span> que afecten a terrenos previstos para <u>infraestructuras hidráulicas de interés general</u> contemplados en los <span class="plan-pill">planes hidrológicos de cuenca</span> o en el <span class="plan-pill">PHN</span>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-file-signature icon text-gray-500"></i>Requerirán, <strong><u>antes de su aprobación inicial</u></strong>, <strong><u>informe vinculante del <span class="actor-pill">MITECO</span></u></strong>.</p></li>
+                                    <li><p><i class="fas fa-tasks icon text-gray-500"></i>Que versará sobre la <strong><u>relación entre tales obras y la protección y utilización del DPH</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-thumbs-up icon text-gray-500"></i>Que se entenderá <strong><u>positivo si no se emite y notifica</u></strong> antes de <span class="pill-blue"><strong>2 meses</strong></span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-bullhorn icon text-green-700"></i>Declaración de utilidad pública y necesidad de ocupación</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-check-circle icon text-blue-600"></i>La <strong><u>aprobación de los proyectos</u></strong> de obras hidráulicas de interés general llevará <strong><u>implícita</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-landmark icon text-gray-500"></i>La <strong>declaración de utilidad pública</strong>.</p></li>
+                                    <li><p><i class="fas fa-map-pin icon text-gray-500"></i>Y la <strong>necesidad de ocupación de los bienes y adquisición de derechos</strong> a efectos de <u>expropiación forzosa</u> y <u>ocupación temporal</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-gavel icon text-amber-700"></i>La <strong><u>propuesta de declaración de urgencia</u></strong> para la ocupación de bienes y derechos afectados por obras hidráulicas de interés general corresponderá a la <span class="actor-pill"><strong>Dirección General del Agua del MITECO</strong></span>.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Régimen jurídico de las Sociedades Estatales de Aguas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-landmark"></i></div>
+                <h2>4. Régimen jurídico de las Sociedades Estatales de Aguas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-users-cog icon text-blue-600"></i>El <span class="actor-pill"><strong>Consejo de Ministros</strong></span> puede <strong><u>constituir Sociedades Estatales de Aguas</u></strong>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-bullseye icon text-purple-600"></i>Cuyo <strong><u>objeto social</u></strong> sea:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-hard-hat icon text-gray-500"></i>La <strong><u>construcción y/o explotación</u></strong> de ciertas <u>obras públicas hidráulicas</u> que al efecto determine el propio <span class="actor-pill">Consejo de Ministros</span>.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-exchange-alt icon text-gray-500"></i>Asimismo, dichas sociedades podrán tener por objeto la <strong><u>adquisición de obras hidráulicas</u></strong>, <u>públicas o privadas</u>, previo cumplimiento de los <u>trámites y requisitos</u> establecidos por la normativa vigente.</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-unlock-alt icon"></i>Y en especial el de <strong><u>desafectación del demanio público</u></strong> cuando corresponda.</p></li>
+                                            <li><p><i class="fas fa-cogs icon"></i>Para su <strong><u>integración a sistemas hidráulicos</u></strong> con el fin de conseguir un <u>mejor aprovechamiento</u> de los recursos hídricos y una <u>gestión más eficiente</u> de los mismos.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-file-signature icon text-cyan-700"></i>Convenios y Contratos</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>La <strong><u>relación entre la <span class="actor-pill">AGE</span> y las sociedades estatales</u></strong> se regulará por <strong><u>convenios</u></strong>, previo <u>informe favorable</u> del <span class="actor-pill">Ministerio de Economía</span>, autorizados por el <span class="actor-pill">Consejo de Ministros</span>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tasks icon text-purple-600"></i>Y que <strong><u>contengan al menos</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-cogs icon text-gray-500"></i>El <strong>régimen de construcción y explotación</strong> de las obras.</p></li>
+                                    <li><p><i class="fas fa-user-shield icon text-gray-500"></i>Las <strong>potestades de la <span class="actor-pill">AGE</span></strong> sobre la <u>dirección, control y recepción</u> de las obras, que será la <u>titular de tales obras</u>.</p></li>
+                                    <li><p><i class="fas fa-euro-sign icon text-gray-500"></i>Las <strong>aportaciones económicas</strong> que haya de realizar la <span class="actor-pill">AGE</span> a la sociedad estatal.</p></li>
+                                    <li><p><i class="fas fa-lock icon text-gray-500"></i>Las <strong>garantías</strong> que hayan de establecerse a favor de las <u>entidades que financien</u> la construcción o explotación de las obras.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-users icon text-orange-600"></i>En los <strong><u>contratos que las sociedades estatales realicen con terceros</u></strong> para la construcción de las obras públicas hidráulicas se observarán las siguientes <strong><u>reglas</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-gavel icon text-gray-500"></i>Se aplicará la <span class="law-pill"><strong>LCSP</strong></span> en lo concerniente a su <u>preparación y adjudicación</u>.</p></li>
+                                    <li><p><i class="fas fa-shield-alt icon text-gray-500"></i>Se incluirán <strong>cláusulas para la adecuada defensa</strong> de los <u>intereses públicos</u> por las sociedades estatales y por la <span class="actor-pill">AGE</span>.</p></li>
+                                    <li><p><i class="fas fa-balance-scale icon text-gray-500"></i>El <strong>orden jurisdiccional contencioso-administrativo</strong> conocerá de las cuestiones que se susciten en relación con la <u>preparación y la adjudicación</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-landmark icon text-green-700"></i>Expropiación y Sociedades Actuales</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-check-circle icon text-blue-600"></i>Las <strong><u>sociedades estatales serán beneficiarias</u></strong> por causa de <strong><u>utilidad pública</u></strong> en los procesos de <strong><u>expropiación forzosa</u></strong> que se desarrollen con ocasión de la <u>construcción, adquisición o explotación</u> de las obras públicas hidráulicas que lleven a cabo.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-building icon text-indigo-600"></i>En <strong><u>España</u></strong> hay actualmente <strong><u>dos Sociedades Estatales de Aguas</u></strong>, que son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i><span class="actor-pill"><strong>AcuaEs</strong></span> (fruto de la fusión de <span class="actor-pill">AcuaSur</span>, <span class="actor-pill">AcuaNorte</span> y <span class="actor-pill">AcuaEbro</span>).</p></li>
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i>Y <span class="actor-pill"><strong>AcuaMed</strong></span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-certificate icon text-yellow-600"></i>Ambas tienen la <strong><u>calificación jurídica</u></strong> de <strong><u>sociedades mercantiles estatales</u></strong>.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5: Contrato de concesión de obras hidráulicas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-file-signature"></i></div>
+                <h2>5. Contrato de concesión de obras hidráulicas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li><p><i class="fas fa-gavel icon text-amber-700"></i>Los <strong><u>contratos de concesión de obras hidráulicas</u></strong> se rigen por la <span class="law-pill"><strong>LCSP</strong></span>.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-bullseye icon text-blue-600"></i>El <strong><u>objeto</u></strong> puede ser:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i>La <strong>explotación</strong> de una obra ya construida.</p></li>
+                                <li><p><i class="fas fa-hard-hat icon text-gray-500"></i>O la <strong>construcción y explotación</strong> por un tiempo máximo de <span class="pill-blue"><strong>75 años</strong></span>.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-euro-sign icon text-green-600"></i>Las obras son <strong><u>financiadas</u></strong> por:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-user-tie icon text-gray-500"></i>El <strong>concesionario</strong> (total o parcialmente).</p></li>
+                                <li><p><i class="fas fa-landmark icon text-gray-500"></i>Por la <strong>administración concedente</strong> u otras.</p></li>
+                                <li><p><i class="fas fa-university icon text-gray-500"></i>Por otros <strong>organismos nacionales o internacionales</strong>.</p></li>
+                                <li><p><i class="fas fa-user-lock icon text-gray-500"></i>O por <strong>financiación privada</strong> de terceros.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-lightbulb icon text-purple-600"></i>El amplio campo de la <strong><u>iniciativa privada no se reduce a la financiación</u></strong>, sino que también puede:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-drafting-compass icon text-gray-500"></i><strong>Elaborar el proyecto</strong>.</p></li>
+                                <li><p><i class="fas fa-handshake icon text-gray-500"></i>O incluso <strong>fijar bilateralmente</strong> las obligaciones contractuales.</p></li>
+                                <li><p><i class="fas fa-bullhorn icon text-gray-500"></i>Puede también <strong>excitar la convocatoria</strong> de una concesión.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-users-cog icon text-orange-600"></i>La <strong><u>administración puede obligar</u></strong> a incorporar a <span class="actor-pill"><strong>Comunidades de Usuarios</strong></span> a la <span class="actor-pill"><strong>Sociedad Concesionaria</strong></span>.</p></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
