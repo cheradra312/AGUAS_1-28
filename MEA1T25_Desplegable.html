@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Seguridad de presas</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Estilos generales del cuerpo del documento */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-shield-alt"></i> MEA1T25. Seguridad de presas <i class="fas fa-dam"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Normativa de seguridad de presas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-gavel"></i></div>
+                <h2>1. Normativa de seguridad de presas, embalses y balsas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-book-open icon text-blue-600"></i>La <strong><u>normativa</u></strong> sobre seguridad de presas, embalses y balsas está <strong><u>recogida en</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-file-alt icon text-gray-500"></i>La <span class="doc-pill"><strong>Directriz básica de planificación de protección civil ante el riesgo de inundaciones de <span class="pill-blue">1994</span></strong></span>, que está incorporada en los aspectos relativos a la seguridad de presas en los reglamentos posteriores.</p></li>
+                                <li><p><i class="fas fa-file-alt icon text-gray-500"></i>El <span class="law-pill"><strong>Reglamento de DPH</strong></span>, que en su modificación de <span class="pill-blue">2008</span> incluye un <strong><u>título de la seguridad de presas, embalses y balsas</u></strong>.</p></li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-file-alt icon text-gray-500"></i>El <span class="law-pill"><strong>RD 264/2021</strong></span>, por el que se aprueban las <span class="doc-pill"><strong>normas técnicas de seguridad para las presas y embalses (NTSPE)</strong></span>, que incluye <span class="pill-blue">3</span> Normas Técnicas de Seguridad dedicadas a:</p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-sitemap icon"></i>La <strong>clasificación de las presas</strong> y para la elaboración de los <strong>planes de emergencia</strong> de presas y embalses.</p></li>
+                                            <li><p><i class="fas fa-hard-hat icon"></i>El <strong>proyecto, construcción y puesta en carga</strong> de presas y llenado de embalses.</p></li>
+                                            <li><p><i class="fas fa-cogs icon"></i>Y para la <strong>explotación, revisiones de seguridad y puesta fuera de servicio</strong> de presas.</p></li>
+                                            <li><p><i class="fas fa-exclamation-circle icon"></i>Están <strong><u>pendientes de aprobación</u></strong> las <span class="pill-blue">3</span> Normas Técnicas de Seguridad referentes a las <strong><u>balsas</u></strong>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-history icon text-purple-600"></i>La <span class="doc-pill"><strong>Instrucción para el proyecto, construcción y explotación de grandes presas de <span class="pill-blue">1967</span></strong></span> (actualmente derogada) y el <span class="actor-pill"><strong>Servicio de Vigilancia de presas</strong></span> (creado en <span class="pill-blue">1959</span> a raíz de la rotura de la presa de Vega de Tera que arrasó el pueblo de Ribadelago en Zamora), han <strong><u>marcado los criterios de seguridad</u></strong> de las presas españolas durante los años en los que se han construido más presas.</p></li>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-arrow-up icon text-cyan-600"></i>El siguiente <strong><u>paso relevante</u></strong> en el avance de la normativa de Seguridad de Presas, que incide muy directamente en la Explotación, lo constituye la <strong><u>aprobación de la Directriz Básica de Planificación de Protección Civil ante el riesgo de inundaciones</u></strong>.</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-info-circle icon text-gray-500"></i>Esta norma, de aplicación a todo el territorio nacional, incluye un apartado correspondiente a presas, que introduce la <strong><u>consideración del riesgo potencial aguas abajo</u></strong> y la <strong><u>obligatoriedad de redactar planes de emergencia</u></strong> de presas.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-map-marked-alt icon text-orange-700"></i>Ámbito de Aplicación y Competencias</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-expand-arrows-alt icon text-blue-600"></i>El <span class="law-pill"><strong>RDPH</strong></span> establece como <strong><u>ámbito de aplicación</u></strong> las <strong><u>presas, embalses y balsas de aguas</u></strong> situadas en <strong><u>todo el territorio nacional</u></strong>, independientemente de quien sea su titular.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-ban icon text-red-500"></i><strong><u>No incluyendo</u></strong> ni los <u>depósitos de agua</u>, ni las <u>balsas que almacenan estériles mineros y residuos</u>, que se rigen por su legislación específica en materia de seguridad minera.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-file-signature icon text-purple-600"></i>Los <strong><u>titulares de presas y balsas</u></strong> de altura superior a <span class="pill-blue"><strong>5 m</strong></span> o de capacidad de embalse mayor de <span class="pill-blue"><strong>100.000 m³</strong></span>, de titularidad privada o pública, existentes, en construcción o que se vayan a construir, estarán <strong><u>obligados a solicitar su clasificación y registro</u></strong>.</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-clock icon text-gray-500"></i>La resolución de clasificación deberá dictarse en el plazo máximo de <span class="pill-blue"><strong>un año</strong></span>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-gavel icon text-amber-700"></i>La <span class="actor-pill"><strong>AGE</strong></span> es <strong><u>competente</u></strong> en materia de seguridad de presas, embalses y balsas cuando:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i>Están situadas en <strong>DPH de demarcaciones hidrográficas intercomunitarias</strong>.</p></li>
+                                    <li><p><i class="fas fa-star icon text-gray-500"></i>O son de <strong>interés general del Estado</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-landmark icon text-cyan-600"></i>Y las <span class="actor-pill"><strong>Comunidades Autónomas</strong></span> cuando:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-map-marker-alt icon text-gray-500"></i>Se sitúen en <strong>DPH de cuencas intracomunitarias</strong>.</p></li>
+                                    <li><p><i class="fas fa-draw-polygon icon text-gray-500"></i>Y en todo caso cuando se sitúen <strong>fuera del DPH (balsas)</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-shield-alt icon text-green-700"></i>Pilares del Sistema de Seguridad</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>El nuevo sistema de seguridad descansa sobre <strong><u>dos pilares fundamentales</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-user-tie icon text-gray-500"></i><span class="definition-pill"><strong>Obligaciones del titular de la presa</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-id-card icon"></i><strong>Inscripción</strong> de la presa en el registro.</p></li>
+                                                <li><p><i class="fas fa-users-cog icon"></i><strong>Designación de equipo técnico</strong> garante de la seguridad.</p></li>
+                                                <li><p><i class="fas fa-file-invoice-dollar icon"></i><strong>Acreditación de solvencia económica</strong> suficiente para hacer frente a las exigencias de seguridad.</p></li>
+                                                <li><p><i class="fas fa-umbrella icon"></i>Y la <strong>cobertura de los riesgos</strong> que la construcción y explotación implican.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-search-plus icon text-gray-500"></i><span class="definition-pill"><strong>Control de la seguridad por parte de la administración competente</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-book icon"></i>Se regula el <strong><u>Registro de Seguridad de Presas y Embalses</u></strong> en el que se inscribirán para cada presa todas las <u>actuaciones administrativas</u> que se produzcan.</p></li>
+                                                <li><p><i class="fas fa-stamp icon"></i>Y en particular la <strong><u>declaración acreditativa del cumplimiento de las exigencias</u></strong> derivadas del control de la seguridad que permitirá tener <u>constancia del cumplimiento</u> de la normativa de seguridad.</p></li>
+                                                <li><p><i class="fas fa-paper-plane icon"></i>Cada una de las administraciones públicas competentes en materia de seguridad de presas y embalses <strong><u>remitirá anualmente al <span class="actor-pill">MITECO</span> los datos</u></strong> de sus correspondientes registros.</p></li>
+                                                <li><p><i class="fas fa-database icon"></i>Para la elaboración y mantenimiento de un <strong><u>Registro Nacional de Seguridad de Presas y Embalses</u></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-check-double icon text-indigo-600"></i><strong><u>Todas las presas de categoría A y B</u></strong> están <strong><u>sujetas a la normativa de seguridad</u></strong> independientemente de su tamaño, así como las clasificadas como <strong><u>gran presa</u></strong>.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Gestión de seguridad de las presas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-tasks"></i></div>
+                <h2>2. Gestión de seguridad de las presas. Inventario de presas y embalses</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-file-alt icon text-blue-600"></i>La <strong><u>normativa vigente</u></strong> establece la necesidad de elaborar una <strong><u>serie de documentos</u></strong> que constituyen los <strong><u>instrumentos de gestión</u></strong> de la explotación y de la seguridad de las presas, y que debe realizar el <strong><u>titular de la presa</u></strong>:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li><p><i class="fas fa-sitemap icon text-gray-500"></i><strong>Clasificación</strong> en función del riesgo potencial.</p></li>
+                                <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong>Normas de explotación</strong> de la presa.</p></li>
+                                <li><p><i class="fas fa-file-medical-alt icon text-gray-500"></i><strong>Plan de Emergencia</strong> de la presa.</p></li>
+                                <li><p><i class="fas fa-sync-alt icon text-gray-500"></i><strong>Revisiones de seguridad</strong> de la presa.</p></li>
+                                <li><p><i class="fas fa-chart-area icon text-gray-500"></i><strong>Informes anuales</strong> de auscultación.</p></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><p><i class="fas fa-book-reader icon text-purple-600"></i>Se han redactado unas <strong><u>guías para facilitar el trabajo</u></strong> de los <u>técnicos</u> involucrados en la construcción y explotación, y de la <u>Administración</u> en su labor de análisis y aprobación.</p></li>
+                </ul>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-user-shield icon text-cyan-700"></i>Gestión de la Seguridad por la Administración</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>La <span class="definition-pill"><strong>gestión de la seguridad de las presas</strong></span> es el <strong><u>conjunto de actuaciones</u></strong> que debe realizar el <span class="actor-pill"><strong>MITECO</strong></span> (a través de la DGA) o la <strong><u>administración hidráulica competente</u></strong> de la <span class="actor-pill">Comunidad Autónoma</span> correspondiente (en cuencas intracomunitarias).</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-bullseye icon text-red-600"></i>Para <strong><u>controlar el cumplimiento de los requisitos de seguridad</u></strong> exigidos por la normativa:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-check icon text-gray-500"></i><strong>Aprobar</strong> la clasificación de la presa.</p></li>
+                                    <li><p><i class="fas fa-file-alt icon text-gray-500"></i><strong>Informar</strong> los proyectos.</p></li>
+                                    <li><p><i class="fas fa-search icon text-gray-500"></i><strong>Inspeccionar</strong> la construcción.</p></li>
+                                    <li><p><i class="fas fa-stamp icon text-gray-500"></i><strong>Aprobar</strong> las normas de explotación y los planes de emergencia.</p></li>
+                                    <li><p><i class="fas fa-clipboard-check icon text-gray-500"></i><strong>Evaluar</strong> el contenido de las revisiones e informes de seguridad.</p></li>
+                                    <li><p><i class="fas fa-sliders-h icon text-gray-500"></i><strong>Establecer</strong> por razones de seguridad <strong>condicionantes</strong> a la explotación ordinaria y <strong>ordenar vaciados</strong> parciales o totales.</p></li>
+                                    <li><p><i class="fas fa-eye icon text-gray-500"></i><strong>Velar</strong> por el cumplimiento de las obligaciones de seguridad del titular.</p></li>
+                                    <li><p><i class="fas fa-database icon text-gray-500"></i><strong>Mantener actualizado</strong> el Registro de Seguridad de Presas y Embalses.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-list-alt icon text-orange-700"></i>Inventario de presas y embalses</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-tools icon text-blue-600"></i>El <strong><u>inventario de presas</u></strong> es un <strong><u>instrumento de gestión eficaz</u></strong> que recoge <strong><u>información de toda España</u></strong> sobre las características de las <u>presas</u>, de la <u>cuenca</u> y del <u>embalse</u>.</p></li>
+                        <li><p><i class="fas fa-chart-bar icon text-purple-600"></i>En el año <span class="pill-blue"><strong>2006</strong></span> se incluían en el inventario <span class="pill-blue"><strong>1.188</strong></span> presas en explotación y <span class="pill-blue"><strong>38</strong></span> en construcción.</p></li>
+                        <li><p><i class="fas fa-sync icon text-cyan-600"></i>Le corresponde a la <span class="actor-pill"><strong>Dirección General del Agua</strong></span> <strong><u>actualizar el inventario</u></strong>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-database-alt icon text-green-600"></i>En <span class="pill-blue"><strong>2002</strong></span> se puso en marcha en la <span class="actor-pill">DGA</span> la base de datos <span class="doc-pill"><strong>GISPE (Gestión de Información de Seguridad de Presas y Embalses)</strong></span> que incluye:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-file-invoice icon text-gray-500"></i>La <strong>Ficha Técnica</strong>.</p></li>
+                                    <li><p><i class="fas fa-folder-open icon text-gray-500"></i><strong>Referencias relativas a la existencia de ciertos documentos</strong> de la presa (<u>cajas rojas</u>, <u>documentos generados por el área de Vigilancia de Presas</u>, <u>informes XYZT</u>, <u>informes anuales de auscultación</u>, <u>clasificación en función del riesgo potencial</u>, <u>normas de explotación</u>, <u>revisiones de seguridad</u> y <u>planes de emergencia</u>).</p></li>
+                                    <li><p><i class="fas fa-map icon text-gray-500"></i><strong>Cartografía</strong> general y de detalle.</p></li>
+                                    <li><p><i class="fas fa-camera icon text-gray-500"></i><strong>Fotografías</strong> actualizadas.</p></li>
+                                    <li><p><i class="fas fa-tasks icon text-gray-500"></i><strong>Control de la tramitación administrativa</strong> de ciertos documentos.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Card 3: Planes de emergencia y revisiones de seguridad -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-file-medical-alt"></i></div>
+                <h2>3. Planes de emergencia y revisiones de seguridad de las presas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-bullhorn icon text-red-600"></i>Planes de emergencia</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>Sus <strong><u>características principales</u></strong> son:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-book icon text-gray-500"></i>Los <strong><u>criterios para su elaboración</u></strong> vienen recogidos en la <span class="doc-pill"><strong>Directriz Básica de Planificación de Protección Civil ante el riesgo de inundaciones</strong></span>.</p></li>
+                                    <li><p><i class="fas fa-check-circle icon text-gray-500"></i><strong><u>Deben tenerlos</u></strong> todas las presas de <strong><u>categoría A o B</u></strong>.</p></li>
+                                    <li><p><i class="fas fa-user-tie icon text-gray-500"></i>Su <strong><u>elaboración es responsabilidad del titular</u></strong> de la presa junto con la <u>implantación</u>, <u>mantenimiento</u> y <u>actualización</u>.</p></li>
+                                    <li><p><i class="fas fa-stamp icon text-gray-500"></i>Son <strong><u>aprobados por la <span class="actor-pill">DGA</span></u></strong>, previo informe del <span class="actor-pill">Consejo Nacional de Protección Civil</span>, u órganos equivalentes en <span class="actor-pill">CCAA</span> si ejercen competencias sobre el DPH para presas ubicadas en cuencas intracomunitarias.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-copy icon text-gray-500"></i>Se <strong><u>remitirá copia</u></strong> del Plan de Emergencia y de su aprobación a los <u>órganos de Protección Civil de las <span class="actor-pill">CCAA</span></u> que puedan verse afectadas por la rotura de la presa y a la <span class="actor-pill">Dirección General de Protección Civil</span>.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-share-square icon"></i>Estos darán <strong><u>información detallada y un ejemplar</u></strong> a los <u>municipios</u> que puedan verse afectados por la onda de rotura antes de <span class="pill-blue">2 horas</span>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tasks icon text-purple-600"></i>El <strong><u>contenido básico</u></strong> es el siguiente:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-shield-alt icon text-gray-500"></i><strong>Análisis de seguridad</strong> estableciendo <u>umbrales de peligro</u>, estudio de <u>fenómenos que puedan afectar a la seguridad</u> como:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-exclamation-circle icon"></i><strong>Comportamiento anormal</strong> de la presa, detectado por las inspecciones o auscultación.</p></li>
+                                                <li><p><i class="fas fa-cloud-showers-heavy icon"></i><strong>Avenidas extremas</strong> o <strong>mal funcionamiento</strong> de los órganos de desagüe.</p></li>
+                                                <li><p><i class="fas fa-satellite-dish icon"></i><strong>Efectos sísmicos</strong>.</p></li>
+                                                <li><p><i class="fas fa-mountain icon"></i><strong>Deslizamientos de laderas</strong> del embalse o <strong>avalanchas</strong> de rocas, nieve o hielo.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><p><i class="fas fa-map-marked-alt icon text-gray-500"></i><strong>Zonificación territorial y análisis de los riesgos</strong> generados por la rotura de la presa, <u>delimitación de las áreas</u> que puedan verse afectadas y <u>estimación de los daños</u> que se podrían ocasionar.</p></li>
+                                    <li><p><i class="fas fa-gavel icon text-gray-500"></i><strong>Normas de actuación</strong>, <u>situaciones</u> en las que habrá de <u>intensificarse la vigilancia</u> de la presa y <u>objetivos</u> de esa vigilancia, <u>medidas a adoptar</u> para la reducción del riesgo, <u>procedimientos de información</u> con los organismos públicos implicados en la gestión de la emergencia.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-users-cog icon text-gray-500"></i><strong>Organización de los recursos humanos y materiales</strong> necesarios para la puesta en práctica de las actuaciones previstas.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li>
+                                                    <div class="collapsible-trigger">
+                                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                                        <p><i class="fas fa-user-tie icon"></i>La <strong><u>dirección del Plan</u></strong> recae sobre la persona que dirija la <strong><u>Explotación de la presa</u></strong> y sus funciones básicas serán:</p>
+                                                    </div>
+                                                    <div class="collapsible-content hidden">
+                                                        <ul class="even-deeper-nested-list">
+                                                            <li><p><i class="fas fa-search-plus icon"></i><strong>Intensificar la vigilancia</strong> de la presa en caso de acontecimiento extraordinario.</p></li>
+                                                            <li><p><i class="fas fa-cogs icon"></i><strong>Disponer la ejecución</strong> de la gestión de emergencia.</p></li>
+                                                            <li><p><i class="fas fa-bullhorn icon"></i><strong>Mantener permanentemente informados</strong> a los organismos públicos implicados en la gestión de la emergencia.</p></li>
+                                                            <li><p><i class="fas fa-bell icon"></i><strong>Dar la alarma</strong> en caso de peligro inminente de rotura o si se ha producido.</p></li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-tools icon text-gray-500"></i><strong>Medios y recursos materiales</strong>, el plan recogerá los <u>medios y recursos</u> con los que cuenta para su puesta en práctica.</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-desktop icon"></i><strong>Sala de emergencia</strong> próxima a la presa para servir de <u>puesto de mando al director del Plan</u> y asegurar las <u>comunicaciones</u> con los organismos públicos implicados en la gestión de la emergencia.</p></li>
+                                                <li><p><i class="fas fa-broadcast-tower icon"></i><strong>Sistemas de aviso rápido a la población</strong> de la zona inundable antes de <span class="pill-blue">30 minutos</span>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-sync-alt icon text-orange-700"></i>Revisiones de seguridad</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>Las <span class="doc-pill"><strong>NTSPE</strong></span> establecen la necesidad de realizar una <strong><u>inspección detallada</u></strong> para <strong><u>evaluar la seguridad</u></strong> de las presas.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-clock icon text-purple-600"></i>Con una <strong><u>periodicidad</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-calendar-alt icon text-gray-500"></i>No superior a <span class="pill-blue"><strong>5 años</strong></span> en las de <strong>categoría A</strong>.</p></li>
+                                    <li><p><i class="fas fa-calendar-alt icon text-gray-500"></i>No superior a <span class="pill-blue"><strong>10 años</strong></span> en las de <strong>categorías B</strong>.</p></li>
+                                    <li><p><i class="fas fa-calendar-alt icon text-gray-500"></i>Y no superior a <span class="pill-blue"><strong>15 años</strong></span> en las <strong>grandes presas de categoría C</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-exclamation-triangle icon text-red-600"></i>Y <strong><u>siempre después de situaciones extraordinarias</u></strong> (grandes avenidas o seísmos).</p></li>
+                        <li><p><i class="fas fa-user-edit icon text-cyan-600"></i>El <strong><u>titular de la presa debe redactar un documento</u></strong> donde se <u>recojan las observaciones realizadas</u> y se <u>propongan las acciones necesarias</u> para mantener el nivel de seguridad de la presa.</p></li>
+                        <li><p><i class="fas fa-stamp icon text-green-600"></i>Que es objeto de <strong><u>aprobación por la <span class="actor-pill">DGA</span></u></strong> en las presas estatales.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
