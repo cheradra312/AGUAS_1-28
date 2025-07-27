@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Presas I</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Estilos CSS personalizados -->
+    <style>
+        /* Estilos generales del cuerpo del documento */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Estructura principal de las tarjetas */
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header .icon-bg {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-size: 1.25rem;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Reset de listas */
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-top: 1rem; }
+
+        /* Estilos para las "píldoras" de colores */
+        .pill, .law-pill, .directive-pill, .actor-pill, .plan-pill, .definition-pill, .doc-pill, .principle-pill, .formula-pill, .operator-pill, .color-red-pill {
+            display: inline;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0 0.2rem;
+            white-space: normal;
+        }
+        .pill-blue { background-color: #dbeafe; color: #1e4d91; border: 1px solid #93c5fd; }
+        .law-pill { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
+        .actor-pill { background-color: #e5e7eb; color: #1f2937; border: 1px solid #9ca3af; }
+        .operator-pill { background-color: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .plan-pill { background-color: #cffafe; color: #164e63; border: 1px solid #67e8f9; }
+        .definition-pill { background-color: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+        .doc-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .principle-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .formula-pill { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .color-white-pill { background-color: #f1f5f9; color: #1e293b; border: 1px solid #94a3b8; }
+        .color-yellow-pill { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .color-blue-pill { background-color: #dbeafe; color: #1e4d91; border: 1px solid #60a5fa; }
+        .color-green-pill { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+        .color-red-pill { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Iconos dentro del texto */
+        .icon {
+            margin-right: 0.5rem;
+            width: 1.25em;
+            text-align: center;
+        }
+
+        /* Estilos para las listas anidadas y sus viñetas */
+        .nested-list, .deeper-nested-list, .even-deeper-nested-list {
+            padding-left: 1.75rem;
+            margin-top: 0.75rem;
+            border-left: 3px dotted #cbd5e1;
+        }
+        .nested-list > li, .deeper-nested-list > li, .even-deeper-nested-list > li {
+            position: relative;
+        }
+        .nested-list > li::before {
+            content: '🔹';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            color: #3b82f6;
+        }
+        .deeper-nested-list > li::before {
+             content: '▪️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        .even-deeper-nested-list > li::before {
+             content: '▫️';
+             position: absolute;
+             left: -1.5rem;
+             top: 0.25rem;
+        }
+        /* Regla para ocultar la viñeta CSS si un icono es el PRIMER elemento */
+        .nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> .collapsible-trigger > p > i.icon:first-child)::before,
+        .nested-list > li:has(> p > i.icon:first-child)::before,
+        .deeper-nested-list > li:has(> p > i.icon:first-child)::before,
+        .even-deeper-nested-list > li:has(> p > i.icon:first-child)::before {
+            content: none;
+        }
+
+        /* --- Estilos para la funcionalidad desplegable --- */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        .collapsible-trigger:hover {
+            background-color: #f9fafb;
+        }
+        .collapsible-trigger > p, .collapsible-trigger > h3, .collapsible-trigger > span {
+            margin: 0;
+            text-align: left;
+        }
+        .collapsible-trigger > h3, .collapsible-trigger > span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        .collapsible-icon {
+            transition: transform 0.3s ease;
+            margin-right: 0.75rem;
+            width: 1em;
+            color: #3b82f6;
+        }
+        .collapsible-content {
+            padding-left: 1.75rem;
+        }
+        .collapsible-trigger.open .collapsible-icon {
+            transform: rotate(90deg);
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilo para los títulos de subsecciones temáticas */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Estilos para tablas */
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+        .custom-table th, .custom-table td {
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem;
+            text-align: center;
+        }
+        .custom-table th {
+            background-color: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header del mapa -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2">
+                <i class="fas fa-water"></i> MEA1T23. Presas I <i class="fas fa-hard-hat"></i>
+            </h1>
+        </header>
+
+        <!-- Contenido del mapa (tarjetas) -->
+
+        <!-- Card 1: Presas I -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-dam"></i></div>
+                <h2>1. Presas I: Generalidades. Avenidas y otros criterios de proyecto</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-info-circle icon text-blue-600"></i>Generalidades</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-building icon text-purple-600"></i>Las <strong><u>presas</u></strong> son unas de las <strong><u>obras más grandes e importantes</u></strong>.</p></li>
+                        <li><p><i class="fas fa-shield-alt icon text-orange-600"></i>Deben <strong><u>resistir grandes cargas</u></strong>, en terrenos a veces muy complicados, lo que exigen una <strong><u>elevada tecnología y especialización</u></strong>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tasks icon text-cyan-600"></i>Tienen <strong><u>2 funciones principales</u></strong> al retener el agua en un cauce:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-arrow-up icon text-gray-500"></i><strong>Elevar su nivel</strong>.</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-warehouse icon text-gray-500"></i>Y <strong>formar un depósito</strong> con un doble propósito:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-sliders-h icon"></i><strong>Regular caudales</strong>.</p></li>
+                                                <li><p><i class="fas fa-house-damage icon"></i>Y <strong>laminar avenidas</strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><i class="fas fa-check-circle icon text-green-600"></i>Las presas <strong><u>regulan el agua</u></strong>, la <strong><u>dan cuando hace falta</u></strong> y la <strong><u>contienen cuando puede dañar</u></strong>.</p></li>
+                        <li><p><i class="fas fa-plus-circle icon text-indigo-600"></i><strong><u>Favorecen</u></strong> los <u>riegos</u>, <strong><u>generan</u></strong> <u>energía</u>, <strong><u>procuran</u></strong> <u>abastecimientos de aguas</u>, <strong><u>protegen</u></strong> los <u>campos y las ciudades</u>, etc.</p></li>
+                        <li><p><i class="fas fa-water icon text-blue-700"></i>En general, cuando una presa tiene cierta altura genera un <strong><u>embalse</u></strong> que suele ser <strong><u>predominante</u></strong>.</p></li>
+                        <li><p><i class="fas fa-chart-pie icon text-gray-700"></i>En <strong><u>España</u></strong> existen más de <span class="pill-blue"><strong>1.200</strong></span> <strong><u>grandes presas</u></strong> y los embalses tienen una <strong><u>capacidad total de <span class="pill-blue">56.000 hm³</span></u></strong>, de los que aproximadamente la <strong><u>mitad son hidroeléctricos</u></strong>.</p></li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-cloud-showers-heavy icon text-red-700"></i>Avenidas y otros criterios de proyecto</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li><p><i class="fas fa-gavel icon text-amber-700"></i>El <span class="law-pill"><strong>Real Decreto 264/2021</strong></span> aprueba <span class="pill-blue"><strong>3</strong></span> <strong><u>Normas Técnicas de Seguridad</u></strong> para las presas y sus embalses.</p></li>
+                        <li><p><i class="fas fa-book-open icon text-blue-600"></i>Una de ellas dedicada al <strong><u>proyecto, construcción y puesta en carga</u></strong> de presas y llenado de embalses.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tasks icon text-purple-600"></i>Establece los siguientes <strong><u>periodos de retorno</u></strong> para:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i>La <span class="definition-pill"><strong>avenida de proyecto</strong></span> (<u>máxima avenida</u> para el dimensionamiento de los <u>órganos de desagüe</u> y las <u>estructuras de disipación de energía</u>).</p></li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-exclamation-triangle icon text-gray-500"></i>Y la <span class="definition-pill"><strong>avenida extrema</strong></span> (<u>mayor avenida</u> que la presa debe soportar <u>sin producirse su desbordamiento</u>, salvo vertidos accidentales por oleaje producido por el viento, que no comprometan su seguridad).</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-ban icon"></i>Lo que significa que en <strong><u>presas de materiales sueltos no se admitirán vertidos</u></strong> sobre la coronación, salvo que estén específicamente proyectadas para ello.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Categoría de la presa frente al riesgo</th>
+                                <th colspan="3">Periodo de retorno de la avenida (años)</th>
+                            </tr>
+                            <tr>
+                                <th>Avenida de proyecto</th>
+                                <th colspan="2">Avenida extrema</th>
+                            </tr>
+                             <tr>
+                                <th></th>
+                                <th></th>
+                                <th>Presas de fábrica</th>
+                                <th>Presas de materiales sueltos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>A</strong></td>
+                                <td><span class="pill-blue">1.000</span></td>
+                                <td><span class="pill-blue">5.000</span></td>
+                                <td><span class="pill-blue">10.000</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>B</strong></td>
+                                <td><span class="pill-blue">500</span></td>
+                                <td><span class="pill-blue">1.000</span></td>
+                                <td><span class="pill-blue">5.000</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>C</strong></td>
+                                <td><span class="pill-blue">100</span></td>
+                                <td><span class="pill-blue">500</span></td>
+                                <td><span class="pill-blue">1.000</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <ul>
+                        <li><p><i class="fas fa-hard-hat icon text-orange-600"></i>Para el dimensionamiento del <strong><u>desvío del río durante la construcción</u></strong> de la presa se determinará una <span class="definition-pill"><strong>avenida de construcción</strong></span>.</p></li>
+                        <li><p><i class="fas fa-info-circle icon text-blue-600"></i>En función de los <strong><u>riesgos asumibles</u></strong> durante el periodo de ejecución de las obras, cuya <strong><u>probabilidad de superación</u></strong> en dicho período, para una estimación prudente del plazo de ejecución, será:</p></li>
+                    </ul>
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Categoría de la presa frente al riesgo</th>
+                                <th colspan="2">Probabilidad de superación</th>
+                            </tr>
+                            <tr>
+                                <th>Presas de fábrica (%)</th>
+                                <th>Presas de materiales sueltos (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>A</strong></td>
+                                <td><span class="pill-blue">≤ 10</span></td>
+                                <td><span class="pill-blue">≤ 5</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>B</strong></td>
+                                <td><span class="pill-blue">≤ 20</span></td>
+                                <td><span class="pill-blue">≤ 10</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>C</strong></td>
+                                <td><span class="pill-blue">≤ 25</span></td>
+                                <td><span class="pill-blue">≤ 20</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <ul>
+                        <li><p><i class="fas fa-cogs icon text-cyan-700"></i>En el <strong><u>proyecto de construcción</u></strong> se <strong><u>comprobará el comportamiento estructural</u></strong> de la presa ante las <u>solicitaciones actuantes y sus posibles combinaciones</u>.</p></li>
+                        <li><p><i class="fas fa-shield-alt icon text-green-700"></i>Y se <strong><u>justificarán los niveles de seguridad</u></strong> que se adopten en cada caso según el <u>tipo de solicitación</u>, la <u>probabilidad de ocurrencia</u> y su <u>presunta permanencia</u>, así como la <u>categoría de la presa</u> y su <u>tipología y dimensiones</u>.</p></li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-tasks icon text-purple-600"></i>Las <strong><u>acciones a considerar</u></strong> actuando sobre la presa serán:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-weight-hanging icon text-gray-500"></i>Peso propio.</p></li>
+                                    <li><p><i class="fas fa-compress-arrows-alt icon text-gray-500"></i>Carga hidrostática.</p></li>
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i>Presiones intersticiales.</p></li>
+                                    <li><p><i class="fas fa-thermometer-half icon text-gray-500"></i>Efectos térmicos.</p></li>
+                                    <li><p><i class="fas fa-mountain icon text-gray-500"></i>Empuje de los sedimentos.</p></li>
+                                    <li><p><i class="fas fa-wave-square icon text-gray-500"></i>Efecto del oleaje.</p></li>
+                                    <li><p><i class="fas fa-satellite-dish icon text-gray-500"></i>Efectos sísmicos.</p></li>
+                                    <li><p><i class="fas fa-snowflake icon text-gray-500"></i>Empuje del hielo.</p></li>
+                                    <li><p><i class="fas fa-plus-circle icon text-gray-500"></i>Y las particulares que procedan en cada caso.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-stream icon text-indigo-600"></i>Las acciones se <strong><u>combinarán entre sí</u></strong>, atendiendo a su <u>probabilidad de presentación</u> y a su <u>permanencia</u>, dando origen a los <strong><u>tipos de situaciones</u></strong> siguientes:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-check-circle icon text-green-500"></i><span class="definition-pill"><strong>Situaciones Normales</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-info-circle icon"></i>Corresponden a combinaciones de acciones que se puedan presentar en el tiempo con <strong><u>apreciable persistencia</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-layer-group icon"></i>Con el embalse en <strong><u>distintos niveles</u></strong> con el límite del <span class="definition-pill"><strong>Nivel Máximo Normal</strong></span>.</p></li>
+                                                <li><p><i class="fas fa-ruler-vertical icon"></i>(<u>Definición:</u> máximo nivel que se alcanza en el embalse cuando todos los órganos de desagüe se encuentran cerrados).</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-exclamation-circle icon text-yellow-500"></i><span class="definition-pill"><strong>Situaciones Accidentales</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-info-circle icon"></i>Corresponden a combinaciones de acciones que se puedan presentar en el tiempo con <strong><u>duración limitada</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-layer-group icon"></i>Con el embalse en <strong><u>distintos niveles</u></strong> con el límite del <span class="definition-pill"><strong>Nivel de la Avenida de Proyecto</strong></span>.</p></li>
+                                                <li><p><i class="fas fa-ruler-vertical icon"></i>(<u>Definición:</u> máximo nivel que alcanzará el agua en el embalse, considerando su acción laminadora, durante el paso de la Avenida de Proyecto).</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-exclamation-triangle icon text-red-500"></i><span class="definition-pill"><strong>Situaciones Extremas</strong></span></p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-info-circle icon"></i>Corresponden a combinaciones de acciones que se puedan presentar en el tiempo con <strong><u>carácter extremo</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-layer-group icon"></i>Con el embalse en <strong><u>distintos niveles</u></strong> con el límite del <span class="definition-pill"><strong>Nivel de la Avenida Extrema</strong></span>.</p></li>
+                                                <li><p><i class="fas fa-ruler-vertical icon"></i>(<u>Definición:</u> máximo nivel que alcanzará el agua en el embalse, considerando su acción laminadora, durante el paso de la Avenida Extrema).</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Criterios generales de predimensionamiento -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-ruler-combined"></i></div>
+                <h2>2. Criterios generales de predimensionamiento</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                <ul>
+                    <li>
+                        <div class="collapsible-trigger">
+                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                            <p><i class="fas fa-info-circle icon text-blue-600"></i>Algunos de los <strong><u>aspectos principales a considerar</u></strong> en el predimensionamiento de una presa son:</p>
+                        </div>
+                        <div class="collapsible-content hidden">
+                            <ul class="nested-list">
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-map-marked-alt icon text-purple-600"></i><span class="definition-pill"><strong>Topografía</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-ruler-vertical icon text-gray-500"></i>Características <strong><u>geométricas de la cerrada</u></strong> de la presa y del <strong><u>vaso del embalse</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-bullseye icon text-gray-500"></i>Con el objetivo de <strong><u>ubicar la presa en el mejor emplazamiento posible</u></strong>.</p></li>
+                                            <li><p><i class="fas fa-chart-area icon text-gray-500"></i>Teniendo en cuenta las <strong><u>curvas de volúmenes y superficies</u></strong> de embalse, tanto las <u>naturales</u> como, si se prevén, las de <u>actuaciones en el vaso</u> o posibles <u>sedimentaciones futuras</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-mountain icon text-orange-600"></i><span class="definition-pill"><strong>Condiciones geotécnicas</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-search icon text-gray-500"></i>Analizando además de la <strong><u>capacidad portante</u></strong>, posibles <strong><u>filtraciones</u></strong> y problemas de <strong><u>inestabilidad</u></strong> que se pudieran presentar.</p></li>
+                                            <li><p><i class="fas fa-map-pin icon text-gray-500"></i>No sólo en el <strong><u>emplazamiento de la presa</u></strong>, sino también en aquellas <strong><u>laderas</u></strong> que puedan influir sobre las condiciones de explotación por posibles <u>afecciones al vaso del embalse</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-chart-bar icon text-cyan-600"></i><span class="definition-pill"><strong>Estudio de aportaciones</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-calculator icon text-gray-500"></i>Para <strong><u>cuantificar el recurso hídrico disponible</u></strong> y su <strong><u>distribución temporal y espacial</u></strong>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-sliders-h icon text-green-600"></i><span class="definition-pill"><strong>Estudio de regulación</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-check-circle icon text-gray-500"></i><strong><u>Evaluando el aprovechamiento</u></strong> del recurso hídrico disponible con <u>distintos esquemas y dimensiones</u> de las obras y con <u>diversas estrategias de explotación</u> en función de los diferentes usos.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-cloud-showers-heavy icon text-red-600"></i><span class="definition-pill"><strong>Estudio de avenidas</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-wave-square icon text-gray-500"></i>En función del <strong><u>hidrograma</u></strong> y de las <strong><u>características del embalse</u></strong> se determina su <strong><u>efecto laminador</u></strong> y el <strong><u>caudal de salida</u></strong> por el aliviadero.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-truck-loading icon text-yellow-700"></i><span class="definition-pill"><strong>Procedencia de materiales</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-compass icon text-gray-500"></i>El diseño de la presa se debe orientar en general al <strong><u>empleo de materiales disponibles en las proximidades</u></strong> de la obra.</p></li>
+                                            <li><p><i class="fas fa-hard-hat icon text-gray-500"></i>Contemplando una <strong><u>presa “construible”</u></strong>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-calendar-alt icon text-indigo-600"></i><span class="definition-pill"><strong>Plan de obra</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-bullseye icon text-gray-500"></i>Con el objeto de <strong><u>asegurar que la construcción de la presa es posible</u></strong> con los <u>métodos existentes</u>.</p></li>
+                                            <li><p><i class="fas fa-clock icon text-gray-500"></i>Y en unos <strong><u>plazos compatibles</u></strong> con la disposición de un <u>volumen de maquinaria razonable</u> con <u>rendimientos factibles</u>.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-route icon text-blue-700"></i><span class="definition-pill"><strong>Desvío del río durante la construcción</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-info-circle icon text-gray-500"></i>Se debe <strong><u>tener en cuenta en el predimensionamiento</u></strong> en función de su <u>importancia</u>, <u>complicación</u> o <u>relación con el diseño</u> de la presa.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="collapsible-trigger">
+                                        <i class="fas fa-chevron-right collapsible-icon"></i>
+                                        <p><i class="fas fa-tools icon text-gray-800"></i><span class="definition-pill"><strong>Tratamientos del terreno en fases de construcción, puesta en carga y explotación</strong></span></p>
+                                    </div>
+                                    <div class="collapsible-content hidden">
+                                        <ul class="deeper-nested-list">
+                                            <li><p><i class="fas fa-exclamation-circle icon text-gray-500"></i>Si se prevén de importancia, son un <strong><u>elemento más a considerar</u></strong> en el predimensionamiento de la presa.</p></li>
+                                            <li><p><i class="fas fa-cogs icon text-gray-500"></i>Considerando sus <strong><u>tipos, criterios y procedimientos</u></strong> de aplicación.</p></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- Card 3: Clasificación tipológica de las presas -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-bg"><i class="fas fa-sitemap"></i></div>
+                <h2>3. Clasificación tipológica de las presas</h2>
+            </div>
+            <div class="collapsible-trigger">
+                <i class="fas fa-chevron-right collapsible-icon"></i>
+                <span>Ver detalles</span>
+            </div>
+            <div class="collapsible-content hidden">
+                
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-stream icon text-blue-600"></i>Clasificación General</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-water icon text-cyan-600"></i>En cuanto a la <strong><u>situación del aliviadero</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i><strong>Presas vertedero</strong> (sobre la misma presa).</p></li>
+                                    <li><p><i class="fas fa-arrows-alt-h icon text-gray-500"></i>O <strong>vertedero independiente</strong> de ella.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-shield-alt icon text-purple-600"></i>Según la <strong><u>forma de resistir el empuje hidrostático</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-weight-hanging icon text-gray-500"></i><span class="definition-pill"><strong>Presas de gravedad</strong></span>, resisten por <strong><u>peso</u></strong>, pueden ser:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-cube icon"></i>Macizas.</p></li>
+                                                <li><p><i class="fas fa-archway icon"></i>Aligeradas con contrafuertes.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><p><i class="fas fa-vector-square icon text-gray-500"></i><span class="definition-pill"><strong>Presas bóvedas</strong></span>, <strong><u>transmiten los empujes al terreno</u></strong>, tiene <u>doble curvatura</u> en horizontal y vertical.</p></li>
+                                    <li><p><i class="fas fa-circle-notch icon text-gray-500"></i><span class="definition-pill"><strong>Presas arco-gravedad</strong></span>, <strong><u>intermedia</u></strong> entre las anteriores, <u>curvatura solo en horizontal</u>.</p></li>
+                                    <li><p><i class="fas fa-clone icon text-gray-500"></i><span class="definition-pill"><strong>Presas con bóvedas múltiples</strong></span>, son un tipo <strong><u>mixto</u></strong> con <u>contrafuertes equidistantes</u> de sección rectangular y unas <u>bóvedas que apoyan sobre ellos</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-box icon text-orange-600"></i>Según el <strong><u>material empleado</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-mountain icon text-gray-500"></i><span class="definition-pill"><strong>Presas de materiales sueltos</strong></span> (<u>piedras, gravas, arenas, limos, arcillas y suelos en general</u>), se dividen en:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-layer-group icon"></i><strong>Presas de escollera</strong>, predomina <u>piedra gruesa</u>.</p></li>
+                                                <li><p><i class="fas fa-globe-europe icon"></i><strong>Presas de tierra</strong>, construidas con <u>materiales térreos</u>.</p></li>
+                                                <li><p><i class="fas fa-shield-alt icon"></i>Necesitan una <strong><u>pantalla aguas arriba o diafragma impermeabilizante</u></strong>, que puede ser de <u>hormigón armado</u>, <u>materiales bituminosos</u> y <u>arcillas en núcleo o diafragma</u>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><p><i class="fas fa-building icon text-gray-500"></i><span class="definition-pill"><strong>Presas de fábrica</strong></span>, actualmente ya solo de <strong><u>hormigón</u></strong>, ya no se construyen de <u>mampostería ni de ladrillo</u>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-check-double icon text-green-700"></i>Elección del tipo de presa</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>El tipo de presa se elige en <strong><u>función de los siguientes factores</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li><p><i class="fas fa-map-marked-alt icon text-gray-500"></i><strong>Topografía</strong> de la cerrada.</p></li>
+                                    <li><p><i class="fas fa-mountain icon text-gray-500"></i><strong>Características geológicas y geotécnicas</strong> de la cerrada.</p></li>
+                                    <li><p><i class="fas fa-euro-sign icon text-gray-500"></i><strong>Coste</strong> de la obra.</p></li>
+                                    <li><p><i class="fas fa-satellite-dish icon text-gray-500"></i><strong>Sismicidad</strong>.</p></li>
+                                    <li><p><i class="fas fa-leaf icon text-gray-500"></i><strong>Incidencia</strong> en el medio ambiente.</p></li>
+                                    <li><p><i class="fas fa-cogs icon text-gray-500"></i><strong>Funcionalidad</strong> durante la explotación.</p></li>
+                                    <li><p><i class="fas fa-water icon text-gray-500"></i><strong>Hidrología</strong> (desvío del río y aliviaderos en función de las máximas avenidas).</p></li>
+                                    <li><p><i class="fas fa-truck-loading icon text-gray-500"></i><strong>Disponibilidad de materiales</strong>.</p></li>
+                                    <li><p><i class="fas fa-tasks icon text-gray-500"></i><strong>Flexibilidad</strong> ante una ejecución por etapas.</p></li>
+                                    <li><p><i class="fas fa-map-pin icon text-gray-500"></i>Y <strong>situación aguas abajo</strong>.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-ruler-combined icon text-indigo-700"></i>Clasificación por Dimensiones</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>El <span class="law-pill"><strong>RD 264/2021</strong></span>, por el que se aprueban las <span class="doc-pill">NTS para las presas y sus embalses</span>, y el <span class="law-pill">RDPH</span> clasifican también las presas en <strong><u>función de sus dimensiones</u></strong>:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-arrows-alt-v icon text-gray-500"></i><span class="definition-pill"><strong>Grandes presas</strong></span>, aquellas con:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-ruler-vertical icon"></i><strong>Altura superior a <span class="pill-blue">15 m</span></strong>.</p></li>
+                                                <li><p><i class="fas fa-arrows-alt-h icon"></i>O las que, teniendo una <strong>altura entre <span class="pill-blue">10</span> y <span class="pill-blue">15 m</span></strong>, tienen una <strong>capacidad de embalse superior a <span class="pill-blue">1 hm³</span></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><p><i class="fas fa-ruler-vertical icon text-gray-500"></i><span class="definition-pill"><strong>Pequeñas presas</strong></span>, el resto.</p></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapsible-trigger section-title">
+                    <i class="fas fa-chevron-right collapsible-icon"></i>
+                    <h3><i class="fas fa-exclamation-triangle icon text-red-700"></i>Clasificación por Riesgo Potencial</h3>
+                </div>
+                <div class="collapsible-content hidden">
+                    <ul>
+                        <li>
+                            <div class="collapsible-trigger">
+                                <i class="fas fa-chevron-right collapsible-icon"></i>
+                                <p><i class="fas fa-info-circle icon text-blue-600"></i>En función del <strong><u>riesgo potencial</u></strong> que pueda derivarse de su <u>rotura o funcionamiento incorrecto</u> y de acuerdo con la <span class="doc-pill">Directriz Básica de Planificación de Protección Civil ante el Riesgo de Inundaciones</span>, las <span class="doc-pill">NTS para las presas y sus embalses</span> y el <span class="law-pill">RDPH</span>, se clasifican en:</p>
+                            </div>
+                            <div class="collapsible-content hidden">
+                                <ul class="nested-list">
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-city icon text-red-500"></i><span class="definition-pill"><strong>Categoría A</strong></span>, si puede:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-home icon"></i><strong><u>Afectar gravemente a núcleos urbanos</u></strong> (<u>más de <span class="pill-blue">5</span> viviendas</u>).</p></li>
+                                                <li><p><i class="fas fa-cogs icon"></i>O <strong><u>servicios esenciales</u></strong> (de los que dependan <span class="pill-blue">10.000</span> habitantes o más).</p></li>
+                                                <li><p><i class="fas fa-house-damage icon"></i>O producir <strong><u>daños materiales o medioambientales muy importantes</u></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-home icon text-orange-500"></i><span class="definition-pill"><strong>Categoría B</strong></span>, si puede:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-home icon"></i>Afectar a un <strong><u>reducido número de viviendas</u></strong> (<u>entre <span class="pill-blue">1</span> y <span class="pill-blue">5</span></u>).</p></li>
+                                                <li><p><i class="fas fa-tools icon"></i>U ocasionar <strong><u>daños materiales o medioambientales importantes</u></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-trigger">
+                                            <i class="fas fa-chevron-right collapsible-icon"></i>
+                                            <p><i class="fas fa-car-crash icon text-yellow-500"></i><span class="definition-pill"><strong>Categoría C</strong></span>, si puede:</p>
+                                        </div>
+                                        <div class="collapsible-content hidden">
+                                            <ul class="deeper-nested-list">
+                                                <li><p><i class="fas fa-wrench icon"></i>Producir <strong><u>daños materiales de moderada importancia</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-user-injured icon"></i>Y sólo <strong><u>incidentalmente pérdida de vidas humanas</u></strong>.</p></li>
+                                                <li><p><i class="fas fa-plus-circle icon"></i>Además de <strong><u>todas la que no son A o B</u></strong>.</p></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Script para la funcionalidad desplegable -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Selecciona todos los elementos que servirán como disparadores
+            const triggers = document.querySelectorAll('.collapsible-trigger');
+
+            // Itera sobre cada disparador para añadirle un detector de clics
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', function (event) {
+                    // Evita que el clic en un desplegable anidado afecte a su contenedor padre
+                    event.stopPropagation();
+                    
+                    // Encuentra el elemento de contenido que sigue inmediatamente al disparador
+                    const content = this.nextElementSibling;
+                    
+                    // Alterna la clase 'open' en el disparador (para rotar el icono)
+                    this.classList.toggle('open');
+                    
+                    // Verifica que el siguiente elemento sea un contenido desplegable y alterna la clase 'hidden'
+                    if (content && content.classList.contains('collapsible-content')) {
+                        content.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
